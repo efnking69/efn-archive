@@ -21,18 +21,6 @@
         const auth = getAuth(app);
 
         // --- AUTH LOGIC ---
-        window.handleAuthError = (err, elementId) => {
-            const el = document.getElementById(elementId);
-            el.style.display = "block";
-            if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-                el.innerText = "Invalid email or password.";
-            } else if (err.code === 'auth/email-already-in-use') {
-                el.innerText = "This email is already registered.";
-            } else {
-                el.innerText = "An error occurred. Try again.";
-            }
-        };
-
         window.login = async () => {
             const email = document.getElementById('log-email').value;
             const pass = document.getElementById('log-pass').value;
@@ -46,7 +34,10 @@
                     errorEl.style.display = "block";
                     errorEl.innerText = "Please verify your email first (check spam).";
                 }
-            } catch (e) { handleAuthError(e, 'log-error'); }
+            } catch (e) { 
+                errorEl.style.display = "block";
+                errorEl.innerText = "Wrong email or password."; 
+            }
         };
 
         window.signUp = async () => {
@@ -55,44 +46,45 @@
             const errorEl = document.getElementById('reg-error');
             errorEl.style.display = "none";
 
+            if (pass.length < 8 || !/\d/.test(pass)) {
+                errorEl.style.display = "block";
+                errorEl.innerText = "Password must be at least 8 characters and include numbers.";
+                return;
+            }
+
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
                 await sendEmailVerification(cred.user);
                 errorEl.style.display = "block";
                 errorEl.style.color = "#3ecf8e";
                 errorEl.innerText = "Verification sent! Check your inbox/spam.";
-            } catch (e) { handleAuthError(e, 'reg-error'); }
+            } catch (e) { 
+                errorEl.style.display = "block";
+                errorEl.innerText = "Email already in use or invalid.";
+            }
         };
 
         window.logout = () => signOut(auth).then(() => location.reload());
 
-        // --- UI TOGGLES ---
         window.togglePass = (id) => {
             const input = document.getElementById(id);
             input.type = input.type === 'password' ? 'text' : 'password';
         };
 
         window.switchAuth = (mode) => {
-            const loginBox = document.getElementById('login-box');
-            const regBox = document.getElementById('reg-box');
-            if (mode === 'reg') {
-                loginBox.style.display = 'none';
-                regBox.style.display = 'block';
-            } else {
-                regBox.style.display = 'none';
-                loginBox.style.display = 'block';
-            }
+            document.getElementById('login-box').style.display = mode === 'reg' ? 'none' : 'block';
+            document.getElementById('reg-box').style.display = mode === 'reg' ? 'block' : 'none';
         };
 
         window.openDetail = (name, status, desc, img, link) => {
             document.getElementById('main-page').style.display = 'none';
-            const det = document.getElementById('detail-page');
-            det.style.display = 'block';
+            document.getElementById('detail-page').style.display = 'block';
             document.getElementById('det-title').innerText = name;
             document.getElementById('det-status').innerText = status;
             document.getElementById('det-desc').innerText = desc;
             document.getElementById('det-img').src = img;
             document.getElementById('det-dl').onclick = () => window.open(link, '_blank');
+            window.scrollTo(0,0);
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -115,13 +107,11 @@
 
         nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; }
         
-        /* Discord Button */
-        .btn-discord-box { background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-discord-box { background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; transition: 0.2s; }
         .btn-discord-box:hover { background: #4752c4; transform: translateY(-2px); }
 
-        /* Profile Menu Fix */
-        .profile-container { position: relative; padding-bottom: 20px; margin-bottom: -20px; } /* The bridge */
-        .dropdown { position: absolute; top: 100%; right: 0; background: #111; border: 1px solid var(--border); border-radius: 8px; width: 170px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100; }
+        .profile-container { position: relative; padding: 10px 0; cursor: pointer; }
+        .dropdown { position: absolute; top: 100%; right: 0; background: #111; border: 1px solid var(--border); border-radius: 8px; width: 170px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 5px 0; }
         .profile-container:hover .dropdown { display: block; }
         .dropdown button { width: 100%; padding: 12px; background: none; border: none; color: #888; text-align: left; cursor: pointer; }
         .dropdown button:hover { background: #1a1a1a; color: #fff; }
@@ -129,31 +119,24 @@
         .container { max-width: 1100px; margin: 50px auto; padding: 0 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; text-align: center; transition: 0.3s; }
-        .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
-        .card:hover { border-color: var(--accent); transform: scale(1.02); }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; text-align: center; }
+        .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; background: #000; border: 1px solid #1a1a1a; }
 
-        /* Lowercase specific buttons */
-        .btn-low { text-transform: lowercase; }
         .btn-main { background: #fff; color: #000; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-main:hover { background: var(--accent); color: #fff; }
-        
-        /* Auth Modal Styling */
-        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .auth-box { width: 360px; background: #0d0d0d; padding: 40px; border-radius: 16px; border: 1px solid var(--border); position: relative; }
-        .auth-box h2 { margin-top: 0; letter-spacing: 1px; }
-        
-        .input-group { position: relative; margin: 15px 0; }
-        input { width: 100%; padding: 14px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; font-size: 0.9rem; }
-        .eye-btn { position: absolute; right: 12px; top: 14px; background: none; border: none; color: #444; cursor: pointer; font-size: 1.1rem; }
-        
-        .error-msg { color: var(--error); font-size: 0.75rem; margin-top: 10px; display: none; font-weight: bold; animation: fadeIn 0.3s ease; }
+        .btn-low { text-transform: lowercase; }
 
-        /* Detail Page */
-        #detail-page { display: none; }
-        .detail-grid { display: flex; gap: 40px; margin-top: 30px; flex-wrap: wrap; }
-        .detail-info { flex: 2; background: #080808; border-radius: 15px; padding: 35px; border: 1px solid var(--border); }
-        .detail-side { flex: 1; background: var(--card); border-radius: 15px; padding: 30px; border: 1px solid var(--border); text-align: center; height: fit-content; }
+        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .auth-box { width: 380px; background: #0d0d0d; padding: 40px; border-radius: 16px; border: 1px solid var(--border); }
+        .auth-box h2 { margin-top: 0; font-size: 1.25rem; margin-bottom: 10px; line-height: 1.4; }
+        .subtext { color: #555; font-size: 0.8rem; margin-bottom: 20px; display: block; }
+        
+        .input-group { position: relative; margin-bottom: 15px; }
+        input { width: 100%; padding: 14px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; }
+        .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #444; cursor: pointer; font-size: 1.1rem; }
+        
+        .error-msg { color: var(--error); font-size: 0.8rem; margin-top: 10px; display: none; font-weight: bold; }
+
         .btn-red { background: var(--error); color: #fff; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
 </head>
@@ -185,18 +168,25 @@
             <p style="color:#444; font-size:0.7rem">Status: Working</p>
             <button class="btn-main btn-low" style="width:100%" onclick="openDetail('Charon Client v2.0 [free]', 'Working', 'no description', 'https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">info</button>
         </div>
+
+        <div class="card">
+            <img src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&" alt="AutoMath">
+            <h3>AutoMath</h3>
+            <p style="color:#444; font-size:0.7rem">Status: Working</p>
+            <button class="btn-main btn-low" style="width:100%" onclick="openDetail('AutoMath', 'Working', 'has bugs but works fine. The zip folder includes an tutorial on how to use. ❤️', 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&', 'https://gofile.io/d/9sUpZS')">info</button>
+        </div>
     </div>
 </div>
 
-<div id="detail-page" class="container fade-in">
+<div id="detail-page" class="container fade-in" style="display:none">
     <button onclick="location.reload()" style="background:none; border:none; color:#555; cursor:pointer; font-weight:bold; margin-bottom:20px">← Back to Tools</button>
-    <div class="detail-grid">
-        <div class="detail-info">
-            <img id="det-img" src="" style="width:100%; border-radius:12px; margin-bottom:20px;">
+    <div style="display:flex; gap:40px; flex-wrap:wrap">
+        <div style="flex:2; background:#080808; border-radius:15px; padding:35px; border:1px solid var(--border)">
+            <img id="det-img" src="" style="width:100%; border-radius:12px; margin-bottom:20px; border: 1px solid #1a1a1a;">
             <h1 id="det-title" style="margin:0"></h1>
             <p id="det-desc" style="color:#777; line-height:1.6"></p>
         </div>
-        <div class="detail-side">
+        <div style="flex:1; background:var(--card); border-radius:15px; padding:30px; border:1px solid var(--border); text-align:center; height:fit-content">
             <p style="color:#444; font-size:0.7rem; margin-bottom:5px">Current Status</p>
             <div id="det-status" style="color:#3ecf8e; font-weight:bold; font-size:1.2rem"></div>
             <hr style="border:0; border-top:1px solid #1a1a1a; margin:25px 0">
@@ -212,7 +202,8 @@
 
 <div id="auth-overlay">
     <div class="auth-box fade-in" id="login-box">
-        <h2>System Login</h2>
+        <h2>Login to An Existing Account</h2>
+        <span class="subtext">Enter your credentials to access the archive.</span>
         <div class="input-group"><input type="email" id="log-email" placeholder="Email Address"></div>
         <div class="input-group">
             <input type="password" id="log-pass" placeholder="Password">
@@ -220,12 +211,13 @@
         </div>
         <div id="log-error" class="error-msg"></div>
         <button class="btn-main" style="width:100%; margin-top:10px" onclick="login()">Sign In</button>
-        <p style="color:#444; font-size:0.8rem; margin-top:20px; cursor:pointer" onclick="switchAuth('reg')">Don't have an account? <span style="color:var(--accent)">Create Account</span></p>
-        <p style="color:#222; font-size:0.7rem; cursor:pointer; margin-top:15px" onclick="document.getElementById('auth-overlay').style.display='none'">Cancel</p>
+        <p style="color:#444; font-size:0.85rem; margin-top:25px; cursor:pointer" onclick="switchAuth('reg')">Need a new account? <span style="color:var(--accent)">Register</span></p>
+        <p style="color:#222; font-size:0.75rem; cursor:pointer; margin-top:15px; text-align:center" onclick="document.getElementById('auth-overlay').style.display='none'">Cancel</p>
     </div>
 
     <div class="auth-box fade-in" id="reg-box" style="display:none">
-        <h2>Create Account</h2>
+        <h2>Create a New Account</h2>
+        <span class="subtext">Password must be 8+ characters and include numbers.</span>
         <div class="input-group"><input type="email" id="reg-email" placeholder="Enter Email"></div>
         <div class="input-group">
             <input type="password" id="reg-pass" placeholder="Create Password">
@@ -233,8 +225,8 @@
         </div>
         <div id="reg-error" class="error-msg"></div>
         <button class="btn-main" style="width:100%; margin-top:10px" onclick="signUp()">Register</button>
-        <p style="color:#444; font-size:0.8rem; margin-top:20px; cursor:pointer" onclick="switchAuth('log')">Already have an account? <span style="color:var(--accent)">Login here</span></p>
-        <p style="color:#222; font-size:0.7rem; cursor:pointer; margin-top:15px" onclick="document.getElementById('auth-overlay').style.display='none'">Cancel</p>
+        <p style="color:#444; font-size:0.85rem; margin-top:25px; cursor:pointer" onclick="switchAuth('log')">Have an account? <span style="color:var(--accent)">Login here</span></p>
+        <p style="color:#222; font-size:0.75rem; cursor:pointer; margin-top:15px; text-align:center" onclick="document.getElementById('auth-overlay').style.display='none'">Cancel</p>
     </div>
 </div>
 
