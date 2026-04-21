@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EFN Archive | PW</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // YOUR EXACT CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyCM-ySTXgy37zVUMB2vy4ZJQ3MWlDD5g4E",
+            authDomain: "efn-archive.firebaseapp.com",
+            projectId: "efn-archive",
+            storageBucket: "efn-archive.firebasestorage.app",
+            messagingSenderId: "1073610968306",
+            appId: "1:1073610968306:web:72e03b6f43decbb636546b",
+            measurementId: "G-LYCJBNFTHE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Sign Up Logic
+        window.signUp = async () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+            const msg = document.getElementById('m-msg');
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                await sendEmailVerification(userCredential.user);
+                msg.style.color = "#3ecf8e";
+                msg.innerText = "Verification email sent! Check your inbox.";
+            } catch (error) { msg.style.color = "#ff4444"; msg.innerText = error.message; }
+        };
+
+        // Login Logic
+        window.login = async () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+            const msg = document.getElementById('m-msg');
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                if (userCredential.user.emailVerified) {
+                    location.reload();
+                } else {
+                    msg.style.color = "#ffa500";
+                    msg.innerText = "Please verify your email first!";
+                }
+            } catch (error) { msg.style.color = "#ff4444"; msg.innerText = error.message; }
+        };
+
+        window.logout = () => signOut(auth).then(() => location.reload());
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.emailVerified) {
+                document.getElementById('auth-controls').classList.add('hidden');
+                document.getElementById('user-controls').classList.remove('hidden');
+                document.getElementById('user-display').innerText = user.email;
+                if(document.getElementById('dl-btn')) document.getElementById('dl-btn').classList.remove('hidden');
+                if(document.getElementById('dl-error')) document.getElementById('dl-error').classList.add('hidden');
+            }
+        });
+
+        // UI Switches
+        window.showInfo = (name) => {
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('info-page').style.display = 'block';
+            document.getElementById('info-title').innerText = name;
+        }
+        window.showMain = () => {
+            document.getElementById('main-page').style.display = 'block';
+            document.getElementById('info-page').style.display = 'none';
+        }
+        window.openAuth = () => document.getElementById('auth-modal').style.display = 'flex';
+        window.closeAuth = () => document.getElementById('auth-modal').style.display = 'none';
+    </script>
+
+    <style>
+        :root { --bg: #000000; --card: #111111; --border: #222222; --text-dim: #888888; --accent: #5865F2; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: #fff; margin: 0; user-select: none; cursor: default; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; border-bottom: 1px solid var(--border); }
+        .logo { font-weight: 900; cursor: pointer; letter-spacing: 1px; }
+        .container { max-width: 1000px; margin: 50px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 25px; text-align: center; transition: 0.2s; }
+        .card:hover { border-color: #444; }
+        button { padding: 10px 20px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-solid { background: white; color: black; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: white; }
+        .btn-discord { background: var(--accent); color: white; text-decoration: none; padding: 8px 16px; border-radius: 4px; font-size: 0.8rem; }
+        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-box { width: 320px; background: #111; padding: 30px; border: 1px solid var(--border); border-radius: 12px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; cursor: text; user-select: text; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo" onclick="showMain()">EFN ARCHIVE</div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="https://discord.gg/QV69upuxbg" target="_blank" class="btn-discord">DISCORD</a>
+            <div id="auth-controls">
+                <button class="btn-outline" onclick="openAuth()">LOGIN / SIGN UP</button>
+            </div>
+            <div id="user-controls" class="hidden">
+                <span id="user-display" style="color:var(--text-dim); font-size:0.8rem; margin-right:10px;"></span>
+                <button class="btn-outline" onclick="logout()">LOGOUT</button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="main-page" class="container">
+        <h2 style="margin-bottom: 40px;">LATEST RELEASES</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>TEST CHEAT A</h3>
+                <button class="btn-solid" style="width:100%" onclick="showInfo('TEST CHEAT A')">VIEW</button>
+            </div>
+            <div class="card">
+                <h3>TEST CHEAT B</h3>
+                <button class="btn-solid" style="width:100%" onclick="showInfo('TEST CHEAT B')">VIEW</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="info-page" class="container" style="display:none">
+        <button class="btn-outline" onclick="showMain()">← BACK</button>
+        <div style="display: flex; gap: 40px; margin-top: 30px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px; height: 300px; background: #111; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #333;">IMAGE_PLACEHOLDER</div>
+            <div style="flex: 1; min-width: 300px;">
+                <h1 id="info-title">ITEM NAME</h1>
+                <p style="color:var(--text-dim); line-height: 1.6;">Everything named test for now. Verified users only.</p>
+                <div style="margin-top: 40px; background: #0a0a0a; border: 1px solid var(--border); padding: 25px; border-radius: 8px; text-align: center;">
+                    <p id="dl-error" style="color: #ff4444; font-size: 0.85rem; margin-bottom: 15px;">LOGIN + VERIFY EMAIL TO ACCESS</p>
+                    <button id="dl-btn" class="btn-solid hidden" style="width: 100%;" onclick="alert('Starting Download...')">DOWNLOAD NOW</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-modal">
+        <div class="modal-box">
+            <h3 style="margin-top: 0;">AUTHENTICATION</h3>
+            <input type="email" id="email" placeholder="EMAIL">
+            <input type="password" id="pass" placeholder="PASSWORD">
+            <button class="btn-solid" style="width:100%; margin-top:10px" onclick="login()">LOGIN</button>
+            <button class="btn-outline" style="width:100%; margin-top:8px" onclick="signUp()">CREATE ACCOUNT</button>
+            <p id="m-msg" style="font-size:0.75rem; margin-top:15px; min-height: 1.2rem;"></p>
+            <button style="background:none; color:#555; margin-top:10px;" onclick="closeAuth()">CANCEL</button>
+        </div>
+    </div>
+
+</body>
+</html>
