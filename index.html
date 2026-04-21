@@ -24,7 +24,9 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // --- Notification Logic (Now in Sidebar) ---
+        let lastMailSent = 0;
+        let lastMsgSent = 0;
+
         window.notify = (msg, type = 'info') => {
             const container = document.getElementById('notif-area');
             const div = document.createElement('div');
@@ -37,18 +39,29 @@
             }, 7000);
         };
 
-        // --- Auth Logic ---
+        window.resendEmail = async () => {
+            const now = Date.now();
+            if (now - lastMailSent < 120000) {
+                const wait = Math.ceil((120000 - (now - lastMailSent)) / 1000);
+                return notify(`Wait ${wait}s to resend.`, "error");
+            }
+            if (auth.currentUser) {
+                await sendEmailVerification(auth.currentUser);
+                lastMailSent = now;
+                notify("Verification link sent!", "success");
+            }
+        };
+
         window.signUp = async () => {
             const e = document.getElementById('reg-email').value;
             const p = document.getElementById('reg-pass').value;
             if (p.length < 8) return notify("Password must be 8+ characters.", "error");
-
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, e, p);
                 await sendEmailVerification(userCredential.user);
-                await signOut(auth); 
-                notify("Verify your email first! Check your spam folder.", "success");
-                switchAuth('log');
+                lastMailSent = Date.now();
+                notify("Account created! Check email/spam.", "success");
+                document.getElementById('resend-ui-reg').style.display = 'block';
             } catch (err) { notify(err.message, "error"); }
         };
 
@@ -58,33 +71,41 @@
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, e, p);
                 if (!userCredential.user.emailVerified) {
-                    notify("Email not verified! Check spam folder.", "error");
+                    notify("Email not verified!", "error");
+                    document.getElementById('resend-ui-log').style.display = 'block';
                     await signOut(auth);
                     return;
                 }
-                location.reload();
-            } catch (err) { notify("Invalid login credentials.", "error"); }
+                notify("Login successful!", "success");
+                setTimeout(() => location.reload(), 1000);
+            } catch (err) { notify("Invalid credentials.", "error"); }
         };
 
-        window.confirmLogout = () => {
-            if (confirm("Are you sure you want to log out?")) {
-                signOut(auth).then(() => location.reload());
-            }
-        };
-
-        // --- Improved Realtime Chat ---
-        const chatBox = document.getElementById('chat-messages');
         window.sendMessage = () => {
             const input = document.getElementById('chat-input');
+            const btn = document.getElementById('chat-btn');
+            const now = Date.now();
             const user = auth.currentUser;
             if (!user || !input.value.trim()) return;
-            
+            if (input.value.length > 120) return notify("Max 120 characters!", "error");
+            if (now - lastMsgSent < 3000) return notify("Wait 3s between messages.", "error");
+
             push(ref(db, 'messages'), {
                 username: user.email.split('@')[0],
                 text: input.value,
                 timestamp: serverTimestamp()
             });
+
+            lastMsgSent = now;
             input.value = "";
+            btn.disabled = true;
+            let timer = 3;
+            btn.innerText = timer;
+            const interval = setInterval(() => {
+                timer--;
+                btn.innerText = timer;
+                if (timer <= 0) { clearInterval(interval); btn.disabled = false; btn.innerText = "SEND"; }
+            }, 1000);
         };
 
         onChildAdded(query(ref(db, 'messages'), limitToLast(40)), (data) => {
@@ -110,7 +131,6 @@
 
         window.openDetail = (name, desc, img, link) => {
             document.getElementById('main-page').style.display = 'none';
-            document.getElementById('account-page').style.display = 'none';
             document.getElementById('detail-page').style.display = 'block';
             document.getElementById('det-title').innerText = name;
             document.getElementById('det-desc').innerHTML = desc;
@@ -123,12 +143,6 @@
             document.getElementById('login-box').style.display = m === 'reg' ? 'none' : 'block';
             document.getElementById('reg-box').style.display = m === 'reg' ? 'block' : 'none';
         };
-
-        window.showAccount = () => {
-            document.getElementById('main-page').style.display = 'none';
-            document.getElementById('detail-page').style.display = 'none';
-            document.getElementById('account-page').style.display = 'block';
-        };
     </script>
 
     <style>
@@ -136,68 +150,68 @@
             --bg: #0b0915; 
             --side: #120e24; 
             --card: #1a1533; 
-            --accent: #9d50ff; /* Purple PixelBet Theme */
+            --accent: #9d50ff; 
             --border: #2a234d; 
-            --error: #ff4d4d;
         }
 
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        
-        main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background: radial-gradient(circle at top right, #1a0b33, transparent); }
-        aside { width: 340px; background: var(--side); border-left: 1px solid var(--border); display: flex; flex-direction: column; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; 
+            background: linear-gradient(45deg, #0b0915, #1a0b33, #0b0915, #120e24);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(18, 14, 36, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        .nav-item { cursor: pointer; font-weight: 600; font-size: 0.9rem; color: #aaa; transition: 0.3s; }
-        .nav-item:hover { color: var(--accent); }
+        main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background: rgba(0,0,0,0.2); }
+        aside { width: 340px; background: var(--side); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 5; }
+
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(18, 14, 36, 0.8); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        
+        .title-anim { font-size: 1.5rem; font-weight: 900; cursor: pointer; animation: colorShift 5s infinite; }
+        @keyframes colorShift { 0%, 100% { color: #fff; text-shadow: 0 0 10px var(--accent); } 50% { color: var(--accent); text-shadow: 0 0 20px #fff; } }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding: 40px; }
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: 0.3s ease; text-align: center;}
         .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(157, 80, 255, 0.2); }
         .card img { width: 100%; border-radius: 8px; height: 160px; object-fit: cover; margin-bottom: 15px; }
 
-        .btn-main { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; letter-spacing: 0.5px; }
-        .btn-main:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(157, 80, 255, 0.4); }
+        .btn-main { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-main:hover:not(:disabled) { filter: brightness(1.2); transform: scale(1.02); }
+        .btn-main:disabled { background: #444; }
 
-        /* Notifications UI */
+        .btn-sub { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 8px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; }
+
         .menu-notif { padding: 12px; border-radius: 8px; margin: 0 15px 10px 15px; font-size: 0.8rem; border-left: 4px solid var(--accent); background: #1f1a3d; animation: slideIn 0.3s ease; display: flex; gap: 10px; align-items: center; }
-        .menu-notif.error { border-left-color: var(--error); color: var(--error); }
-        .menu-notif.success { border-left-color: #00e676; }
         @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        /* Chat UI */
         #chat-messages { flex: 1; overflow-y: auto; padding: 20px; font-size: 0.9rem; }
-        .chat-msg { margin-bottom: 15px; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; }
-        .chat-user { color: var(--accent); font-weight: bold; margin-bottom: 4px; display: block; font-size: 0.75rem; }
-        .chat-input-area { padding: 20px; border-top: 1px solid var(--border); background: var(--side); }
+        .chat-msg { margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; }
+        .chat-user { color: var(--accent); font-weight: bold; font-size: 0.75rem; display: block; }
+        .chat-input-area { padding: 20px; border-top: 1px solid var(--border); }
         
-        input { width: 100%; padding: 12px; background: #07080a; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; outline: none; }
-        input:focus { border-color: var(--accent); }
-
-        /* Description Styling */
+        input { width: 100%; padding: 12px; background: #07080a; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; outline: none; margin-bottom: 5px; }
+        
         .tut-box { background: #07080a; padding: 20px; border-radius: 8px; margin: 15px 0; text-align: left; border-left: 3px solid var(--accent); }
         blockquote { border-left: 3px solid #444; padding-left: 15px; margin: 15px 0; color: #ccc; }
 
-        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(8px); }
+        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000; }
         .auth-box { width: 380px; background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
-
-        .title-anim { font-size: 1.5rem; font-weight: 900; color: #fff; cursor: pointer; }
-        .title-anim span { color: var(--accent); }
     </style>
 </head>
 <body>
 
 <main>
     <nav>
-        <div class="title-anim" onclick="location.reload()">EFN <span>ARCHIVE</span></div>
+        <div class="title-anim" onclick="location.reload()">EFN ARCHIVE</div>
         <div style="display:flex; gap:25px; align-items:center">
             <span class="nav-item" onclick="location.reload()">Home</span>
-            <span class="nav-item auth-ui" style="display:none" onclick="showAccount()">Account</span>
             <div id="nav-guest">
                 <button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'">Login/Create Account</button>
             </div>
             <div id="nav-user" style="display:none; align-items:center; gap:20px">
                 <span id="user-tag" style="font-weight:bold; color:var(--accent)"></span>
-                <button onclick="confirmLogout()" style="color:#ff4444; border:none; background:none; cursor:pointer; font-size:0.8rem; font-weight:bold;">Logout</button>
+                <button onclick="confirmLogout()" style="color:#ff4444; border:none; background:none; cursor:pointer; font-weight:bold;">Logout</button>
             </div>
         </div>
     </nav>
@@ -240,29 +254,23 @@
                 <button class="btn-main" onclick="openDetail('Hyx Client [free]', `
                     <div class='tut-box'>
                         <p>Make sure this is installed if you don't have it already:<br>
-                        <a href='https://github.com/abbodi1406/vcredist/releases/download/v0.103.0/VisualCppRedist_AIO_x86_x64.exe' style='color:var(--accent)'>vcredist AIO</a></p>
-                        <p>Setup steam launch settings for the game or the menu wont appear: <code>-force-d3d11</code></p>
+                        vcredist AIO</p>
+                        <p>Setup steam launch settings for the game or the menu wont appear:-force-d3d11</p>
                         <p>Also remove charon client folders from pixel worlds folder if not working!</p>
                     </div>
                 `, 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx')">Info</button>
             </div>
 
             <div class="card">
-                <img src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&">
+                <img src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png">
                 <h3>AutoMath Tool</h3>
                 <button class="btn-main" onclick="openDetail('AutoMath Tool', `
                     <div class='tut-box'>
-                        <p>Automate your math questions in Pixel Worlds. Tutorial is included in the zip folder! ❤️</p>
+                        <p>the tutorial is included in the zip folder and add a heart in the end. ❤️</p>
                     </div>
-                `, 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&', 'https://gofile.io/d/9sUpZS')">Info</button>
+                `, 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png', 'https://gofile.io/d/9sUpZS')">Info</button>
             </div>
         </div>
-    </div>
-
-    <div id="account-page" style="display:none; text-align:center; padding-top:100px;">
-        <h1 style="font-size:3rem; color:var(--accent)">Coming soon...</h1>
-        <p>Your account customization is currently under development.</p>
-        <button class="btn-main" onclick="location.reload()">Back to Home</button>
     </div>
 
     <div id="detail-page" style="display:none; padding:40px;">
@@ -283,40 +291,35 @@
 
 <aside>
     <div style="padding:20px; font-weight:800; border-bottom:1px solid var(--border); font-size:0.75rem; color:#666">SYSTEM NOTIFICATIONS</div>
-    <div id="notif-area" style="padding-top:10px;">
-        <div class="menu-notif">Welcome back to the Archive.</div>
-    </div>
-    
+    <div id="notif-area" style="padding-top:10px;"></div>
     <div style="padding:20px; font-weight:800; border-bottom:1px solid var(--border); border-top:1px solid var(--border); font-size:0.75rem; color:#666">GLOBAL CHAT</div>
     <div id="chat-messages"></div>
-    
     <div class="chat-input-area">
-        <div id="chat-guest-ui">
-            <p style="font-size:0.8rem; color:#555; text-align:center">Login to chat</p>
-        </div>
+        <div id="chat-guest-ui"><p style="font-size:0.8rem; color:#555; text-align:center">Login to chat</p></div>
         <div id="chat-user-ui" style="display:none; gap:10px; flex-direction:column">
-            <input type="text" id="chat-input" placeholder="Type a message...">
-            <button class="btn-main" onclick="sendMessage()" style="width:100%">SEND</button>
+            <input type="text" id="chat-input" placeholder="Type a message..." maxlength="120">
+            <button class="btn-main" id="chat-btn" onclick="sendMessage()" style="width:100%">SEND</button>
         </div>
     </div>
 </aside>
 
 <div id="auth-overlay">
     <div class="auth-box" id="login-box">
-        <h2 style="margin-top:0">Sign In</h2>
+        <h2>Sign In</h2>
         <input type="email" id="log-email" placeholder="Email">
         <input type="password" id="log-pass" placeholder="Password">
         <button class="btn-main" style="width:100%" onclick="login()">Login to account</button>
+        <div id="resend-ui-log" style="display:none"><button class="btn-sub" onclick="resendEmail()">Send verification link</button></div>
         <p style="font-size:0.8rem; margin-top:20px">No account? <span style="color:var(--accent); cursor:pointer" onclick="switchAuth('reg')">Create Account</span></p>
         <p style="font-size:0.75rem; color:#444; cursor:pointer" onclick="document.getElementById('auth-overlay').style.display='none'">Close</p>
     </div>
-
     <div class="auth-box" id="reg-box" style="display:none">
-        <h2 style="margin-top:0">Create Account</h2>
+        <h2>Create Account</h2>
         <input type="email" id="reg-email" placeholder="Email">
-        <input type="password" id="reg-pass" placeholder="Password (Min 8 characters)">
+        <input type="password" id="reg-pass" placeholder="Password (8+ chars)">
         <button class="btn-main" style="width:100%" onclick="signUp()">Sign Up</button>
-        <p style="font-size:0.8rem; margin-top:20px">Already have an account? <span style="color:var(--accent); cursor:pointer" onclick="switchAuth('log')">Login</span></p>
+        <div id="resend-ui-reg" style="display:none"><button class="btn-sub" onclick="resendEmail()">Resend verification email</button></div>
+        <p style="font-size:0.8rem; margin-top:20px">Joined already? <span style="color:var(--accent); cursor:pointer" onclick="switchAuth('log')">Login</span></p>
     </div>
 </div>
 
