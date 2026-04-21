@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EFN Archive | VAULT</title>
-    
+    <title>EFN Archive | Pixel Worlds Tools</title>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -21,164 +20,153 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // UI Logic
-        window.switchMode = (mode) => {
-            document.getElementById('email').value = "";
-            document.getElementById('pass').value = "";
-            document.getElementById('m-msg').innerText = "";
-            const title = document.getElementById('m-title');
-            const btnBox = document.getElementById('m-btn-box');
-
-            if(mode === 'signup') {
-                title.innerText = "CREATE ACCOUNT";
-                btnBox.innerHTML = `
-                    <button class="btn-solid" style="width:100%" onclick="signUp()">REGISTER NOW</button>
-                    <p onclick="switchMode('login')" style="cursor:pointer; color:#555; font-size:0.7rem; margin-top:15px">BACK TO LOGIN</p>
-                `;
-            } else {
-                title.innerText = "MEMBER LOGIN";
-                btnBox.innerHTML = `
-                    <button class="btn-solid" style="width:100%" onclick="login()">SIGN IN</button>
-                    <p onclick="switchMode('signup')" style="cursor:pointer; color:#555; font-size:0.7rem; margin-top:15px">NEW USER? CREATE ACCOUNT</p>
-                `;
-            }
+        // Live Password Check
+        window.checkPass = () => {
+            const pass = document.getElementById('pass').value;
+            const msg = document.getElementById('m-msg');
+            if (pass.length === 0) { msg.innerText = ""; return; }
+            if (pass.length < 8) { msg.innerText = "❌ Password too short (8+ required)"; msg.style.color = "#ff4444"; }
+            else if (!/\d/.test(pass)) { msg.innerText = "❌ Add a number"; msg.style.color = "#ff4444"; }
+            else { msg.innerText = "✅ Password Valid"; msg.style.color = "#3ecf8e"; }
         };
 
         window.signUp = async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
-            const msg = document.getElementById('m-msg');
-            msg.style.color = "#ff4444";
-
-            if (!email.includes('@')) { msg.innerText = "Invalid Email Format"; return; }
-            if (pass.length < 8 || !/\d/.test(pass)) { msg.innerText = "Needs 8+ characters & 1 number"; return; }
-
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
                 await sendEmailVerification(cred.user);
-                msg.style.color = "#3ecf8e";
-                msg.innerText = "Verify your email! Check inbox.";
-            } catch (e) { msg.innerText = "Error: " + e.message; }
+                alert("Verification Email Sent! Check your SPAM folder too.");
+            } catch (e) { alert(e.message); }
         };
 
         window.login = async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
-            const msg = document.getElementById('m-msg');
             try {
                 const cred = await signInWithEmailAndPassword(auth, email, pass);
-                if (cred.user.emailVerified) { location.reload(); } 
-                else { msg.style.color = "orange"; msg.innerText = "Check your email first!"; }
-            } catch (e) { msg.style.color = "#ff4444"; msg.innerText = "Invalid Login"; }
+                if (cred.user.emailVerified) { location.reload(); }
+                else { alert("Verify your email first! Check spam."); }
+            } catch (e) { alert("Login failed."); }
         };
 
-        // FIXED LOGOUT
-        window.logout = () => {
-            signOut(auth).then(() => {
-                window.location.href = window.location.href; // Force hard refresh
-            }).catch((error) => {
-                console.error("Logout failed", error);
-            });
+        window.logout = () => signOut(auth).then(() => location.reload());
+
+        window.openDetail = (name, status, desc) => {
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('detail-page').style.display = 'block';
+            document.getElementById('det-title').innerText = name;
+            document.getElementById('det-status').innerText = status;
+            document.getElementById('det-desc').innerText = desc;
+            window.scrollTo(0,0);
         };
 
         onAuthStateChanged(auth, (user) => {
-            const navAuth = document.getElementById('nav-auth');
-            const navUser = document.getElementById('nav-user');
-            const locks = document.querySelectorAll('.lock-text');
-            const dls = document.querySelectorAll('.dl-active');
-
             if (user && user.emailVerified) {
-                navAuth.classList.add('hidden');
-                navUser.classList.remove('hidden');
-                document.getElementById('user-email').innerText = user.email;
-                locks.forEach(el => el.style.display = 'none');
-                dls.forEach(el => el.classList.remove('hidden'));
-            } else {
-                navAuth.classList.remove('hidden');
-                navUser.classList.add('hidden');
-                locks.forEach(el => el.style.display = 'block');
-                dls.forEach(el => el.classList.add('hidden'));
+                document.getElementById('nav-guest').style.display = 'none';
+                document.getElementById('nav-user').style.display = 'flex';
+                document.getElementById('user-tag').innerText = user.email.split('@')[0].toUpperCase();
+                document.querySelectorAll('.lock-ui').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.auth-ui').forEach(el => el.style.display = 'block');
             }
         });
-
-        window.openAuth = () => { document.getElementById('auth-modal').style.display='flex'; switchMode('login'); }
-        window.closeAuth = () => { document.getElementById('auth-modal').style.display='none'; }
     </script>
 
     <style>
-        :root { --bg: #050505; --card: #0d0d0d; --border: #1a1a1a; --accent: #5865F2; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; overflow-x: hidden; }
+        :root { --bg: #050505; --card: #0d0d0d; --accent: #5865F2; --border: #1a1a1a; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; }
         
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .anim { animation: slideUp 0.6s ease forwards; opacity: 0; }
+        .fade { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 6%; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index: 1000; }
         
-        .btn-discord { background: var(--accent); color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; transition: 0.3s; margin-right: 10px; }
-        .btn-discord:hover { background: #4752c4; transform: scale(1.05); }
+        .profile-area { position: relative; cursor: pointer; }
+        .profile-area:hover .dropdown { display: block; }
+        .dropdown { position: absolute; top: 100%; right: 0; background: #0f0f0f; border: 1px solid var(--border); width: 150px; display: none; border-radius: 8px; overflow: hidden; }
+        .dropdown button { width: 100%; padding: 12px; background: none; border: none; color: #777; text-align: left; cursor: pointer; }
+        .dropdown button:hover { background: #1a1a1a; color: #fff; }
 
-        .btn-solid { background: #fff; color: #000; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .container { max-width: 1100px; margin: 50px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        
+        .card { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; transition: 0.3s; position: relative; text-align: center; }
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
+
+        .btn-solid { background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .btn-solid:hover { background: var(--accent); color: #fff; }
-        
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: #888; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
-        .btn-outline:hover { color: #fff; border-color: #555; }
+        .btn-discord { background: var(--accent); color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 0.8rem; margin-right: 15px; font-weight: bold; }
 
-        .container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
-        
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 35px 25px; text-align: center; position: relative; transition: 0.4s; }
-        .card:hover { border-color: var(--accent); }
+        #detail-page { display: none; }
+        .detail-layout { display: flex; gap: 40px; margin-top: 40px; flex-wrap: wrap; }
+        .detail-main { flex: 2; background: #080808; padding: 40px; border-radius: 15px; border: 1px solid var(--border); }
+        .detail-side { flex: 1; background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--border); text-align: center; height: fit-content; }
 
-        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(8px); }
-        .modal-box { width: 350px; background: #0a0a0a; border: 1px solid var(--border); padding: 40px; border-radius: 20px; text-align: center; }
-        
-        input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; outline: none; }
-        .hidden { display: none !important; }
-        .tag { position: absolute; top: 15px; left: 15px; font-size: 0.6rem; color: var(--accent); font-weight: bold; }
+        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .modal-box { width: 330px; background: #0a0a0a; padding: 40px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 8px; outline: none; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div style="font-weight:900; letter-spacing:3px;">EFN ARCHIVE</div>
-    <div style="display: flex; align-items: center;">
+    <div style="font-weight:900; letter-spacing:2px; cursor:pointer" onclick="location.reload()">EFN ARCHIVE</div>
+    <div style="display:flex; align-items:center">
         <a href="https://discord.gg/QV69upuxbg" target="_blank" class="btn-discord">DISCORD</a>
-        <div id="nav-auth">
-            <button class="btn-outline" onclick="openAuth()">SYSTEM LOGIN</button>
+        <div id="nav-guest">
+            <button class="btn-solid" onclick="document.getElementById('auth-modal').style.display='flex'">LOGIN</button>
         </div>
-        <div id="nav-user" class="hidden">
-            <span id="user-email" style="color:#444; font-size:0.7rem; margin-right:10px;"></span>
-            <button class="btn-outline" onclick="logout()">LOGOUT</button>
+        <div id="nav-user" style="display:none;" class="profile-area">
+            <span id="user-tag" style="background:#111; padding:10px 20px; border:1px solid #222; border-radius:30px; font-size:0.7rem; letter-spacing:1px"></span>
+            <div class="dropdown">
+                <button onclick="alert('Profile editor coming soon!')">Edit Account</button>
+                <button onclick="logout()" style="color:#ff4444">Logout</button>
+            </div>
         </div>
     </div>
 </nav>
 
-<div class="container">
-    <div style="margin-bottom:60px">
-        <h1 style="font-size: 3rem; margin:0">VAULT v1.4</h1>
-        <p style="color:#333">8 Active Modules • Verification Required</p>
-    </div>
-
+<div id="main-page" class="container fade">
+    <h1 style="font-size: 2.5rem; margin-bottom: 40px; letter-spacing: -1px;">PIXEL WORLDS TOOLS</h1>
     <div class="grid">
-        <div class="card anim" style="animation-delay: 0.1s;"><div class="tag">001</div><h3>BYPASS_X</h3><p>Internal kernel-level module.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
-        <div class="card anim" style="animation-delay: 0.15s;"><div class="tag">002</div><h3>ARCHIVE_B</h3><p>Legacy stable archive files.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
-        <div class="card anim" style="animation-delay: 0.2s;"><div class="tag">003</div><h3>KERNEL_V4</h3><p>Core system injection tool.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
-        <div class="card anim" style="animation-delay: 0.25s;"><div class="tag">004</div><h3>SENTRY_FIX</h3><p>Security bypass for v2 sentry.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
-        <div class="card anim" style="animation-delay: 0.3s;"><div class="tag">005</div><h3>MODULE_Z</h3><p>Beta testing module Z.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
-        <div class="card anim" style="animation-delay: 0.35s;"><div class="tag">006</div><h3>PROTO_7</h3><p>Prototype module level 7.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
-        <div class="card anim" style="animation-delay: 0.4s;"><div class="tag">007</div><h3>GLOBAL_V2</h3><p>Global rollout archive build.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
-        <div class="card anim" style="animation-delay: 0.45s;"><div class="tag">008</div><h3>VOID_SYNC</h3><p>Sync tool for void databases.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
+        <div class="card"><h3>PW_AUTOFARM</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('PW_AUTOFARM', 'WORKING', 'Advanced autofarm tool for Pixel Worlds. Includes smart block detection and pathfinding.')">VIEW TOOL</button></div>
+        <div class="card"><h3>VISUAL_HACK</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('VISUAL_HACK', 'WORKING', 'Change item visuals locally. Supports all legendary items and wings.')">VIEW TOOL</button></div>
+        <div class="card"><h3>AUTO_BUYER</h3><p style="color:#444; font-size:0.7rem">Status: Patching</p><button class="btn-solid" style="width:100%" onclick="openDetail('AUTO_BUYER', 'PATCHING', 'Automatic shop sniper. Currently being updated for the latest PW version.')">VIEW TOOL</button></div>
+        <div class="card"><h3>SPEED_MOD</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('SPEED_MOD', 'WORKING', 'Adjust player movement speed and jump height safely.')">VIEW TOOL</button></div>
+        <div class="card"><h3>SPAMMER_PRO</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('SPAMMER_PRO', 'WORKING', 'Highly customizable chat spammer for advertising your world.')">VIEW TOOL</button></div>
+        <div class="card"><h3>ANTI_LAG</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('ANTI_LAG', 'WORKING', 'Removes particle effects and optimizes rendering for smoother gameplay.')">VIEW TOOL</button></div>
+        <div class="card"><h3>MULTI_BOX</h3><p style="color:#444; font-size:0.7rem">Status: Beta</p><button class="btn-solid" style="width:100%" onclick="openDetail('MULTI_BOX', 'BETA', 'Open multiple PW instances at once. Experimental feature.')">VIEW TOOL</button></div>
+        <div class="card"><h3>GRAVITY_SHIFT</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('GRAVITY_SHIFT', 'WORKING', 'Modify world gravity physics locally for easier parkour.')">VIEW TOOL</button></div>
+    </div>
+</div>
+
+<div id="detail-page" class="container fade">
+    <button onclick="location.reload()" style="background:none; border:1px solid #222; color:#555; padding:8px 15px; border-radius:5px; cursor:pointer">← BACK TO TOOLS</button>
+    <div class="detail-layout">
+        <div class="detail-main">
+            <h1 id="det-title" style="margin-top:0; letter-spacing:2px">TOOL NAME</h1>
+            <p id="det-desc" style="color:#777; line-height:1.8;"></p>
+            <div style="margin-top:30px; color:#5865F2; font-size:0.8rem; font-weight:bold">SUPPORT: Join Discord for help with this tool.</div>
+        </div>
+        <div class="side-box">
+            <h4 style="color:#444; margin-bottom:10px">STATUS</h4>
+            <div id="det-status" style="color:#3ecf8e; font-weight:900; font-size:1.2rem">WORKING</div>
+            <hr style="border:0; border-top:1px solid #1a1a1a; margin:25px 0">
+            <div class="lock-ui" style="color:#ff4444; font-size:0.7rem; font-weight:bold">VERIFY ACCOUNT TO DOWNLOAD</div>
+            <button class="btn-solid auth-ui" style="display:none; width:100%" onclick="alert('Download Started...')">DOWNLOAD TOOL</button>
+        </div>
     </div>
 </div>
 
 <div id="auth-modal">
-    <div class="modal-box">
-        <h2 id="m-title" style="letter-spacing:4px; font-size:1.1rem; margin-bottom:30px">LOGIN</h2>
-        <input type="email" id="email" placeholder="EMAIL ADDRESS">
-        <input type="password" id="pass" placeholder="PASSWORD">
-        <p id="m-msg" style="font-size:0.75rem; margin:15px 0; min-height:1.2rem;"></p>
-        <div id="m-btn-box"></div>
-        <p onclick="closeAuth()" style="margin-top:25px; color:#333; cursor:pointer; font-size:0.7rem">EXIT</p>
+    <div class="modal-box fade">
+        <h2 style="letter-spacing:3px; font-size:1.1rem">SYSTEM ACCESS</h2>
+        <input type="email" id="email" placeholder="EMAIL">
+        <input type="password" id="pass" placeholder="PASSWORD" oninput="checkPass()">
+        <p id="m-msg" style="font-size:0.7rem; margin:10px 0; min-height:1.2rem"></p>
+        <button class="btn-solid" style="width:100%" onclick="login()">SIGN IN</button>
+        <button style="background:none; border:none; color:#555; margin-top:20px; cursor:pointer; font-size:0.75rem" onclick="signUp()">CREATE ACCOUNT</button>
+        <button style="background:none; border:none; color:#222; margin-top:10px; cursor:pointer" onclick="document.getElementById('auth-modal').style.display='none'">CANCEL</button>
     </div>
 </div>
 
