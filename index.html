@@ -8,694 +8,238 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 <style>
-:root {
-  --bg: #07060f;
-  --surface: #100f1e;
-  --surface2: #16152a;
-  --border: #2a2845;
-  --accent: #7c5cfc;
-  --accent2: #b48dff;
-  --text: #e8e4ff;
-  --muted: #7a779a;
-  --success: #4ade80;
-  --error: #f87171;
-  --warn: #facc15;
-  --radius: 12px;
-  --radius-sm: 8px;
-}
+:root{--bg:#07060f;--surface:#100f1e;--surface2:#16152a;--border:#2a2845;--accent:#7c5cfc;--accent2:#b48dff;--text:#e8e4ff;--muted:#7a779a;--success:#4ade80;--error:#f87171;--radius:12px;--radius-sm:8px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(124,92,252,.12) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(180,141,255,.08) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 50% 50%,rgba(124,92,252,.04) 0%,transparent 70%);animation:bgPulse 10s ease-in-out infinite alternate;pointer-events:none;z-index:0}
+@keyframes bgPulse{0%{opacity:.7;transform:scale(1)}100%{opacity:1;transform:scale(1.04)}}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+#app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:15px 32px;border-bottom:1px solid var(--border);background:rgba(16,15,30,.88);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;animation:navSlide .5s ease forwards}
+@keyframes navSlide{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+.site-title{font-size:1.25rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--text);cursor:pointer;position:relative;user-select:none}
+.site-title::before,.site-title::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;pointer-events:none;clip-path:inset(0 100% 0 0)}
+.site-title::before{color:#7c5cfc;transform:translate(-2px,1px)}
+.site-title::after{color:#b48dff;transform:translate(2px,-1px)}
+.site-title:hover::before{clip-path:inset(0 0% 0 0);animation:glitchA .4s steps(2) forwards}
+.site-title:hover::after{clip-path:inset(0 0% 0 0);animation:glitchB .4s steps(2) forwards}
+@keyframes glitchA{0%{clip-path:inset(10% 0 80% 0);transform:translate(-3px,0)}25%{clip-path:inset(40% 0 30% 0);transform:translate(3px,0)}50%{clip-path:inset(70% 0 5% 0);transform:translate(-2px,0)}75%{clip-path:inset(0% 0 60% 0);transform:translate(0,0)}100%{clip-path:inset(0 100% 0 0);transform:translate(-2px,1px)}}
+@keyframes glitchB{0%{clip-path:inset(60% 0 10% 0);transform:translate(3px,0)}33%{clip-path:inset(20% 0 60% 0);transform:translate(-3px,0)}66%{clip-path:inset(80% 0 5% 0);transform:translate(1px,0)}100%{clip-path:inset(0 100% 0 0);transform:translate(2px,-1px)}}
+.nav-right{display:flex;gap:10px;align-items:center}
 
-html, body {
-  height: 100%;
-  font-family: 'Syne', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  overflow-x: hidden;
-}
+/* BUTTONS */
+.btn{font-family:'Space Mono',monospace;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:8px 17px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all .2s ease}
+.btn:active{transform:scale(.97)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent2)}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 0 16px rgba(124,92,252,.35)}
+.btn-primary:hover{background:#8e6cff;box-shadow:0 0 24px rgba(124,92,252,.5)}
+.btn-sm{padding:5px 12px;font-size:.68rem}
+.btn-danger{background:rgba(248,113,113,.15);color:var(--error);border:1px solid rgba(248,113,113,.3)}
+.btn-danger:hover{background:rgba(248,113,113,.25)}
+.btn-locked{background:rgba(122,119,154,.1);color:var(--muted);border:1px solid var(--border);cursor:not-allowed;font-size:.62rem;padding:5px 10px;pointer-events:auto}
+.btn-locked:hover{background:rgba(122,119,154,.18)}
 
-/* ── ANIMATED BACKGROUND ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,92,252,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(180,141,255,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(124,92,252,0.04) 0%, transparent 70%);
-  animation: bgPulse 10s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
-}
-@keyframes bgPulse {
-  0%   { opacity: 0.7; transform: scale(1); }
-  100% { opacity: 1;   transform: scale(1.04); }
-}
+#nav-guest{display:flex;gap:8px}
+#nav-user{display:none;gap:10px;align-items:center}
+.user-tag{font-family:'Space Mono',monospace;font-size:.74rem;color:var(--accent2);background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.25);padding:5px 13px;border-radius:var(--radius-sm)}
 
-/* ── GRAIN OVERLAY ── */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.4;
-}
+/* LAYOUT */
+#main-page{flex:1;display:grid;grid-template-columns:1fr 300px;max-height:calc(100vh - 58px)}
 
-#app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+/* CARDS */
+.cards-area{padding:28px 32px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.cards-area::-webkit-scrollbar{width:4px}
+.cards-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.section-header{display:flex;align-items:baseline;gap:12px;margin-bottom:22px}
+.section-title{font-size:.9rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.section-line{flex:1;height:1px;background:var(--border)}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px}
 
-/* ── NAV ── */
-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 40px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(16,15,30,0.8);
-  backdrop-filter: blur(20px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  animation: navSlide .5s ease forwards;
-}
-@keyframes navSlide {
-  from { opacity: 0; transform: translateY(-16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;opacity:0;transform:translateY(22px);animation:cardFade .55s ease forwards;transition:border-color .25s,box-shadow .25s,transform .25s;display:flex;flex-direction:column}
+.card:hover{border-color:var(--accent);box-shadow:0 0 26px rgba(124,92,252,.18),0 8px 20px rgba(0,0,0,.4);transform:translateY(-3px)}
+@keyframes cardFade{to{opacity:1;transform:translateY(0)}}
+.card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.13s}.card:nth-child(3){animation-delay:.21s}.card:nth-child(4){animation-delay:.29s}
+.card-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;border-bottom:1px solid var(--border);transition:filter .3s;background:var(--surface2)}
+.card:hover .card-img{filter:brightness(1.08)}
+.card-body{padding:13px 15px;flex:1}
+.card-name{font-size:.86rem;font-weight:800;letter-spacing:.04em;margin-bottom:5px;color:var(--text)}
+.card-desc{font-size:.72rem;color:var(--muted);line-height:1.55;font-family:'Space Mono',monospace}
+.card-footer{padding:9px 15px 13px;display:flex;align-items:center;justify-content:flex-end;border-top:1px solid var(--border);gap:8px}
 
-/* ── TITLE GLITCH ── */
-.site-title {
-  font-size: 1.35rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text);
-  cursor: pointer;
-  position: relative;
-  user-select: none;
-}
-.site-title::before,
-.site-title::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  pointer-events: none;
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path .3s ease;
-}
-.site-title::before { color: #7c5cfc; transform: translate(-2px, 1px); }
-.site-title::after  { color: #b48dff; transform: translate(2px, -1px); }
-.site-title:hover::before { clip-path: inset(0 0% 0 0); animation: glitchA .4s steps(2) forwards; }
-.site-title:hover::after  { clip-path: inset(0 0% 0 0); animation: glitchB .4s steps(2) forwards; }
-@keyframes glitchA {
-  0%   { clip-path: inset(10% 0 80% 0); transform: translate(-3px,0); }
-  25%  { clip-path: inset(40% 0 30% 0); transform: translate(3px,0); }
-  50%  { clip-path: inset(70% 0 5%  0); transform: translate(-2px,0); }
-  75%  { clip-path: inset(0%  0 60% 0); transform: translate(0,0); }
-  100% { clip-path: inset(0 100% 0 0); transform: translate(-2px,1px); }
-}
-@keyframes glitchB {
-  0%   { clip-path: inset(60% 0 10% 0); transform: translate(3px,0); }
-  33%  { clip-path: inset(20% 0 60% 0); transform: translate(-3px,0); }
-  66%  { clip-path: inset(80% 0 5%  0); transform: translate(1px,0); }
-  100% { clip-path: inset(0 100% 0 0); transform: translate(2px,-1px); }
-}
+/* CHAT */
+.chat-panel{border-left:1px solid var(--border);display:flex;flex-direction:column;background:rgba(16,15,30,.6);animation:panelFade .6s ease .15s both}
+@keyframes panelFade{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.chat-header{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;flex-shrink:0}
+.chat-dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 7px var(--success);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.chat-header-title{font-size:.76rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:7px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.chat-messages::-webkit-scrollbar{width:3px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border)}
+.chat-msg{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 11px;font-size:.76rem;line-height:1.5;animation:msgPop .22s ease forwards;opacity:0;transform:translateY(5px)}
+@keyframes msgPop{to{opacity:1;transform:translateY(0)}}
+.chat-user{display:block;font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent2);margin-bottom:3px}
+.typing-bar{padding:3px 14px;font-size:.68rem;font-family:'Space Mono',monospace;color:var(--muted);min-height:20px;flex-shrink:0;transition:opacity .3s}
+.chat-hint{padding:10px 14px 12px;border-top:1px solid var(--border);flex-shrink:0;text-align:center;font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);line-height:1.6}
+.chat-hint a{color:var(--accent2);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.chat-hint a:hover{color:var(--text)}
+.chat-user-ui{display:none;flex-direction:column;gap:6px;padding:11px;border-top:1px solid var(--border);flex-shrink:0}
+.chat-input-row{display:flex;gap:7px;align-items:center}
+.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 11px;color:var(--text);font-family:'Space Mono',monospace;font-size:.74rem;outline:none;transition:border-color .2s}
+.chat-input:focus{border-color:var(--accent)}
+.chat-input::placeholder{color:var(--muted)}
+.char-count{font-family:'Space Mono',monospace;font-size:.64rem;color:var(--muted);text-align:right}
 
-.nav-actions { display: flex; gap: 10px; align-items: center; }
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(7,6,15,.85);backdrop-filter:blur(8px);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.active{display:flex;animation:overlayIn .2s ease}
+@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px 32px 28px;width:360px;max-width:95vw;position:relative;animation:modalSlide .3s cubic-bezier(.34,1.56,.64,1) forwards;transform:scale(.9) translateY(18px);opacity:0}
+@keyframes modalSlide{to{transform:scale(1) translateY(0);opacity:1}}
+.modal-close{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;color:var(--muted);width:29px;height:29px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.82rem;transition:all .2s}
+.modal-close:hover{background:rgba(248,113,113,.15);color:var(--error);border-color:rgba(248,113,113,.3)}
+.auth-title{font-size:1.15rem;font-weight:900;letter-spacing:.04em;margin-bottom:4px}
+.auth-subtitle{font-size:.73rem;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:18px}
+.notif-area{margin-bottom:11px}
+.menu-notif{padding:8px 12px;border-radius:var(--radius-sm);font-size:.74rem;font-family:'Space Mono',monospace;line-height:1.4;animation:notifIn .22s ease}
+@keyframes notifIn{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
+.menu-notif.error{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.25);color:var(--error)}
+.menu-notif.success{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--success)}
+.menu-notif.info{background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.25);color:var(--accent2)}
+.auth-field{margin-bottom:11px}
+.auth-label{display:block;font-size:.68rem;font-family:'Space Mono',monospace;color:var(--muted);margin-bottom:5px;letter-spacing:.06em;text-transform:uppercase}
+.auth-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 13px;color:var(--text);font-family:'Space Mono',monospace;font-size:.78rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.auth-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,252,.12)}
+.resend-ui{display:none;margin-top:9px}
+.resend-bar-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;height:32px;position:relative;display:flex;align-items:center}
+.resend-bar-fill{position:absolute;left:0;top:0;bottom:0;background:rgba(124,92,252,.18);border-radius:var(--radius-sm)}
+.resend-bar-text{position:relative;z-index:1;width:100%;text-align:center;font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted)}
+.resend-ready{display:none;margin-top:7px}
+.auth-switch{margin-top:15px;text-align:center;font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted)}
+.auth-link{color:var(--accent2);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.auth-link:hover{color:var(--text)}
 
-/* ── BUTTONS ── */
-.btn {
-  font-family: 'Space Mono', monospace;
-  font-size: .78rem;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  padding: 9px 20px;
-  border-radius: var(--radius-sm);
-  border: none;
-  cursor: pointer;
-  transition: all .2s ease;
-  position: relative;
-  overflow: hidden;
-}
-.btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.06);
-  opacity: 0;
-  transition: opacity .2s;
-}
-.btn:hover::after { opacity: 1; }
-.btn:active { transform: scale(0.97); }
-
-.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-.btn-ghost:hover { border-color: var(--accent); color: var(--accent2); }
-.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 0 20px rgba(124,92,252,0.35); }
-.btn-primary:hover { background: #8e6cff; box-shadow: 0 0 28px rgba(124,92,252,0.5); }
-.btn-sm { padding: 6px 14px; font-size: .72rem; }
-.btn-danger { background: rgba(248,113,113,0.15); color: var(--error); border: 1px solid rgba(248,113,113,0.3); }
-.btn-danger:hover { background: rgba(248,113,113,0.25); }
-
-#nav-guest { display: flex; gap: 10px; }
-#nav-user  { display: none; gap: 12px; align-items: center; }
-.user-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: .78rem;
-  color: var(--accent2);
-  background: rgba(124,92,252,0.12);
-  border: 1px solid rgba(124,92,252,0.25);
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
-}
-
-/* ── MAIN LAYOUT ── */
-#main-page {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 0;
-  max-height: calc(100vh - 65px);
-}
-
-/* ── CARDS AREA ── */
-.cards-area {
-  padding: 36px 40px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
-.cards-area::-webkit-scrollbar { width: 4px; }
-.cards-area::-webkit-scrollbar-track { background: transparent; }
-.cards-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-.section-header {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  margin-bottom: 28px;
-}
-.section-title {
-  font-size: 1.05rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--muted);
-}
-.section-line {
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 18px;
-}
-
-/* ── CARD ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  cursor: pointer;
-  opacity: 0;
-  transform: translateY(24px);
-  animation: cardFade .55s ease forwards;
-  transition: border-color .25s, box-shadow .25s, transform .25s;
-}
-.card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 32px rgba(124,92,252,0.2), 0 8px 24px rgba(0,0,0,0.4);
-  transform: translateY(-3px);
-}
-@keyframes cardFade {
-  to { opacity: 1; transform: translateY(0); }
-}
-.card:nth-child(1) { animation-delay: .05s; }
-.card:nth-child(2) { animation-delay: .13s; }
-.card:nth-child(3) { animation-delay: .21s; }
-
-.card-img {
-  width: 100%;
-  aspect-ratio: 16/9;
-  object-fit: cover;
-  display: block;
-  border-bottom: 1px solid var(--border);
-  transition: filter .3s;
-}
-.card:hover .card-img { filter: brightness(1.1); }
-
-.card-body { padding: 16px; }
-.card-title {
-  font-size: .95rem;
-  font-weight: 800;
-  letter-spacing: .05em;
-  margin-bottom: 6px;
-  color: var(--text);
-}
-.card-desc {
-  font-size: .8rem;
-  color: var(--muted);
-  line-height: 1.55;
-  font-family: 'Space Mono', monospace;
-}
-.card-footer {
-  padding: 10px 16px 14px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-/* ── CHAT PANEL ── */
-.chat-panel {
-  border-left: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  background: rgba(16,15,30,0.6);
-  animation: panelFade .6s ease .15s both;
-}
-@keyframes panelFade {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-.chat-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.chat-header-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--success);
-  box-shadow: 0 0 8px var(--success);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%,100% { opacity: 1; }
-  50%      { opacity: 0.4; }
-}
-.chat-header-title {
-  font-size: .82rem;
-  font-weight: 800;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
-.chat-messages::-webkit-scrollbar { width: 3px; }
-.chat-messages::-webkit-scrollbar-thumb { background: var(--border); }
-
-.chat-msg {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  font-size: .8rem;
-  line-height: 1.5;
-  animation: msgPop .25s ease forwards;
-  opacity: 0;
-  transform: translateY(6px);
-}
-@keyframes msgPop {
-  to { opacity: 1; transform: translateY(0); }
-}
-.chat-user {
-  display: block;
-  font-family: 'Space Mono', monospace;
-  font-size: .7rem;
-  color: var(--accent2);
-  margin-bottom: 4px;
-}
-
-.typing-indicator {
-  padding: 4px 16px;
-  font-size: .72rem;
-  font-family: 'Space Mono', monospace;
-  color: var(--muted);
-  min-height: 22px;
-  transition: opacity .3s;
-}
-
-.chat-guest-ui {
-  padding: 16px;
-  text-align: center;
-  font-size: .8rem;
-  color: var(--muted);
-  font-family: 'Space Mono', monospace;
-  border-top: 1px solid var(--border);
-  line-height: 1.6;
-}
-.chat-user-ui {
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-  padding: 14px;
-  border-top: 1px solid var(--border);
-}
-.chat-input-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.chat-input {
-  flex: 1;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  color: var(--text);
-  font-family: 'Space Mono', monospace;
-  font-size: .78rem;
-  outline: none;
-  transition: border-color .2s;
-}
-.chat-input:focus { border-color: var(--accent); }
-.chat-input::placeholder { color: var(--muted); }
-.char-count {
-  font-family: 'Space Mono', monospace;
-  font-size: .68rem;
-  color: var(--muted);
-  text-align: right;
-}
-
-/* ── MODALS ── */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(7,6,15,0.85);
-  backdrop-filter: blur(8px);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-  animation: overlayIn .2s ease;
-}
-.modal-overlay.active { display: flex; }
-@keyframes overlayIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.auth-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 36px 36px 32px;
-  width: 380px;
-  max-width: 95vw;
-  position: relative;
-  animation: modalSlide .3s cubic-bezier(.34,1.56,.64,1) forwards;
-  transform: scale(0.9) translateY(20px);
-  opacity: 0;
-}
-@keyframes modalSlide {
-  to { transform: scale(1) translateY(0); opacity: 1; }
-}
-
-.modal-close {
-  position: absolute;
-  top: 14px; right: 14px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--muted);
-  width: 32px; height: 32px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  font-size: .9rem;
-  transition: all .2s;
-}
-.modal-close:hover { background: rgba(248,113,113,0.15); color: var(--error); border-color: rgba(248,113,113,0.3); }
-
-.auth-title {
-  font-size: 1.25rem;
-  font-weight: 900;
-  letter-spacing: .05em;
-  margin-bottom: 6px;
-}
-.auth-subtitle {
-  font-size: .78rem;
-  color: var(--muted);
-  font-family: 'Space Mono', monospace;
-  margin-bottom: 24px;
-}
-
-/* ── NOTIFICATION INSIDE AUTH ── */
-.notif-area { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
-.menu-notif {
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-size: .78rem;
-  font-family: 'Space Mono', monospace;
-  line-height: 1.4;
-  animation: notifIn .25s ease;
-}
-@keyframes notifIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.menu-notif.error   { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.25); color: var(--error); }
-.menu-notif.success { background: rgba(74,222,128,0.10); border: 1px solid rgba(74,222,128,0.25); color: var(--success); }
-.menu-notif.info    { background: rgba(124,92,252,0.12); border: 1px solid rgba(124,92,252,0.25); color: var(--accent2); }
-
-.auth-field { margin-bottom: 14px; }
-.auth-label {
-  display: block;
-  font-size: .72rem;
-  font-family: 'Space Mono', monospace;
-  color: var(--muted);
-  margin-bottom: 6px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-.auth-input {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 11px 14px;
-  color: var(--text);
-  font-family: 'Space Mono', monospace;
-  font-size: .82rem;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-.auth-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(124,92,252,0.15);
-}
-
-/* ── RESEND BAR ── */
-.resend-ui {
-  display: none;
-  margin-top: 12px;
-}
-.resend-bar-wrap {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  height: 36px;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-.resend-bar-fill {
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  background: rgba(124,92,252,0.2);
-  transition: width 1s linear;
-  border-radius: var(--radius-sm);
-}
-.resend-bar-text {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  text-align: center;
-  font-family: 'Space Mono', monospace;
-  font-size: .72rem;
-  color: var(--muted);
-}
-.resend-ready {
-  display: none;
-  margin-top: 8px;
-}
-
-.auth-switch {
-  margin-top: 18px;
-  text-align: center;
-  font-family: 'Space Mono', monospace;
-  font-size: .74rem;
-  color: var(--muted);
-}
-.auth-link {
-  color: var(--accent2);
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.auth-link:hover { color: var(--text); }
-
-/* ── DETAIL PAGE ── */
-#detail-page {
-  display: none;
-  flex: 1;
-  padding: 48px 60px;
-  max-width: 900px;
-  margin: 0 auto;
-  animation: cardFade .4s ease forwards;
-}
-.det-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Space Mono', monospace;
-  font-size: .78rem;
-  color: var(--muted);
-  cursor: pointer;
-  margin-bottom: 32px;
-  transition: color .2s;
-}
-.det-back:hover { color: var(--accent2); }
-.det-back i { font-size: .7rem; }
-.det-img {
-  width: 100%;
-  max-height: 340px;
-  object-fit: cover;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  margin-bottom: 28px;
-}
-.det-title {
-  font-size: 2rem;
-  font-weight: 900;
-  margin-bottom: 14px;
-}
-.det-desc {
-  font-family: 'Space Mono', monospace;
-  font-size: .84rem;
-  color: var(--muted);
-  line-height: 1.75;
-  margin-bottom: 28px;
-}
+/* DETAIL */
+#detail-page{display:none;flex:1;padding:40px 52px;overflow-y:auto;animation:cardFade .4s ease forwards;max-width:860px}
+.det-back{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:.74rem;color:var(--muted);cursor:pointer;margin-bottom:26px;transition:color .2s}
+.det-back:hover{color:var(--accent2)}
+.det-img{width:100%;max-width:500px;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:20px;display:block}
+.det-title{font-size:1.7rem;font-weight:900;margin-bottom:16px}
+.det-desc{font-family:'Space Mono',monospace;font-size:.76rem;color:var(--muted);line-height:1.85;margin-bottom:22px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;white-space:pre-wrap;word-break:break-word}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- NAV -->
-  <nav>
-    <span class="site-title" data-text="EFN ARCHIVE" onclick="document.getElementById('main-page').style.display='grid'; document.getElementById('detail-page').style.display='none';">EFN ARCHIVE</span>
-    <div class="nav-actions">
-      <div id="nav-guest">
-        <button class="btn btn-ghost btn-sm" onclick="openModal('login-modal')">Log In</button>
-        <button class="btn btn-primary btn-sm" onclick="openModal('reg-modal')">Sign Up</button>
-      </div>
-      <div id="nav-user">
-        <span class="user-tag" id="user-tag">—</span>
-        <button class="btn btn-danger btn-sm" onclick="doSignOut()">Sign Out</button>
-      </div>
+<!-- NAV -->
+<nav>
+  <span class="site-title" data-text="EFN ARCHIVE" onclick="goHome()">EFN ARCHIVE</span>
+  <div class="nav-right">
+    <div id="nav-guest">
+      <button class="btn btn-ghost btn-sm" onclick="openModal('login-modal')">Log In</button>
+      <button class="btn btn-primary btn-sm" onclick="openModal('reg-modal')">Sign Up</button>
     </div>
-  </nav>
-
-  <!-- MAIN -->
-  <div id="main-page" style="display:grid">
-    <div class="cards-area">
-      <div class="section-header">
-        <span class="section-title">PW Database</span>
-        <div class="section-line"></div>
-      </div>
-      <div class="cards-grid">
-
-        <!-- CHARON -->
-        <div class="card" onclick="openDetail('Charon','Charon is a powerful automation bot built for advanced server workflows. Handles everything from moderation utilities to background task execution with minimal overhead.','https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&','#')">
-          <img class="card-img" src="https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&" alt="Charon" onerror="this.style.background='#16152a';this.removeAttribute('src')">
-          <div class="card-body">
-            <div class="card-title">Charon</div>
-            <div class="card-desc">Advanced server automation bot with moderation utilities and background task execution.</div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-primary btn-sm">View</button>
-          </div>
-        </div>
-
-        <!-- AUTOMATH -->
-        <div class="card" onclick="openDetail('AutoMath','AutoMath is a Discord bot that solves mathematical expressions in real-time. Supports algebra, calculus snippets, and expression parsing — all directly in your server chat.','https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a09e28ba5b9ebc6ae95efa525deaf8dc32c261c5&','#')">
-          <img class="card-img" src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a09e28ba5b9ebc6ae95efa525deaf8dc32c261c5&" alt="AutoMath" onerror="this.style.background='#16152a';this.removeAttribute('src')">
-          <div class="card-body">
-            <div class="card-title">AutoMath</div>
-            <div class="card-desc">Real-time math solver bot. Algebra, calculus, expression parsing — all in Discord.</div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-primary btn-sm">View</button>
-          </div>
-        </div>
-
-        <!-- TICTACTOE BOT -->
-        <div class="card" onclick="openDetail('TicTacToe Bot','EFN\'s TicTacToe Bot lets you play classic TicTacToe directly inside Discord. Supports single-player against AI and two-player head-to-head mode. Lightweight, fast, and fun.','https://cdn.discordapp.com/attachments/1492915866797342976/1495336661331214366/image.png?ex=69e8834a&is=69e731ca&hm=7fc23cf25aa9f324555d7749935e95dfc6f7e924caf9bd6fa65b47d9b8aefdcd&','https://cdn.discordapp.com/attachments/1492915866797342976/1495336594624741517/Efns_Tictactoe_Bot_v3.1.html?ex=69e8833a&is=69e731ba&hm=2e2bb4c4efb795ecf211618a8c87476d707bf45b120f95a048962ade4372d05e&')">
-          <img class="card-img" src="https://cdn.discordapp.com/attachments/1492915866797342976/1495336661331214366/image.png?ex=69e8834a&is=69e731ca&hm=7fc23cf25aa9f324555d7749935e95dfc6f7e924caf9bd6fa65b47d9b8aefdcd&" alt="TicTacToe Bot" onerror="this.style.background='#16152a';this.removeAttribute('src')">
-          <div class="card-body">
-            <div class="card-title">TicTacToe Bot</div>
-            <div class="card-desc">Play TicTacToe in Discord — solo vs AI or head-to-head with a friend. Fast, fun, lightweight.</div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-primary btn-sm">View</button>
-          </div>
-        </div>
-
-      </div>
+    <div id="nav-user">
+      <span class="user-tag" id="user-tag">—</span>
+      <button class="btn btn-danger btn-sm" onclick="doSignOut()">Sign Out</button>
     </div>
+  </div>
+</nav>
 
-    <!-- CHAT PANEL -->
-    <div class="chat-panel">
-      <div class="chat-header">
-        <div class="chat-header-dot"></div>
-        <span class="chat-header-title">Live Chat</span>
-      </div>
-      <div class="chat-messages" id="chat-messages"></div>
-      <div class="typing-indicator" id="typing-indicator"></div>
-      <div class="chat-guest-ui" id="chat-guest-ui">
-        Log in to chat with<br>the community.
-      </div>
-      <div class="chat-user-ui" id="chat-user-ui">
-        <div class="char-count" id="char-count">0 / 120</div>
-        <div class="chat-input-row">
-          <input class="chat-input" id="chat-input" type="text" placeholder="Say something…" maxlength="120">
-          <button class="btn btn-primary btn-sm" id="chat-btn" onclick="sendMessage()">SEND</button>
+<!-- MAIN -->
+<div id="main-page" style="display:grid">
+  <!-- CARDS -->
+  <div class="cards-area">
+    <div class="section-header">
+      <span class="section-title">PW Database</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards-grid">
+
+      <!-- CHARON -->
+      <div class="card" onclick="openDetail('charon')">
+        <img class="card-img" src="https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&" alt="Charon" onerror="this.style.background='#16152a';this.removeAttribute('src')">
+        <div class="card-body">
+          <div class="card-name">Charon v2.0</div>
+          <div class="card-desc">Advanced PW cheat client. BepInEx injection, F2/FN+2 menu toggle.</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-sm dl-btn" data-key="charon" data-url="https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file" onclick="event.stopPropagation();handleDl(this)">Download</button>
         </div>
       </div>
+
+      <!-- AUTOMATH -->
+      <div class="card" onclick="openDetail('automath')">
+        <img class="card-img" src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a09e28ba5b9ebc6ae95efa525deaf8dc32c261c5&" alt="AutoMath" onerror="this.style.background='#16152a';this.removeAttribute('src')">
+        <div class="card-body">
+          <div class="card-name">AutoMath</div>
+          <div class="card-desc">Real-time math solver Discord bot. Algebra, calculus, expression parsing.</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-sm dl-btn" data-key="automath" data-url="#" onclick="event.stopPropagation();handleDl(this)">Download</button>
+        </div>
+      </div>
+
+      <!-- TICTACTOE -->
+      <div class="card" onclick="openDetail('tictactoe')">
+        <img class="card-img" src="https://cdn.discordapp.com/attachments/1492915866797342976/1495336661331214366/image.png?ex=69e8834a&is=69e731ca&hm=7fc23cf25aa9f324555d7749935e95dfc6f7e924caf9bd6fa65b47d9b8aefdcd&" alt="TicTacToe Bot" onerror="this.style.background='#16152a';this.removeAttribute('src')">
+        <div class="card-body">
+          <div class="card-name">TicTacToe Bot</div>
+          <div class="card-desc">Play TicTacToe in Discord — solo vs AI or head-to-head with a friend.</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-sm dl-btn" data-key="tictactoe" data-url="https://cdn.discordapp.com/attachments/1492915866797342976/1495336594624741517/Efns_Tictactoe_Bot_v3.1.html?ex=69e8833a&is=69e731ba&hm=2e2bb4c4efb795ecf211618a8c87476d707bf45b120f95a048962ade4372d05e&" onclick="event.stopPropagation();handleDl(this)">Download</button>
+        </div>
+      </div>
+
+      <!-- HYX -->
+      <div class="card" onclick="openDetail('hyx')">
+        <div class="card-img" style="background:linear-gradient(135deg,#16152a,#1e1a36);display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:900;color:var(--accent2);letter-spacing:.1em">HYX</div>
+        <div class="card-body">
+          <div class="card-name">Hyx Cheat</div>
+          <div class="card-desc">EFN's Hyx cheat tool for Pixel Worlds. Lightweight and reliable.</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-sm dl-btn" data-key="hyx" data-url="#" onclick="event.stopPropagation();handleDl(this)">Download</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- DETAIL PAGE -->
-  <div id="detail-page">
-    <div class="det-back" onclick="document.getElementById('main-page').style.display='grid'; document.getElementById('detail-page').style.display='none';">
-      <i class="fas fa-arrow-left"></i> Back to Archive
+  <!-- CHAT PANEL -->
+  <div class="chat-panel">
+    <div class="chat-header">
+      <div class="chat-dot"></div>
+      <span class="chat-header-title">Live Chat</span>
     </div>
-    <img class="det-img" id="det-img" src="" alt="">
-    <div class="det-title" id="det-title"></div>
-    <div class="det-desc" id="det-desc"></div>
-    <button class="btn btn-primary" id="det-dl"><i class="fas fa-download"></i> &nbsp;Download</button>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="typing-bar" id="typing-bar"></div>
+    <div class="chat-hint" id="chat-guest-ui">
+      <a onclick="openModal('login-modal')">Log in</a> to send messages.
+    </div>
+    <div class="chat-user-ui" id="chat-user-ui">
+      <div class="char-count" id="char-count">0 / 120</div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chat-input" type="text" placeholder="Say something…" maxlength="120">
+        <button class="btn btn-primary btn-sm" id="chat-btn" onclick="sendMessage()">SEND</button>
+      </div>
+    </div>
   </div>
+</div>
+
+<!-- DETAIL PAGE -->
+<div id="detail-page">
+  <div class="det-back" onclick="goHome()"><i class="fas fa-arrow-left"></i> &nbsp;Back</div>
+  <img class="det-img" id="det-img" src="" alt="">
+  <div class="det-title" id="det-title"></div>
+  <div class="det-desc" id="det-desc"></div>
+  <button class="btn btn-sm" id="det-dl">⬇ Download</button>
+</div>
 
 </div><!-- #app -->
 
@@ -721,7 +265,7 @@ nav {
       </div>
     </div>
     <div class="resend-ready" id="resend-ready-log">
-      <button class="btn btn-ghost" style="width:100%;font-size:.75rem" onclick="resendEmail('log')">Resend verification email</button>
+      <button class="btn btn-ghost" style="width:100%;font-size:.71rem" onclick="resendEmail('log')">Resend verification email</button>
     </div>
     <br>
     <button class="btn btn-primary" style="width:100%" onclick="login()">Log In</button>
@@ -747,11 +291,11 @@ nav {
     <div class="resend-ui" id="resend-ui-reg">
       <div class="resend-bar-wrap">
         <div class="resend-bar-fill" id="resend-fill-reg" style="width:100%"></div>
-        <div class="resend-bar-text" id="resend-text-reg">Check your inbox — verifying…</div>
+        <div class="resend-bar-text" id="resend-text-reg">Check your inbox…</div>
       </div>
     </div>
     <div class="resend-ready" id="resend-ready-reg">
-      <button class="btn btn-ghost" style="width:100%;font-size:.75rem" onclick="resendEmail('reg')">Resend verification email</button>
+      <button class="btn btn-ghost" style="width:100%;font-size:.71rem" onclick="resendEmail('reg')">Resend verification email</button>
     </div>
     <br>
     <button class="btn btn-primary" style="width:100%" onclick="signUp()">Create Account</button>
@@ -759,273 +303,299 @@ nav {
   </div>
 </div>
 
-<!-- FIREBASE + LOGIC (at bottom so DOM is ready) -->
 <script type="module">
-import { initializeApp }          from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
          onAuthStateChanged, signOut, sendEmailVerification }
        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getDatabase, ref, push, onChildAdded, onValue, set, query, limitToLast }
        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey:            "AIzaSyCM-ySTXgy37zVUMB2vy4ZJQ3MWlDD5g4E",
-  authDomain:        "efn-archive.firebaseapp.com",
-  projectId:         "efn-archive",
-  storageBucket:     "efn-archive.firebasestorage.app",
-  messagingSenderId: "1073610968306",
-  appId:             "1:1073610968306:web:72e03b6f43decbb636546b",
-  databaseURL:       "https://efn-archive-default-rtdb.firebaseio.com"
-};
-
-const app  = initializeApp(firebaseConfig);
+const app  = initializeApp({
+  apiKey:"AIzaSyCM-ySTXgy37zVUMB2vy4ZJQ3MWlDD5g4E",
+  authDomain:"efn-archive.firebaseapp.com",
+  projectId:"efn-archive",
+  storageBucket:"efn-archive.firebasestorage.app",
+  messagingSenderId:"1073610968306",
+  appId:"1:1073610968306:web:72e03b6f43decbb636546b",
+  databaseURL:"https://efn-archive-default-rtdb.firebaseio.com"
+});
 const auth = getAuth(app);
 const db   = getDatabase(app);
 
+let currentUser = null;
 let lastMsgSent = 0;
-let lastMailSent = { log: 0, reg: 0 };
+let lastMailSent = {log:0,reg:0};
 
-/* ── MODAL HELPERS ── */
-window.openModal  = id => { const el = document.getElementById(id); if(el){ el.classList.add('active'); } };
-window.closeModal = id => { const el = document.getElementById(id); if(el){ el.classList.remove('active'); } };
+/* ── CHEAT DATA ── */
+const CHEATS = {
+  charon:{
+    name:'Charon v2.0',
+    img:'https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&',
+    url:'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file',
+    desc:`If menu doesn't show up click F2 / FN + 2.
+If that didn't work change:
+  BepInEx → Config → CharonXXIII.DearImGuiInjection.cfg
+    StartupMode = ForceD3D12
+  (if that doesn't work try ForceD3D11)
 
-/* Close on backdrop click */
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => { if(e.target === overlay) overlay.classList.remove('active'); });
-});
+Credits: xorry / ! efn  — 19.4.2026
 
-/* ── NOTIFY (inside auth box) ── */
-function notify(boxId, msg, type='error') {
-  const container = document.getElementById(boxId);
-  if (!container) return;
+──────────────────────────────────
+INSTALLATION
 
-  const div = document.createElement('div');
-  div.className = `menu-notif ${type}`;
-  div.innerText = msg;
-  container.innerHTML = '';
-  container.appendChild(div);
+1. Download the ZIP
+2. Extract all files to your Pixel Worlds folder
+   (ask AI if you don't know where it is)
 
-  setTimeout(() => div.remove(), 5000);
-}
+──────────────────────────────────
+CHARON CLIENT — POSSIBLE CAUSES & FIXES
 
-/* ── RESEND EMAIL (60s bar) ── */
-window.resendEmail = async (which) => {
-  const now = Date.now();
-  if (now - lastMailSent[which] < 60000) return;
+▸ Running fullscreen or changed resolution while menu was active
+  • Delete the entire PW folder and reinstall PW
+  • In-game → Settings → Display → switch to Windowed Mode
+  • Or add -windowed to your Steam Launch Options
 
-  if (!auth.currentUser) return;
-  try {
-    await sendEmailVerification(auth.currentUser);
-  } catch(e) { console.warn('resend err', e); }
+▸ DirectX issues (most common on laptops)
 
-  lastMailSent[which] = Date.now();
+  Option 1 — Auto (try first)
+  BepInEx/config/dearimgui.cfg → startupmode = Auto
 
-  const uiEl    = document.getElementById(`resend-ui-${which}`);
-  const fillEl  = document.getElementById(`resend-fill-${which}`);
-  const textEl  = document.getElementById(`resend-text-${which}`);
-  const readyEl = document.getElementById(`resend-ready-${which}`);
+  Option 2 — Force D3D11
+  Steam launch option: -force-d3d11
+  BepInEx/config/dearimgui.cfg → startupmode = ForceD3D11
 
-  uiEl.style.display    = 'block';
-  readyEl.style.display = 'none';
+  Option 3 — Force D3D12
+  Steam launch option: -force-d3d12
+  BepInEx/config/dearimgui.cfg → startupmode = ForceD3D12
 
-  let t = 60;
-  fillEl.style.transition = 'none';
-  fillEl.style.width = '100%';
-  setTimeout(() => {
-    fillEl.style.transition = `width ${t}s linear`;
-    fillEl.style.width = '0%';
-  }, 50);
+⚠ IF YOU CRASH ON LOGIN: minimize PW and use a small window.`
+  },
+  automath:{
+    name:'AutoMath',
+    img:'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a09e28ba5b9ebc6ae95efa525deaf8dc32c261c5&',
+    url:'#',
+    desc:`AutoMath is a Discord bot that solves mathematical expressions in real-time.
 
-  textEl.innerText = `Email sent — resend in ${t}s`;
-  const i = setInterval(() => {
-    t--;
-    textEl.innerText = `Email sent — resend in ${t}s`;
-    if (t <= 0) {
-      clearInterval(i);
-      textEl.innerText = 'Resend available';
-      readyEl.style.display = 'block';
-      uiEl.style.display = 'none';
-    }
-  }, 1000);
+Supports algebra, calculus snippets, and expression parsing — all directly in your server chat.
+
+Add the bot to your server and use the /math command to get started.`
+  },
+  tictactoe:{
+    name:'TicTacToe Bot v3.1',
+    img:'https://cdn.discordapp.com/attachments/1492915866797342976/1495336661331214366/image.png?ex=69e8834a&is=69e731ca&hm=7fc23cf25aa9f324555d7749935e95dfc6f7e924caf9bd6fa65b47d9b8aefdcd&',
+    url:'https://cdn.discordapp.com/attachments/1492915866797342976/1495336594624741517/Efns_Tictactoe_Bot_v3.1.html?ex=69e8833a&is=69e731ba&hm=2e2bb4c4efb795ecf211618a8c87476d707bf45b120f95a048962ade4372d05e&',
+    desc:`EFN's TicTacToe Bot lets you play classic TicTacToe directly inside Discord.
+
+Supports:
+  • Single-player vs AI
+  • Two-player head-to-head mode
+
+Lightweight, fast, and fun.
+Download the HTML file and host it or open it directly.`
+  },
+  hyx:{
+    name:'Hyx Cheat',
+    img:null,
+    url:'#',
+    desc:`Hyx is EFN's lightweight cheat tool for Pixel Worlds.
+
+Reliable and easy to use.
+More details and download coming soon.`
+  }
 };
 
-function showResendUI(which) {
-  document.getElementById(`resend-ui-${which}`).style.display = 'block';
+/* ── MODAL HELPERS ── */
+window.openModal  = id => document.getElementById(id).classList.add('active');
+window.closeModal = id => document.getElementById(id).classList.remove('active');
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('active'); });
+});
+
+/* ── NOTIFY ── */
+function notify(boxId,msg,type='error'){
+  const c=document.getElementById(boxId); if(!c) return;
+  c.innerHTML='';
+  const d=document.createElement('div');
+  d.className=`menu-notif ${type}`; d.innerText=msg;
+  c.appendChild(d); setTimeout(()=>d.remove(),5000);
+}
+
+/* ── RESEND EMAIL ── */
+window.resendEmail = async(which)=>{
+  const now=Date.now();
+  if(now-lastMailSent[which]<60000) return;
+  if(!auth.currentUser) return;
+  try{ await sendEmailVerification(auth.currentUser); }catch(e){}
+  lastMailSent[which]=Date.now();
+  const ui=document.getElementById(`resend-ui-${which}`);
+  const fill=document.getElementById(`resend-fill-${which}`);
+  const txt=document.getElementById(`resend-text-${which}`);
+  const ready=document.getElementById(`resend-ready-${which}`);
+  ui.style.display='block'; ready.style.display='none';
+  fill.style.transition='none'; fill.style.width='100%';
+  setTimeout(()=>{ fill.style.transition='width 60s linear'; fill.style.width='0%'; },50);
+  let t=60; txt.innerText=`Email sent — resend in ${t}s`;
+  const iv=setInterval(()=>{
+    t--; txt.innerText=`Email sent — resend in ${t}s`;
+    if(t<=0){ clearInterval(iv); ui.style.display='none'; ready.style.display='block'; }
+  },1000);
+};
+function showResendUI(which){
+  document.getElementById(`resend-ui-${which}`).style.display='block';
   resendEmail(which);
 }
 
-/* ── SIGN UP ── */
-window.signUp = async () => {
-  const e = document.getElementById('reg-email').value.trim();
-  const p = document.getElementById('reg-pass').value;
-
-  if (!e) return notify('reg-notifs', 'Please enter your email.');
-  if (p.length < 8) return notify('reg-notifs', 'Password must be 8+ characters.');
-
-  try {
-    const cred = await createUserWithEmailAndPassword(auth, e, p);
+/* ── AUTH ── */
+window.signUp = async()=>{
+  const e=document.getElementById('reg-email').value.trim();
+  const p=document.getElementById('reg-pass').value;
+  if(!e) return notify('reg-notifs','Please enter your email.');
+  if(p.length<8) return notify('reg-notifs','Password must be 8+ characters.');
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,e,p);
     await sendEmailVerification(cred.user);
-    lastMailSent.reg = Date.now();
-    notify('reg-notifs', 'Account created! Check your email to verify.', 'success');
+    lastMailSent.reg=Date.now();
+    notify('reg-notifs','Account created! Check your email to verify.','success');
     showResendUI('reg');
-  } catch(err) {
-    if (err.code === 'auth/email-already-in-use') notify('reg-notifs', 'That email is already registered.');
-    else if (err.code === 'auth/invalid-email')    notify('reg-notifs', 'Invalid email address.');
-    else notify('reg-notifs', err.message);
+  }catch(err){
+    const msgs={'auth/email-already-in-use':'That email is already registered.','auth/invalid-email':'Invalid email address.'};
+    notify('reg-notifs',msgs[err.code]||err.message);
   }
 };
 
-/* ── LOGIN ── */
-window.login = async () => {
-  const e = document.getElementById('log-email').value.trim();
-  const p = document.getElementById('log-pass').value;
-
-  if (!e || !p) return notify('login-notifs', 'Please fill in all fields.');
-
-  try {
-    const cred = await signInWithEmailAndPassword(auth, e, p);
-    if (!cred.user.emailVerified) {
-      notify('login-notifs', 'Email not verified. Check your inbox.');
+window.login = async()=>{
+  const e=document.getElementById('log-email').value.trim();
+  const p=document.getElementById('log-pass').value;
+  if(!e||!p) return notify('login-notifs','Please fill in all fields.');
+  try{
+    const cred=await signInWithEmailAndPassword(auth,e,p);
+    if(!cred.user.emailVerified){
+      notify('login-notifs','Email not verified. Check your inbox.');
       showResendUI('log');
-      await signOut(auth);
-      return;
+      await signOut(auth); return;
     }
     closeModal('login-modal');
     location.reload();
-  } catch(err) {
-    if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential')
-      notify('login-notifs', 'Invalid email or password.');
-    else notify('login-notifs', err.message);
+  }catch(err){
+    const bad=['auth/user-not-found','auth/wrong-password','auth/invalid-credential'];
+    notify('login-notifs',bad.includes(err.code)?'Invalid email or password.':err.message);
   }
 };
 
-/* ── SIGN OUT ── */
-window.doSignOut = async () => {
-  await signOut(auth);
-  location.reload();
+window.doSignOut = async()=>{ await signOut(auth); location.reload(); };
+
+/* ── DOWNLOAD GATE ── */
+window.handleDl = (btn)=>{
+  const url=btn.dataset.url;
+  if(!currentUser){
+    openModal('login-modal');
+    notify('login-notifs','Please log in to download.','info');
+    return;
+  }
+  if(url&&url!=='#') window.open(url,'_blank');
 };
 
-/* ── CHAT ── */
-const chatBox   = document.getElementById('chat-messages');
-const chatInput = document.getElementById('chat-input');
-const chatBtn   = document.getElementById('chat-btn');
-const charCount = document.getElementById('char-count');
-
-chatInput.addEventListener('input', () => {
-  charCount.innerText = `${chatInput.value.length} / 120`;
-});
-
-chatInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') sendMessage();
-});
-
-window.sendMessage = () => {
-  const user = auth.currentUser;
-  if (!user) return;
-  const text = chatInput.value.trim();
-  if (!text) return;
-  if (text.length > 120) return;
-  if (Date.now() - lastMsgSent < 3000) return;
-
-  push(ref(db, 'messages'), {
-    username: user.email.split('@')[0],
-    text,
-    timestamp: Date.now()
+function refreshDlButtons(loggedIn){
+  document.querySelectorAll('.dl-btn').forEach(btn=>{
+    if(loggedIn){
+      btn.className='btn btn-primary btn-sm dl-btn';
+      btn.textContent='Download';
+    } else {
+      btn.className='btn btn-locked btn-sm dl-btn';
+      btn.textContent='🔒 Login to Download';
+    }
   });
-
-  chatInput.value = '';
-  charCount.innerText = '0 / 120';
-  lastMsgSent = Date.now();
-
-  chatBtn.disabled = true;
-  let t = 3;
-  chatBtn.innerText = t;
-  const i = setInterval(() => {
-    t--;
-    chatBtn.innerText = t;
-    if (t <= 0) { clearInterval(i); chatBtn.disabled = false; chatBtn.innerText = 'SEND'; }
-  }, 1000);
-};
-
-/* ── LOAD MESSAGES ── */
-onChildAdded(query(ref(db, 'messages'), limitToLast(40)), snap => {
-  const m = snap.val();
-  const time = m.timestamp
-    ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    : '';
-
-  const div = document.createElement('div');
-  div.className = 'chat-msg';
-  div.innerHTML = `<span class="chat-user">${escHtml(m.username)} · ${time}</span>${escHtml(m.text)}`;
-  chatBox.appendChild(div);
-  chatBox.scrollTop = chatBox.scrollHeight;
-});
-
-function escHtml(s) {
-  return String(s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
 }
 
-/* ── TYPING INDICATOR ── */
-const typingRef = ref(db, 'typing');
-const typingIndicator = document.getElementById('typing-indicator');
-let typingTimeout;
-
-chatInput.addEventListener('input', () => {
-  const u = auth.currentUser;
-  if (!u) return;
-  set(typingRef, u.email.split('@')[0]);
-  clearTimeout(typingTimeout);
-  typingTimeout = setTimeout(() => set(typingRef, null), 2500);
-});
-
-onValue(typingRef, snap => {
-  const val = snap.val();
-  const u = auth.currentUser;
-  // Don't show your own typing indicator
-  if (val && u && val !== u.email.split('@')[0]) {
-    typingIndicator.innerText = `${val} is typing…`;
-    typingIndicator.style.opacity = '1';
-  } else {
-    typingIndicator.innerText = '';
-    typingIndicator.style.opacity = '0';
-  }
-});
-
 /* ── AUTH STATE ── */
-onAuthStateChanged(auth, user => {
-  const navGuest   = document.getElementById('nav-guest');
-  const navUser    = document.getElementById('nav-user');
-  const userTag    = document.getElementById('user-tag');
-  const guestChat  = document.getElementById('chat-guest-ui');
-  const userChat   = document.getElementById('chat-user-ui');
-
-  if (user && user.emailVerified) {
-    navGuest.style.display  = 'none';
-    navUser.style.display   = 'flex';
-    userTag.innerText       = user.email.split('@')[0];
-    guestChat.style.display = 'none';
-    userChat.style.display  = 'flex';
-  } else {
-    navGuest.style.display  = 'flex';
-    navUser.style.display   = 'none';
-    guestChat.style.display = 'block';
-    userChat.style.display  = 'none';
-  }
+onAuthStateChanged(auth,user=>{
+  currentUser = (user&&user.emailVerified) ? user : null;
+  const ok=!!currentUser;
+  document.getElementById('nav-guest').style.display = ok?'none':'flex';
+  document.getElementById('nav-user').style.display  = ok?'flex':'none';
+  if(ok) document.getElementById('user-tag').innerText=user.email.split('@')[0];
+  document.getElementById('chat-guest-ui').style.display = ok?'none':'block';
+  document.getElementById('chat-user-ui').style.display  = ok?'flex':'none';
+  refreshDlButtons(ok);
 });
 
-/* ── DETAIL VIEW ── */
-window.openDetail = (name, desc, img, link) => {
-  document.getElementById('main-page').style.display   = 'none';
-  document.getElementById('detail-page').style.display = 'flex';
-  document.getElementById('det-title').innerText  = name;
-  document.getElementById('det-desc').innerHTML   = desc;
-  document.getElementById('det-img').src          = img;
-  document.getElementById('det-dl').onclick       = () => window.open(link, '_blank');
+/* ── CHAT ── */
+const chatBox=document.getElementById('chat-messages');
+const chatInput=document.getElementById('chat-input');
+const chatBtn=document.getElementById('chat-btn');
+const charCount=document.getElementById('char-count');
+
+chatInput.addEventListener('input',()=>{
+  charCount.innerText=`${chatInput.value.length} / 120`;
+  if(!currentUser) return;
+  set(ref(db,'typing'),currentUser.email.split('@')[0]);
+  clearTimeout(window._tt);
+  window._tt=setTimeout(()=>set(ref(db,'typing'),null),2500);
+});
+chatInput.addEventListener('keydown',e=>{ if(e.key==='Enter') sendMessage(); });
+
+window.sendMessage=()=>{
+  if(!currentUser) return;
+  const text=chatInput.value.trim();
+  if(!text||text.length>120) return;
+  if(Date.now()-lastMsgSent<3000) return;
+  push(ref(db,'messages'),{username:currentUser.email.split('@')[0],text,timestamp:Date.now()});
+  chatInput.value=''; charCount.innerText='0 / 120';
+  lastMsgSent=Date.now();
+  chatBtn.disabled=true; let t=3; chatBtn.innerText=t;
+  const iv=setInterval(()=>{ t--; chatBtn.innerText=t; if(t<=0){clearInterval(iv);chatBtn.disabled=false;chatBtn.innerText='SEND';} },1000);
+};
+
+/* Load messages — visible to everyone */
+onChildAdded(query(ref(db,'messages'),limitToLast(50)),snap=>{
+  const m=snap.val();
+  const time=m.timestamp?new Date(m.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+  const div=document.createElement('div');
+  div.className='chat-msg';
+  div.innerHTML=`<span class="chat-user">${esc(m.username)} · ${time}</span>${esc(m.text)}`;
+  chatBox.appendChild(div);
+  chatBox.scrollTop=chatBox.scrollHeight;
+});
+
+/* Typing indicator */
+onValue(ref(db,'typing'),snap=>{
+  const val=snap.val();
+  const me=currentUser?currentUser.email.split('@')[0]:null;
+  const bar=document.getElementById('typing-bar');
+  if(val&&val!==me){ bar.innerText=`${val} is typing…`; bar.style.opacity='1'; }
+  else { bar.innerText=''; bar.style.opacity='0'; }
+});
+
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── NAVIGATION ── */
+window.goHome=()=>{
+  document.getElementById('main-page').style.display='grid';
+  document.getElementById('detail-page').style.display='none';
+};
+
+window.openDetail=(key)=>{
+  const c=CHEATS[key]; if(!c) return;
+  document.getElementById('main-page').style.display='none';
+  document.getElementById('detail-page').style.display='block';
+  document.getElementById('det-title').innerText=c.name;
+  document.getElementById('det-desc').innerText=c.desc;
+  const img=document.getElementById('det-img');
+  if(c.img){ img.src=c.img; img.style.display='block'; } else img.style.display='none';
+  const dlBtn=document.getElementById('det-dl');
+  if(currentUser){
+    dlBtn.className='btn btn-primary btn-sm';
+    dlBtn.innerText='⬇ Download';
+    dlBtn.onclick=()=>{ if(c.url&&c.url!=='#') window.open(c.url,'_blank'); };
+  } else {
+    dlBtn.className='btn btn-locked btn-sm';
+    dlBtn.innerText='🔒 Login to Download';
+    dlBtn.onclick=()=>{ goHome(); openModal('login-modal'); notify('login-notifs','Please log in to download.','info'); };
+  }
 };
 </script>
 </body>
-</html>
+</html>      
