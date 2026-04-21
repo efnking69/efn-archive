@@ -20,60 +20,79 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // UI Helpers
-        window.checkPass = () => {
-            const pass = document.getElementById('pass').value;
-            const msg = document.getElementById('m-msg');
-            if (pass.length === 0) { msg.innerText = ""; return; }
-            if (pass.length < 8 || !/\d/.test(pass)) {
-                msg.innerText = "❌ invalid: 8+ chars & 1 number";
-                msg.style.color = "#ff4444";
+        // --- AUTH LOGIC ---
+        window.handleAuthError = (err, elementId) => {
+            const el = document.getElementById(elementId);
+            el.style.display = "block";
+            if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+                el.innerText = "Invalid email or password.";
+            } else if (err.code === 'auth/email-already-in-use') {
+                el.innerText = "This email is already registered.";
             } else {
-                msg.innerText = "✅ password secure";
-                msg.style.color = "#3ecf8e";
+                el.innerText = "An error occurred. Try again.";
             }
         };
 
-        window.signUp = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
-            try {
-                const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                await sendEmailVerification(cred.user);
-                alert("verification link sent! check your email and spam.");
-            } catch (e) { alert(e.message); }
-        };
-
         window.login = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
+            const email = document.getElementById('log-email').value;
+            const pass = document.getElementById('log-pass').value;
+            const errorEl = document.getElementById('log-error');
+            errorEl.style.display = "none";
+
             try {
                 const cred = await signInWithEmailAndPassword(auth, email, pass);
                 if (cred.user.emailVerified) { location.reload(); }
-                else { alert("please verify your email first!"); }
-            } catch (e) { alert("login failed - check credentials"); }
+                else { 
+                    errorEl.style.display = "block";
+                    errorEl.innerText = "Please verify your email first (check spam).";
+                }
+            } catch (e) { handleAuthError(e, 'log-error'); }
+        };
+
+        window.signUp = async () => {
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            const errorEl = document.getElementById('reg-error');
+            errorEl.style.display = "none";
+
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                await sendEmailVerification(cred.user);
+                errorEl.style.display = "block";
+                errorEl.style.color = "#3ecf8e";
+                errorEl.innerText = "Verification sent! Check your inbox/spam.";
+            } catch (e) { handleAuthError(e, 'reg-error'); }
         };
 
         window.logout = () => signOut(auth).then(() => location.reload());
 
-        // Page Transitions
+        // --- UI TOGGLES ---
+        window.togglePass = (id) => {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        };
+
+        window.switchAuth = (mode) => {
+            const loginBox = document.getElementById('login-box');
+            const regBox = document.getElementById('reg-box');
+            if (mode === 'reg') {
+                loginBox.style.display = 'none';
+                regBox.style.display = 'block';
+            } else {
+                regBox.style.display = 'none';
+                loginBox.style.display = 'block';
+            }
+        };
+
         window.openDetail = (name, status, desc, img, link) => {
-            const main = document.getElementById('main-page');
-            const detail = document.getElementById('detail-page');
-            
-            main.classList.add('page-exit');
-            setTimeout(() => {
-                main.style.display = 'none';
-                detail.style.display = 'block';
-                detail.classList.add('page-enter');
-                
-                document.getElementById('det-title').innerText = name.toLowerCase();
-                document.getElementById('det-status').innerText = status.toLowerCase();
-                document.getElementById('det-desc').innerText = desc.toLowerCase();
-                document.getElementById('det-img').src = img;
-                document.getElementById('det-dl').onclick = () => window.open(link, '_blank');
-                window.scrollTo(0,0);
-            }, 300);
+            document.getElementById('main-page').style.display = 'none';
+            const det = document.getElementById('detail-page');
+            det.style.display = 'block';
+            document.getElementById('det-title').innerText = name;
+            document.getElementById('det-status').innerText = status;
+            document.getElementById('det-desc').innerText = desc;
+            document.getElementById('det-img').src = img;
+            document.getElementById('det-dl').onclick = () => window.open(link, '_blank');
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -88,117 +107,134 @@
     </script>
 
     <style>
-        :root { --bg: #030303; --card: #080808; --accent: #5865F2; --border: #121212; --red: #ff4444; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; overflow-x: hidden; }
+        :root { --bg: #050505; --card: #0a0a0a; --accent: #5865F2; --border: #151515; --error: #ff4444; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; margin: 0; }
         
-        /* Animations */
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
-        .page-enter { animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        .page-exit { animation: slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .fade-in { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); position: sticky; top:0; z-index: 1000; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; }
         
-        .btn-solid { background: #fff; color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: lowercase; transition: 0.2s; }
-        .btn-solid:hover { transform: scale(1.05); background: var(--accent); color: #fff; }
-        
-        .btn-red { background: var(--red); color: #fff; padding: 15px; border-radius: 8px; font-weight: bold; border: none; width: 100%; cursor: pointer; text-transform: lowercase; }
+        /* Discord Button */
+        .btn-discord-box { background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-discord-box:hover { background: #4752c4; transform: translateY(-2px); }
 
-        .container { max-width: 1100px; margin: 60px auto; padding: 0 20px; }
+        /* Profile Menu Fix */
+        .profile-container { position: relative; padding-bottom: 20px; margin-bottom: -20px; } /* The bridge */
+        .dropdown { position: absolute; top: 100%; right: 0; background: #111; border: 1px solid var(--border); border-radius: 8px; width: 170px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100; }
+        .profile-container:hover .dropdown { display: block; }
+        .dropdown button { width: 100%; padding: 12px; background: none; border: none; color: #888; text-align: left; cursor: pointer; }
+        .dropdown button:hover { background: #1a1a1a; color: #fff; }
+
+        .container { max-width: 1100px; margin: 50px auto; padding: 0 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 25px; transition: 0.4s; position: relative; text-align: center; }
-        .card:hover { border-color: var(--accent); box-shadow: 0 10px 40px rgba(88, 101, 242, 0.05); }
-        .card img { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; margin-bottom: 20px; border: 1px solid #1a1a1a; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; text-align: center; transition: 0.3s; }
+        .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+        .card:hover { border-color: var(--accent); transform: scale(1.02); }
 
-        .profile-area { position: relative; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        .dropdown { position: absolute; top: 120%; right: 0; background: #0a0a0a; border: 1px solid var(--border); border-radius: 10px; width: 160px; display: none; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .profile-area:hover .dropdown { display: block; }
-        .dropdown button { width: 100%; padding: 12px; background: none; border: none; color: #555; text-align: left; cursor: pointer; transition: 0.2s; text-transform: lowercase; }
-        .dropdown button:hover { background: #111; color: #fff; }
+        /* Lowercase specific buttons */
+        .btn-low { text-transform: lowercase; }
+        .btn-main { background: #fff; color: #000; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-main:hover { background: var(--accent); color: #fff; }
+        
+        /* Auth Modal Styling */
+        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .auth-box { width: 360px; background: #0d0d0d; padding: 40px; border-radius: 16px; border: 1px solid var(--border); position: relative; }
+        .auth-box h2 { margin-top: 0; letter-spacing: 1px; }
+        
+        .input-group { position: relative; margin: 15px 0; }
+        input { width: 100%; padding: 14px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; font-size: 0.9rem; }
+        .eye-btn { position: absolute; right: 12px; top: 14px; background: none; border: none; color: #444; cursor: pointer; font-size: 1.1rem; }
+        
+        .error-msg { color: var(--error); font-size: 0.75rem; margin-top: 10px; display: none; font-weight: bold; animation: fadeIn 0.3s ease; }
 
-        /* Detail View Layout */
+        /* Detail Page */
         #detail-page { display: none; }
-        .detail-layout { display: flex; gap: 50px; margin-top: 40px; flex-wrap: wrap; }
-        .detail-content { flex: 2; }
-        .detail-card { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 20px; flex: 1; height: fit-content; text-align: center; }
-        #det-img { width: 100%; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 20px; }
-
-        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(10px); }
-        .modal-box { width: 340px; background: #050505; padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; }
-        input { width: 100%; padding: 16px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 10px; outline: none; }
+        .detail-grid { display: flex; gap: 40px; margin-top: 30px; flex-wrap: wrap; }
+        .detail-info { flex: 2; background: #080808; border-radius: 15px; padding: 35px; border: 1px solid var(--border); }
+        .detail-side { flex: 1; background: var(--card); border-radius: 15px; padding: 30px; border: 1px solid var(--border); text-align: center; height: fit-content; }
+        .btn-red { background: var(--error); color: #fff; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div style="font-weight:900; letter-spacing:3px; cursor:pointer" onclick="location.reload()">EFN ARCHIVE</div>
-    <div style="display:flex; align-items:center; gap: 15px;">
-        <a href="https://discord.gg/QV69upuxbg" target="_blank" style="text-decoration:none; color:var(--accent); font-weight:800; font-size:0.8rem; text-transform:lowercase;">discord</a>
+    <div style="font-weight:900; letter-spacing:2px; cursor:pointer" onclick="location.reload()">EFN ARCHIVE</div>
+    <div style="display:flex; align-items:center; gap: 20px;">
+        <a href="https://discord.gg/QV69upuxbg" target="_blank" class="btn-discord-box">discord server</a>
         <div id="nav-guest">
-            <button class="btn-solid" onclick="document.getElementById('auth-modal').style.display='flex'">login</button>
+            <button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'">Login</button>
         </div>
-        <div id="nav-user" style="display:none;" class="profile-area">
-            <span id="user-tag" style="font-size:0.8rem; color:#444; text-transform:lowercase;"></span>
-            <div style="width:30px; height:30px; background:var(--accent); border-radius:50%"></div>
+        <div id="nav-user" style="display:none;" class="profile-container">
+            <span id="user-tag" style="background:#111; padding:8px 15px; border:1px solid #222; border-radius:20px; font-size:0.8rem"></span>
             <div class="dropdown">
-                <button onclick="alert('coming soon')">edit account</button>
-                <button onclick="logout()" style="color:var(--red)">logout</button>
+                <button onclick="alert('Coming soon!')">Edit Account</button>
+                <button onclick="logout()" style="color:var(--error)">Log Out</button>
             </div>
         </div>
     </div>
 </nav>
 
-<div id="main-page" class="container page-enter">
-    <h1 style="font-size: 3rem; margin-bottom: 10px; letter-spacing:-2px">pixel worlds tools</h1>
-    <p style="color:#222; margin-bottom:50px; font-weight:bold">v2.1 • efn archive</p>
-    
+<div id="main-page" class="container fade-in">
+    <h1 style="font-size: 2.5rem; margin-bottom: 40px;">Pixel Worlds Tools</h1>
     <div class="grid">
         <div class="card">
             <img src="https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&" alt="Charon">
-            <h3 style="letter-spacing:1px; font-size:0.9rem">charon client v2.0 [free]</h3>
-            <p style="color:#333; font-size:0.7rem; margin-bottom:20px">status: working</p>
-            <button class="btn-solid" style="width:100%" onclick="openDetail('charon client v2.0 [free]', 'working', 'no description', 'https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">info</button>
+            <h3>Charon Client v2.0 [free]</h3>
+            <p style="color:#444; font-size:0.7rem">Status: Working</p>
+            <button class="btn-main btn-low" style="width:100%" onclick="openDetail('Charon Client v2.0 [free]', 'Working', 'no description', 'https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">info</button>
         </div>
-        
-        <div class="card" style="opacity:0.3"><h3>coming soon</h3><p>...</p></div>
-        <div class="card" style="opacity:0.3"><h3>coming soon</h3><p>...</p></div>
     </div>
 </div>
 
-<div id="detail-page" class="container">
-    <button onclick="location.reload()" style="background:none; border:none; color:#333; cursor:pointer; font-weight:bold; text-transform:lowercase">← back to tools</button>
-    <div class="detail-layout">
-        <div class="detail-content">
-            <img id="det-img" src="" alt="preview">
-            <h1 id="det-title" style="font-size:2.5rem; margin:0; letter-spacing:-1px"></h1>
-            <p id="det-desc" style="color:#555; margin-top:20px; line-height:1.6"></p>
+<div id="detail-page" class="container fade-in">
+    <button onclick="location.reload()" style="background:none; border:none; color:#555; cursor:pointer; font-weight:bold; margin-bottom:20px">← Back to Tools</button>
+    <div class="detail-grid">
+        <div class="detail-info">
+            <img id="det-img" src="" style="width:100%; border-radius:12px; margin-bottom:20px;">
+            <h1 id="det-title" style="margin:0"></h1>
+            <p id="det-desc" style="color:#777; line-height:1.6"></p>
         </div>
-        <div class="detail-card">
-            <p style="color:#333; font-size:0.7rem; text-transform:lowercase; margin-bottom:5px">current status</p>
-            <div id="det-status" style="color:#3ecf8e; font-weight:900; font-size:1.4rem; text-transform:lowercase"></div>
-            <hr style="border:0; border-top:1px solid #111; margin:30px 0">
-            
+        <div class="detail-side">
+            <p style="color:#444; font-size:0.7rem; margin-bottom:5px">Current Status</p>
+            <div id="det-status" style="color:#3ecf8e; font-weight:bold; font-size:1.2rem"></div>
+            <hr style="border:0; border-top:1px solid #1a1a1a; margin:25px 0">
             <div class="lock-ui">
-                <button class="btn-red" onclick="document.getElementById('auth-modal').style.display='flex'">please login to download</button>
+                <button class="btn-red btn-low" onclick="document.getElementById('auth-overlay').style.display='flex'">please login to download</button>
             </div>
-            
             <div class="auth-ui" style="display:none">
-                <button id="det-dl" class="btn-solid" style="width:100%">download tool</button>
+                <button id="det-dl" class="btn-main btn-low" style="width:100%">download tool</button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="auth-modal">
-    <div class="modal-box">
-        <h2 style="text-transform:lowercase; letter-spacing:2px">system login</h2>
-        <input type="email" id="email" placeholder="email">
-        <input type="password" id="pass" placeholder="password" oninput="checkPass()">
-        <p id="m-msg" style="font-size:0.7rem; margin:10px 0; min-height:1.2rem"></p>
-        <button class="btn-solid" style="width:100%" onclick="login()">sign in</button>
-        <p onclick="signUp()" style="color:#333; font-size:0.75rem; margin-top:20px; cursor:pointer">create account</p>
-        <p onclick="document.getElementById('auth-modal').style.display='none'" style="color:#111; font-size:0.7rem; margin-top:10px; cursor:pointer">close</p>
+<div id="auth-overlay">
+    <div class="auth-box fade-in" id="login-box">
+        <h2>System Login</h2>
+        <div class="input-group"><input type="email" id="log-email" placeholder="Email Address"></div>
+        <div class="input-group">
+            <input type="password" id="log-pass" placeholder="Password">
+            <button class="eye-btn" onclick="togglePass('log-pass')">👁️</button>
+        </div>
+        <div id="log-error" class="error-msg"></div>
+        <button class="btn-main" style="width:100%; margin-top:10px" onclick="login()">Sign In</button>
+        <p style="color:#444; font-size:0.8rem; margin-top:20px; cursor:pointer" onclick="switchAuth('reg')">Don't have an account? <span style="color:var(--accent)">Create Account</span></p>
+        <p style="color:#222; font-size:0.7rem; cursor:pointer; margin-top:15px" onclick="document.getElementById('auth-overlay').style.display='none'">Cancel</p>
+    </div>
+
+    <div class="auth-box fade-in" id="reg-box" style="display:none">
+        <h2>Create Account</h2>
+        <div class="input-group"><input type="email" id="reg-email" placeholder="Enter Email"></div>
+        <div class="input-group">
+            <input type="password" id="reg-pass" placeholder="Create Password">
+            <button class="eye-btn" onclick="togglePass('reg-pass')">👁️</button>
+        </div>
+        <div id="reg-error" class="error-msg"></div>
+        <button class="btn-main" style="width:100%; margin-top:10px" onclick="signUp()">Register</button>
+        <p style="color:#444; font-size:0.8rem; margin-top:20px; cursor:pointer" onclick="switchAuth('log')">Already have an account? <span style="color:var(--accent)">Login here</span></p>
+        <p style="color:#222; font-size:0.7rem; cursor:pointer; margin-top:15px" onclick="document.getElementById('auth-overlay').style.display='none'">Cancel</p>
     </div>
 </div>
 
