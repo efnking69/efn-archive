@@ -1,327 +1,1031 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EFN ARCHIVE | PW Database</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendEmailVerification, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, push, onChildAdded, onValue, set, remove, serverTimestamp, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EFN ARCHIVE | PW Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCM-ySTXgy37zVUMB2vy4ZJQ3MWlDD5g4E",
-            authDomain: "efn-archive.firebaseapp.com",
-            projectId: "efn-archive",
-            storageBucket: "efn-archive.firebasestorage.app",
-            messagingSenderId: "1073610968306",
-            appId: "1:1073610968306:web:72e03b6f43decbb636546b",
-            databaseURL: "https://efn-archive-default-rtdb.firebaseio.com"
-        };
+<style>
+:root {
+  --bg: #07060f;
+  --surface: #100f1e;
+  --surface2: #16152a;
+  --border: #2a2845;
+  --accent: #7c5cfc;
+  --accent2: #b48dff;
+  --text: #e8e4ff;
+  --muted: #7a779a;
+  --success: #4ade80;
+  --error: #f87171;
+  --warn: #facc15;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        let lastMailSent = 0;
-        let lastMsgSent = 0;
+html, body {
+  height: 100%;
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
 
-        window.notify = (msg, type = 'info') => {
-            const container = document.getElementById('notif-area');
-            const div = document.createElement('div');
-            div.className = `menu-notif ${type}`;
-            div.innerHTML = `<i class="fas fa-bell"></i> <span>${msg}</span>`;
-            container.prepend(div);
-            setTimeout(() => {
-                div.style.opacity = '0';
-                setTimeout(() => div.remove(), 500);
-            }, 7000);
-        };
+/* ── ANIMATED BACKGROUND ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,92,252,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(180,141,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(124,92,252,0.04) 0%, transparent 70%);
+  animation: bgPulse 10s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes bgPulse {
+  0%   { opacity: 0.7; transform: scale(1); }
+  100% { opacity: 1;   transform: scale(1.04); }
+}
 
-        window.resendEmail = async () => {
-            const now = Date.now();
-            if (now - lastMailSent < 120000) {
-                const wait = Math.ceil((120000 - (now - lastMailSent)) / 1000);
-                return notify(`Wait ${wait}s to resend.`, "error");
-            }
-            if (auth.currentUser) {
-                await sendEmailVerification(auth.currentUser);
-                lastMailSent = now;
-                notify("Verification link sent!", "success");
-            }
-        };
+/* ── GRAIN OVERLAY ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
 
-        window.signUp = async () => {
-            const e = document.getElementById('reg-email').value;
-            const p = document.getElementById('reg-pass').value;
-            if (p.length < 8) return notify("Password must be 8+ characters.", "error");
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, e, p);
-                await sendEmailVerification(userCredential.user);
-                lastMailSent = Date.now();
-                notify("Account created! Check email/spam.", "success");
-                document.getElementById('resend-ui-reg').style.display = 'block';
-            } catch (err) { notify(err.message, "error"); }
-        };
+#app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
-        window.login = async () => {
-            const e = document.getElementById('log-email').value;
-            const p = document.getElementById('log-pass').value;
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, e, p);
-                if (!userCredential.user.emailVerified) {
-                    notify("Email not verified!", "error");
-                    document.getElementById('resend-ui-log').style.display = 'block';
-                    await signOut(auth);
-                    return;
-                }
-                notify("Login successful!", "success");
-                setTimeout(() => location.reload(), 1000);
-            } catch (err) { notify("Invalid credentials.", "error"); }
-        };
+/* ── NAV ── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(16,15,30,0.8);
+  backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  animation: navSlide .5s ease forwards;
+}
+@keyframes navSlide {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-        window.sendMessage = () => {
-            const input = document.getElementById('chat-input');
-            const btn = document.getElementById('chat-btn');
-            const now = Date.now();
-            const user = auth.currentUser;
-            if (!user || !input.value.trim()) return;
-            if (input.value.length > 120) return notify("Max 120 characters!", "error");
-            if (now - lastMsgSent < 3000) return notify("Wait 3s between messages.", "error");
+/* ── TITLE GLITCH ── */
+.site-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+.site-title::before,
+.site-title::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  pointer-events: none;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path .3s ease;
+}
+.site-title::before { color: #7c5cfc; transform: translate(-2px, 1px); }
+.site-title::after  { color: #b48dff; transform: translate(2px, -1px); }
+.site-title:hover::before { clip-path: inset(0 0% 0 0); animation: glitchA .4s steps(2) forwards; }
+.site-title:hover::after  { clip-path: inset(0 0% 0 0); animation: glitchB .4s steps(2) forwards; }
+@keyframes glitchA {
+  0%   { clip-path: inset(10% 0 80% 0); transform: translate(-3px,0); }
+  25%  { clip-path: inset(40% 0 30% 0); transform: translate(3px,0); }
+  50%  { clip-path: inset(70% 0 5%  0); transform: translate(-2px,0); }
+  75%  { clip-path: inset(0%  0 60% 0); transform: translate(0,0); }
+  100% { clip-path: inset(0 100% 0 0); transform: translate(-2px,1px); }
+}
+@keyframes glitchB {
+  0%   { clip-path: inset(60% 0 10% 0); transform: translate(3px,0); }
+  33%  { clip-path: inset(20% 0 60% 0); transform: translate(-3px,0); }
+  66%  { clip-path: inset(80% 0 5%  0); transform: translate(1px,0); }
+  100% { clip-path: inset(0 100% 0 0); transform: translate(2px,-1px); }
+}
 
-            push(ref(db, 'messages'), {
-                username: user.email.split('@')[0],
-                text: input.value,
-                timestamp: serverTimestamp()
-            });
+.nav-actions { display: flex; gap: 10px; align-items: center; }
 
-            lastMsgSent = now;
-            input.value = "";
-            btn.disabled = true;
-            let timer = 3;
-            btn.innerText = timer;
-            const interval = setInterval(() => {
-                timer--;
-                btn.innerText = timer;
-                if (timer <= 0) { clearInterval(interval); btn.disabled = false; btn.innerText = "SEND"; }
-            }, 1000);
-        };
+/* ── BUTTONS ── */
+.btn {
+  font-family: 'Space Mono', monospace;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 9px 20px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all .2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.06);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.btn:hover::after { opacity: 1; }
+.btn:active { transform: scale(0.97); }
 
-        onChildAdded(query(ref(db, 'messages'), limitToLast(40)), (data) => {
-            const msg = data.val();
-            const div = document.createElement('div');
-            div.className = 'chat-msg';
-            div.innerHTML = `<span class="chat-user">${msg.username}</span> ${msg.text}`;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        });
+.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent2); }
+.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 0 20px rgba(124,92,252,0.35); }
+.btn-primary:hover { background: #8e6cff; box-shadow: 0 0 28px rgba(124,92,252,0.5); }
+.btn-sm { padding: 6px 14px; font-size: .72rem; }
+.btn-danger { background: rgba(248,113,113,0.15); color: var(--error); border: 1px solid rgba(248,113,113,0.3); }
+.btn-danger:hover { background: rgba(248,113,113,0.25); }
 
-        onAuthStateChanged(auth, (user) => {
-            if (user && user.emailVerified) {
-                document.getElementById('nav-guest').style.display = 'none';
-                document.getElementById('nav-user').style.display = 'flex';
-                document.getElementById('user-tag').innerText = user.email.split('@')[0];
-                document.querySelectorAll('.lock-ui').forEach(el => el.style.display = 'none');
-                document.querySelectorAll('.auth-ui').forEach(el => el.style.display = 'block');
-                document.getElementById('chat-guest-ui').style.display = 'none';
-                document.getElementById('chat-user-ui').style.display = 'flex';
-            }
-        });
+#nav-guest { display: flex; gap: 10px; }
+#nav-user  { display: none; gap: 12px; align-items: center; }
+.user-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: .78rem;
+  color: var(--accent2);
+  background: rgba(124,92,252,0.12);
+  border: 1px solid rgba(124,92,252,0.25);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+}
 
-        window.openDetail = (name, desc, img, link) => {
-            document.getElementById('main-page').style.display = 'none';
-            document.getElementById('detail-page').style.display = 'block';
-            document.getElementById('det-title').innerText = name;
-            document.getElementById('det-desc').innerHTML = desc;
-            document.getElementById('det-img').src = img;
-            document.getElementById('det-dl').onclick = () => window.open(link, '_blank');
-            window.scrollTo(0,0);
-        };
+/* ── MAIN LAYOUT ── */
+#main-page {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 0;
+  max-height: calc(100vh - 65px);
+}
 
-        window.switchAuth = (m) => {
-            document.getElementById('login-box').style.display = m === 'reg' ? 'none' : 'block';
-            document.getElementById('reg-box').style.display = m === 'reg' ? 'block' : 'none';
-        };
-    </script>
+/* ── CARDS AREA ── */
+.cards-area {
+  padding: 36px 40px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.cards-area::-webkit-scrollbar { width: 4px; }
+.cards-area::-webkit-scrollbar-track { background: transparent; }
+.cards-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-    <style>
-        :root { 
-            --bg: #0b0915; 
-            --side: #120e24; 
-            --card: #1a1533; 
-            --accent: #9d50ff; 
-            --border: #2a234d; 
-        }
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.section-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+}
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; 
-            background: linear-gradient(45deg, #0b0915, #1a0b33, #0b0915, #120e24);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-        }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+}
 
-        main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background: rgba(0,0,0,0.2); }
-        aside { width: 340px; background: var(--side); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 5; }
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: cardFade .55s ease forwards;
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
+.card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 32px rgba(124,92,252,0.2), 0 8px 24px rgba(0,0,0,0.4);
+  transform: translateY(-3px);
+}
+@keyframes cardFade {
+  to { opacity: 1; transform: translateY(0); }
+}
+.card:nth-child(1) { animation-delay: .05s; }
+.card:nth-child(2) { animation-delay: .13s; }
+.card:nth-child(3) { animation-delay: .21s; }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(18, 14, 36, 0.8); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        
-        .title-anim { font-size: 1.5rem; font-weight: 900; cursor: pointer; animation: colorShift 5s infinite; }
-        @keyframes colorShift { 0%, 100% { color: #fff; text-shadow: 0 0 10px var(--accent); } 50% { color: var(--accent); text-shadow: 0 0 20px #fff; } }
+.card-img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid var(--border);
+  transition: filter .3s;
+}
+.card:hover .card-img { filter: brightness(1.1); }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding: 40px; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: 0.3s ease; text-align: center;}
-        .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(157, 80, 255, 0.2); }
-        .card img { width: 100%; border-radius: 8px; height: 160px; object-fit: cover; margin-bottom: 15px; }
+.card-body { padding: 16px; }
+.card-title {
+  font-size: .95rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.card-desc {
+  font-size: .8rem;
+  color: var(--muted);
+  line-height: 1.55;
+  font-family: 'Space Mono', monospace;
+}
+.card-footer {
+  padding: 10px 16px 14px;
+  display: flex;
+  justify-content: flex-end;
+}
 
-        .btn-main { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-main:hover:not(:disabled) { filter: brightness(1.2); transform: scale(1.02); }
-        .btn-main:disabled { background: #444; }
+/* ── CHAT PANEL ── */
+.chat-panel {
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: rgba(16,15,30,0.6);
+  animation: panelFade .6s ease .15s both;
+}
+@keyframes panelFade {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
 
-        .btn-sub { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 8px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; }
+.chat-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.chat-header-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+.chat-header-title {
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 
-        .menu-notif { padding: 12px; border-radius: 8px; margin: 0 15px 10px 15px; font-size: 0.8rem; border-left: 4px solid var(--accent); background: #1f1a3d; animation: slideIn 0.3s ease; display: flex; gap: 10px; align-items: center; }
-        @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.chat-messages::-webkit-scrollbar { width: 3px; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border); }
 
-        #chat-messages { flex: 1; overflow-y: auto; padding: 20px; font-size: 0.9rem; }
-        .chat-msg { margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; }
-        .chat-user { color: var(--accent); font-weight: bold; font-size: 0.75rem; display: block; }
-        .chat-input-area { padding: 20px; border-top: 1px solid var(--border); }
-        
-        input { width: 100%; padding: 12px; background: #07080a; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; outline: none; margin-bottom: 5px; }
-        
-        .tut-box { background: #07080a; padding: 20px; border-radius: 8px; margin: 15px 0; text-align: left; border-left: 3px solid var(--accent); }
-        blockquote { border-left: 3px solid #444; padding-left: 15px; margin: 15px 0; color: #ccc; }
+.chat-msg {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: .8rem;
+  line-height: 1.5;
+  animation: msgPop .25s ease forwards;
+  opacity: 0;
+  transform: translateY(6px);
+}
+@keyframes msgPop {
+  to { opacity: 1; transform: translateY(0); }
+}
+.chat-user {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: .7rem;
+  color: var(--accent2);
+  margin-bottom: 4px;
+}
 
-        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .auth-box { width: 380px; background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
-    </style>
+.typing-indicator {
+  padding: 4px 16px;
+  font-size: .72rem;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  min-height: 22px;
+  transition: opacity .3s;
+}
+
+.chat-guest-ui {
+  padding: 16px;
+  text-align: center;
+  font-size: .8rem;
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  border-top: 1px solid var(--border);
+  line-height: 1.6;
+}
+.chat-user-ui {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-top: 1px solid var(--border);
+}
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.chat-input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: .78rem;
+  outline: none;
+  transition: border-color .2s;
+}
+.chat-input:focus { border-color: var(--accent); }
+.chat-input::placeholder { color: var(--muted); }
+.char-count {
+  font-family: 'Space Mono', monospace;
+  font-size: .68rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ── MODALS ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(7,6,15,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  animation: overlayIn .2s ease;
+}
+.modal-overlay.active { display: flex; }
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.auth-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px 36px 32px;
+  width: 380px;
+  max-width: 95vw;
+  position: relative;
+  animation: modalSlide .3s cubic-bezier(.34,1.56,.64,1) forwards;
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+}
+@keyframes modalSlide {
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: .9rem;
+  transition: all .2s;
+}
+.modal-close:hover { background: rgba(248,113,113,0.15); color: var(--error); border-color: rgba(248,113,113,0.3); }
+
+.auth-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: .05em;
+  margin-bottom: 6px;
+}
+.auth-subtitle {
+  font-size: .78rem;
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  margin-bottom: 24px;
+}
+
+/* ── NOTIFICATION INSIDE AUTH ── */
+.notif-area { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
+.menu-notif {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: .78rem;
+  font-family: 'Space Mono', monospace;
+  line-height: 1.4;
+  animation: notifIn .25s ease;
+}
+@keyframes notifIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.menu-notif.error   { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.25); color: var(--error); }
+.menu-notif.success { background: rgba(74,222,128,0.10); border: 1px solid rgba(74,222,128,0.25); color: var(--success); }
+.menu-notif.info    { background: rgba(124,92,252,0.12); border: 1px solid rgba(124,92,252,0.25); color: var(--accent2); }
+
+.auth-field { margin-bottom: 14px; }
+.auth-label {
+  display: block;
+  font-size: .72rem;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  margin-bottom: 6px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.auth-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: .82rem;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.auth-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(124,92,252,0.15);
+}
+
+/* ── RESEND BAR ── */
+.resend-ui {
+  display: none;
+  margin-top: 12px;
+}
+.resend-bar-wrap {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  height: 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.resend-bar-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  background: rgba(124,92,252,0.2);
+  transition: width 1s linear;
+  border-radius: var(--radius-sm);
+}
+.resend-bar-text {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: .72rem;
+  color: var(--muted);
+}
+.resend-ready {
+  display: none;
+  margin-top: 8px;
+}
+
+.auth-switch {
+  margin-top: 18px;
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: .74rem;
+  color: var(--muted);
+}
+.auth-link {
+  color: var(--accent2);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.auth-link:hover { color: var(--text); }
+
+/* ── DETAIL PAGE ── */
+#detail-page {
+  display: none;
+  flex: 1;
+  padding: 48px 60px;
+  max-width: 900px;
+  margin: 0 auto;
+  animation: cardFade .4s ease forwards;
+}
+.det-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: .78rem;
+  color: var(--muted);
+  cursor: pointer;
+  margin-bottom: 32px;
+  transition: color .2s;
+}
+.det-back:hover { color: var(--accent2); }
+.det-back i { font-size: .7rem; }
+.det-img {
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+.det-title {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 14px;
+}
+.det-desc {
+  font-family: 'Space Mono', monospace;
+  font-size: .84rem;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 28px;
+}
+</style>
 </head>
 <body>
+<div id="app">
 
-<main>
-    <nav>
-        <div class="title-anim" onclick="location.reload()">EFN ARCHIVE</div>
-        <div style="display:flex; gap:25px; align-items:center">
-            <span class="nav-item" onclick="location.reload()">Home</span>
-            <div id="nav-guest">
-                <button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'">Login/Create Account</button>
-            </div>
-            <div id="nav-user" style="display:none; align-items:center; gap:20px">
-                <span id="user-tag" style="font-weight:bold; color:var(--accent)"></span>
-                <button onclick="confirmLogout()" style="color:#ff4444; border:none; background:none; cursor:pointer; font-weight:bold;">Logout</button>
-            </div>
+  <!-- NAV -->
+  <nav>
+    <span class="site-title" data-text="EFN ARCHIVE" onclick="document.getElementById('main-page').style.display='grid'; document.getElementById('detail-page').style.display='none';">EFN ARCHIVE</span>
+    <div class="nav-actions">
+      <div id="nav-guest">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('login-modal')">Log In</button>
+        <button class="btn btn-primary btn-sm" onclick="openModal('reg-modal')">Sign Up</button>
+      </div>
+      <div id="nav-user">
+        <span class="user-tag" id="user-tag">—</span>
+        <button class="btn btn-danger btn-sm" onclick="doSignOut()">Sign Out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div id="main-page" style="display:grid">
+    <div class="cards-area">
+      <div class="section-header">
+        <span class="section-title">PW Database</span>
+        <div class="section-line"></div>
+      </div>
+      <div class="cards-grid">
+
+        <!-- CHARON -->
+        <div class="card" onclick="openDetail('Charon','Charon is a powerful automation bot built for advanced server workflows. Handles everything from moderation utilities to background task execution with minimal overhead.','https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&','#')">
+          <img class="card-img" src="https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&" alt="Charon" onerror="this.style.background='#16152a';this.removeAttribute('src')">
+          <div class="card-body">
+            <div class="card-title">Charon</div>
+            <div class="card-desc">Advanced server automation bot with moderation utilities and background task execution.</div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary btn-sm">View</button>
+          </div>
         </div>
-    </nav>
 
-    <div id="main-page">
-        <div class="grid">
-            <div class="card">
-                <img src="https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg">
-                <h3>Charon Client v2.0</h3>
-                <button class="btn-main" onclick="openDetail('Charon Client v2.0', `
-                    <div class='tut-box'>
-                        <p><strong>Charon Client Possible Causes & Fixes</strong></p>
-                        <blockquote>
-                            <strong>Running the game fullscreen or changed resolution while the menu was active</strong><br>
-                            You may need to:<br>
-                            - Delete the entire PW folder and reinstall PW<br>
-                            - Go in-game → <strong>Settings</strong> → <strong>Display</strong> → switch to <strong>Windowed Mode</strong><br>
-                            - Or add <code>-windowed</code> to your <strong>Steam Launch Options</strong>
-                        </blockquote>
-                        <blockquote>
-                            <strong>DirectX issues</strong> <em>(most common on laptops)</em><br>
-                            Try forcing a DirectX version via <strong>Steam Launch Options</strong>:<br><br>
-                            <strong>Option 1 Auto (try this first)</strong><br>
-                            Set <code>BepInEx/config/dearimgui.cfg</code> → <code>startupmode</code> = <code>Auto</code><br><br>
-                            <strong>Option 2 Force D3D11</strong><br>
-                            Launch option: <code>-force-d3d11</code><br>
-                            <code>BepInEx/config/dearimgui.cfg</code> → <code>startupmode</code> = <code>ForceD3D11</code><br><br>
-                            <strong>Option 3 Force D3D12</strong><br>
-                            Launch option: <code>-force-d3d12</code><br>
-                            <code>BepInEx/config/dearimgui.cfg</code> → <code>startupmode</code> = <code>ForceD3D12</code>
-                        </blockquote>
-                        <p style='color:var(--accent)'>EVERYONE WHO CRASHED WHEN U TRY LOGIN JUST MINIMIZE UR PW USE SMALL WINDOW</p>
-                    </div>
-                `, 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">Info</button>
-            </div>
-
-            <div class="card">
-                <img src="https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg">
-                <h3>Hyx Client [free]</h3>
-                <button class="btn-main" onclick="openDetail('Hyx Client [free]', `
-                    <div class='tut-box'>
-                        <p>Make sure this is installed if you don't have it already:<br>
-                        vcredist AIO</p>
-                        <p>Setup steam launch settings for the game or the menu wont appear:-force-d3d11</p>
-                        <p>Also remove charon client folders from pixel worlds folder if not working!</p>
-                    </div>
-                `, 'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg', 'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx')">Info</button>
-            </div>
-
-            <div class="card">
-                <img src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png">
-                <h3>AutoMath Tool</h3>
-                <button class="btn-main" onclick="openDetail('AutoMath Tool', `
-                    <div class='tut-box'>
-                        <p>the tutorial is included in the zip folder and add a heart in the end. ❤️</p>
-                    </div>
-                `, 'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png', 'https://gofile.io/d/9sUpZS')">Info</button>
-            </div>
+        <!-- AUTOMATH -->
+        <div class="card" onclick="openDetail('AutoMath','AutoMath is a Discord bot that solves mathematical expressions in real-time. Supports algebra, calculus snippets, and expression parsing — all directly in your server chat.','https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a09e28ba5b9ebc6ae95efa525deaf8dc32c261c5&','#')">
+          <img class="card-img" src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a09e28ba5b9ebc6ae95efa525deaf8dc32c261c5&" alt="AutoMath" onerror="this.style.background='#16152a';this.removeAttribute('src')">
+          <div class="card-body">
+            <div class="card-title">AutoMath</div>
+            <div class="card-desc">Real-time math solver bot. Algebra, calculus, expression parsing — all in Discord.</div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary btn-sm">View</button>
+          </div>
         </div>
-    </div>
 
-    <div id="detail-page" style="display:none; padding:40px;">
-        <button onclick="location.reload()" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:bold; margin-bottom:20px;">← Back</button>
-        <div style="display:flex; gap:40px; flex-wrap:wrap">
-            <div style="flex:2">
-                <img id="det-img" src="" style="width:100%; border-radius:12px; border:1px solid var(--border);">
-                <h1 id="det-title" style="margin-top:25px;"></h1>
-                <div id="det-desc"></div>
-            </div>
-            <div style="flex:1; background:var(--card); border-radius:12px; padding:35px; border:1px solid var(--border); height:fit-content;">
-                <div class="lock-ui"><button class="btn-main" style="width:100%" onclick="document.getElementById('auth-overlay').style.display='flex'">Login to Download</button></div>
-                <div class="auth-ui" style="display:none"><button id="det-dl" class="btn-main" style="width:100%">Download File</button></div>
-            </div>
+        <!-- TICTACTOE BOT -->
+        <div class="card" onclick="openDetail('TicTacToe Bot','EFN\'s TicTacToe Bot lets you play classic TicTacToe directly inside Discord. Supports single-player against AI and two-player head-to-head mode. Lightweight, fast, and fun.','https://cdn.discordapp.com/attachments/1492915866797342976/1495336661331214366/image.png?ex=69e8834a&is=69e731ca&hm=7fc23cf25aa9f324555d7749935e95dfc6f7e924caf9bd6fa65b47d9b8aefdcd&','https://cdn.discordapp.com/attachments/1492915866797342976/1495336594624741517/Efns_Tictactoe_Bot_v3.1.html?ex=69e8833a&is=69e731ba&hm=2e2bb4c4efb795ecf211618a8c87476d707bf45b120f95a048962ade4372d05e&')">
+          <img class="card-img" src="https://cdn.discordapp.com/attachments/1492915866797342976/1495336661331214366/image.png?ex=69e8834a&is=69e731ca&hm=7fc23cf25aa9f324555d7749935e95dfc6f7e924caf9bd6fa65b47d9b8aefdcd&" alt="TicTacToe Bot" onerror="this.style.background='#16152a';this.removeAttribute('src')">
+          <div class="card-body">
+            <div class="card-title">TicTacToe Bot</div>
+            <div class="card-desc">Play TicTacToe in Discord — solo vs AI or head-to-head with a friend. Fast, fun, lightweight.</div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary btn-sm">View</button>
+          </div>
         </div>
-    </div>
-</main>
 
-<aside>
-    <div style="padding:20px; font-weight:800; border-bottom:1px solid var(--border); font-size:0.75rem; color:#666">SYSTEM NOTIFICATIONS</div>
-    <div id="notif-area" style="padding-top:10px;"></div>
-    <div style="padding:20px; font-weight:800; border-bottom:1px solid var(--border); border-top:1px solid var(--border); font-size:0.75rem; color:#666">GLOBAL CHAT</div>
-    <div id="chat-messages"></div>
-    <div class="chat-input-area">
-        <div id="chat-guest-ui"><p style="font-size:0.8rem; color:#555; text-align:center">Login to chat</p></div>
-        <div id="chat-user-ui" style="display:none; gap:10px; flex-direction:column">
-            <input type="text" id="chat-input" placeholder="Type a message..." maxlength="120">
-            <button class="btn-main" id="chat-btn" onclick="sendMessage()" style="width:100%">SEND</button>
+      </div>
+    </div>
+
+    <!-- CHAT PANEL -->
+    <div class="chat-panel">
+      <div class="chat-header">
+        <div class="chat-header-dot"></div>
+        <span class="chat-header-title">Live Chat</span>
+      </div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="typing-indicator" id="typing-indicator"></div>
+      <div class="chat-guest-ui" id="chat-guest-ui">
+        Log in to chat with<br>the community.
+      </div>
+      <div class="chat-user-ui" id="chat-user-ui">
+        <div class="char-count" id="char-count">0 / 120</div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chat-input" type="text" placeholder="Say something…" maxlength="120">
+          <button class="btn btn-primary btn-sm" id="chat-btn" onclick="sendMessage()">SEND</button>
         </div>
+      </div>
     </div>
-</aside>
+  </div>
 
-<div id="auth-overlay">
-    <div class="auth-box" id="login-box">
-        <h2>Sign In</h2>
-        <input type="email" id="log-email" placeholder="Email">
-        <input type="password" id="log-pass" placeholder="Password">
-        <button class="btn-main" style="width:100%" onclick="login()">Login to account</button>
-        <div id="resend-ui-log" style="display:none"><button class="btn-sub" onclick="resendEmail()">Send verification link</button></div>
-        <p style="font-size:0.8rem; margin-top:20px">No account? <span style="color:var(--accent); cursor:pointer" onclick="switchAuth('reg')">Create Account</span></p>
-        <p style="font-size:0.75rem; color:#444; cursor:pointer" onclick="document.getElementById('auth-overlay').style.display='none'">Close</p>
+  <!-- DETAIL PAGE -->
+  <div id="detail-page">
+    <div class="det-back" onclick="document.getElementById('main-page').style.display='grid'; document.getElementById('detail-page').style.display='none';">
+      <i class="fas fa-arrow-left"></i> Back to Archive
     </div>
-    <div class="auth-box" id="reg-box" style="display:none">
-        <h2>Create Account</h2>
-        <input type="email" id="reg-email" placeholder="Email">
-        <input type="password" id="reg-pass" placeholder="Password (8+ chars)">
-        <button class="btn-main" style="width:100%" onclick="signUp()">Sign Up</button>
-        <div id="resend-ui-reg" style="display:none"><button class="btn-sub" onclick="resendEmail()">Resend verification email</button></div>
-        <p style="font-size:0.8rem; margin-top:20px">Joined already? <span style="color:var(--accent); cursor:pointer" onclick="switchAuth('log')">Login</span></p>
+    <img class="det-img" id="det-img" src="" alt="">
+    <div class="det-title" id="det-title"></div>
+    <div class="det-desc" id="det-desc"></div>
+    <button class="btn btn-primary" id="det-dl"><i class="fas fa-download"></i> &nbsp;Download</button>
+  </div>
+
+</div><!-- #app -->
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="auth-box">
+    <button class="modal-close" onclick="closeModal('login-modal')"><i class="fas fa-times"></i></button>
+    <div class="auth-title">Welcome back</div>
+    <div class="auth-subtitle">// efn-archive access</div>
+    <div class="notif-area" id="login-notifs"></div>
+    <div class="auth-field">
+      <label class="auth-label">Email</label>
+      <input class="auth-input" id="log-email" type="email" placeholder="you@example.com">
     </div>
+    <div class="auth-field">
+      <label class="auth-label">Password</label>
+      <input class="auth-input" id="log-pass" type="password" placeholder="••••••••">
+    </div>
+    <div class="resend-ui" id="resend-ui-log">
+      <div class="resend-bar-wrap">
+        <div class="resend-bar-fill" id="resend-fill-log" style="width:100%"></div>
+        <div class="resend-bar-text" id="resend-text-log">Verification email sent</div>
+      </div>
+    </div>
+    <div class="resend-ready" id="resend-ready-log">
+      <button class="btn btn-ghost" style="width:100%;font-size:.75rem" onclick="resendEmail('log')">Resend verification email</button>
+    </div>
+    <br>
+    <button class="btn btn-primary" style="width:100%" onclick="login()">Log In</button>
+    <div class="auth-switch">No account? <span class="auth-link" onclick="closeModal('login-modal');openModal('reg-modal')">Sign up</span></div>
+  </div>
 </div>
 
+<!-- REGISTER MODAL -->
+<div class="modal-overlay" id="reg-modal">
+  <div class="auth-box">
+    <button class="modal-close" onclick="closeModal('reg-modal')"><i class="fas fa-times"></i></button>
+    <div class="auth-title">Create account</div>
+    <div class="auth-subtitle">// join efn-archive</div>
+    <div class="notif-area" id="reg-notifs"></div>
+    <div class="auth-field">
+      <label class="auth-label">Email</label>
+      <input class="auth-input" id="reg-email" type="email" placeholder="you@example.com">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Password <span style="color:var(--muted);font-weight:400">(min 8 chars)</span></label>
+      <input class="auth-input" id="reg-pass" type="password" placeholder="••••••••">
+    </div>
+    <div class="resend-ui" id="resend-ui-reg">
+      <div class="resend-bar-wrap">
+        <div class="resend-bar-fill" id="resend-fill-reg" style="width:100%"></div>
+        <div class="resend-bar-text" id="resend-text-reg">Check your inbox — verifying…</div>
+      </div>
+    </div>
+    <div class="resend-ready" id="resend-ready-reg">
+      <button class="btn btn-ghost" style="width:100%;font-size:.75rem" onclick="resendEmail('reg')">Resend verification email</button>
+    </div>
+    <br>
+    <button class="btn btn-primary" style="width:100%" onclick="signUp()">Create Account</button>
+    <div class="auth-switch">Have an account? <span class="auth-link" onclick="closeModal('reg-modal');openModal('login-modal')">Log in</span></div>
+  </div>
+</div>
+
+<!-- FIREBASE + LOGIC (at bottom so DOM is ready) -->
+<script type="module">
+import { initializeApp }          from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+         onAuthStateChanged, signOut, sendEmailVerification }
+       from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, push, onChildAdded, onValue, set, query, limitToLast }
+       from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyCM-ySTXgy37zVUMB2vy4ZJQ3MWlDD5g4E",
+  authDomain:        "efn-archive.firebaseapp.com",
+  projectId:         "efn-archive",
+  storageBucket:     "efn-archive.firebasestorage.app",
+  messagingSenderId: "1073610968306",
+  appId:             "1:1073610968306:web:72e03b6f43decbb636546b",
+  databaseURL:       "https://efn-archive-default-rtdb.firebaseio.com"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getDatabase(app);
+
+let lastMsgSent = 0;
+let lastMailSent = { log: 0, reg: 0 };
+
+/* ── MODAL HELPERS ── */
+window.openModal  = id => { const el = document.getElementById(id); if(el){ el.classList.add('active'); } };
+window.closeModal = id => { const el = document.getElementById(id); if(el){ el.classList.remove('active'); } };
+
+/* Close on backdrop click */
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if(e.target === overlay) overlay.classList.remove('active'); });
+});
+
+/* ── NOTIFY (inside auth box) ── */
+function notify(boxId, msg, type='error') {
+  const container = document.getElementById(boxId);
+  if (!container) return;
+
+  const div = document.createElement('div');
+  div.className = `menu-notif ${type}`;
+  div.innerText = msg;
+  container.innerHTML = '';
+  container.appendChild(div);
+
+  setTimeout(() => div.remove(), 5000);
+}
+
+/* ── RESEND EMAIL (60s bar) ── */
+window.resendEmail = async (which) => {
+  const now = Date.now();
+  if (now - lastMailSent[which] < 60000) return;
+
+  if (!auth.currentUser) return;
+  try {
+    await sendEmailVerification(auth.currentUser);
+  } catch(e) { console.warn('resend err', e); }
+
+  lastMailSent[which] = Date.now();
+
+  const uiEl    = document.getElementById(`resend-ui-${which}`);
+  const fillEl  = document.getElementById(`resend-fill-${which}`);
+  const textEl  = document.getElementById(`resend-text-${which}`);
+  const readyEl = document.getElementById(`resend-ready-${which}`);
+
+  uiEl.style.display    = 'block';
+  readyEl.style.display = 'none';
+
+  let t = 60;
+  fillEl.style.transition = 'none';
+  fillEl.style.width = '100%';
+  setTimeout(() => {
+    fillEl.style.transition = `width ${t}s linear`;
+    fillEl.style.width = '0%';
+  }, 50);
+
+  textEl.innerText = `Email sent — resend in ${t}s`;
+  const i = setInterval(() => {
+    t--;
+    textEl.innerText = `Email sent — resend in ${t}s`;
+    if (t <= 0) {
+      clearInterval(i);
+      textEl.innerText = 'Resend available';
+      readyEl.style.display = 'block';
+      uiEl.style.display = 'none';
+    }
+  }, 1000);
+};
+
+function showResendUI(which) {
+  document.getElementById(`resend-ui-${which}`).style.display = 'block';
+  resendEmail(which);
+}
+
+/* ── SIGN UP ── */
+window.signUp = async () => {
+  const e = document.getElementById('reg-email').value.trim();
+  const p = document.getElementById('reg-pass').value;
+
+  if (!e) return notify('reg-notifs', 'Please enter your email.');
+  if (p.length < 8) return notify('reg-notifs', 'Password must be 8+ characters.');
+
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, e, p);
+    await sendEmailVerification(cred.user);
+    lastMailSent.reg = Date.now();
+    notify('reg-notifs', 'Account created! Check your email to verify.', 'success');
+    showResendUI('reg');
+  } catch(err) {
+    if (err.code === 'auth/email-already-in-use') notify('reg-notifs', 'That email is already registered.');
+    else if (err.code === 'auth/invalid-email')    notify('reg-notifs', 'Invalid email address.');
+    else notify('reg-notifs', err.message);
+  }
+};
+
+/* ── LOGIN ── */
+window.login = async () => {
+  const e = document.getElementById('log-email').value.trim();
+  const p = document.getElementById('log-pass').value;
+
+  if (!e || !p) return notify('login-notifs', 'Please fill in all fields.');
+
+  try {
+    const cred = await signInWithEmailAndPassword(auth, e, p);
+    if (!cred.user.emailVerified) {
+      notify('login-notifs', 'Email not verified. Check your inbox.');
+      showResendUI('log');
+      await signOut(auth);
+      return;
+    }
+    closeModal('login-modal');
+    location.reload();
+  } catch(err) {
+    if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential')
+      notify('login-notifs', 'Invalid email or password.');
+    else notify('login-notifs', err.message);
+  }
+};
+
+/* ── SIGN OUT ── */
+window.doSignOut = async () => {
+  await signOut(auth);
+  location.reload();
+};
+
+/* ── CHAT ── */
+const chatBox   = document.getElementById('chat-messages');
+const chatInput = document.getElementById('chat-input');
+const chatBtn   = document.getElementById('chat-btn');
+const charCount = document.getElementById('char-count');
+
+chatInput.addEventListener('input', () => {
+  charCount.innerText = `${chatInput.value.length} / 120`;
+});
+
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+window.sendMessage = () => {
+  const user = auth.currentUser;
+  if (!user) return;
+  const text = chatInput.value.trim();
+  if (!text) return;
+  if (text.length > 120) return;
+  if (Date.now() - lastMsgSent < 3000) return;
+
+  push(ref(db, 'messages'), {
+    username: user.email.split('@')[0],
+    text,
+    timestamp: Date.now()
+  });
+
+  chatInput.value = '';
+  charCount.innerText = '0 / 120';
+  lastMsgSent = Date.now();
+
+  chatBtn.disabled = true;
+  let t = 3;
+  chatBtn.innerText = t;
+  const i = setInterval(() => {
+    t--;
+    chatBtn.innerText = t;
+    if (t <= 0) { clearInterval(i); chatBtn.disabled = false; chatBtn.innerText = 'SEND'; }
+  }, 1000);
+};
+
+/* ── LOAD MESSAGES ── */
+onChildAdded(query(ref(db, 'messages'), limitToLast(40)), snap => {
+  const m = snap.val();
+  const time = m.timestamp
+    ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : '';
+
+  const div = document.createElement('div');
+  div.className = 'chat-msg';
+  div.innerHTML = `<span class="chat-user">${escHtml(m.username)} · ${time}</span>${escHtml(m.text)}`;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+});
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+/* ── TYPING INDICATOR ── */
+const typingRef = ref(db, 'typing');
+const typingIndicator = document.getElementById('typing-indicator');
+let typingTimeout;
+
+chatInput.addEventListener('input', () => {
+  const u = auth.currentUser;
+  if (!u) return;
+  set(typingRef, u.email.split('@')[0]);
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => set(typingRef, null), 2500);
+});
+
+onValue(typingRef, snap => {
+  const val = snap.val();
+  const u = auth.currentUser;
+  // Don't show your own typing indicator
+  if (val && u && val !== u.email.split('@')[0]) {
+    typingIndicator.innerText = `${val} is typing…`;
+    typingIndicator.style.opacity = '1';
+  } else {
+    typingIndicator.innerText = '';
+    typingIndicator.style.opacity = '0';
+  }
+});
+
+/* ── AUTH STATE ── */
+onAuthStateChanged(auth, user => {
+  const navGuest   = document.getElementById('nav-guest');
+  const navUser    = document.getElementById('nav-user');
+  const userTag    = document.getElementById('user-tag');
+  const guestChat  = document.getElementById('chat-guest-ui');
+  const userChat   = document.getElementById('chat-user-ui');
+
+  if (user && user.emailVerified) {
+    navGuest.style.display  = 'none';
+    navUser.style.display   = 'flex';
+    userTag.innerText       = user.email.split('@')[0];
+    guestChat.style.display = 'none';
+    userChat.style.display  = 'flex';
+  } else {
+    navGuest.style.display  = 'flex';
+    navUser.style.display   = 'none';
+    guestChat.style.display = 'block';
+    userChat.style.display  = 'none';
+  }
+});
+
+/* ── DETAIL VIEW ── */
+window.openDetail = (name, desc, img, link) => {
+  document.getElementById('main-page').style.display   = 'none';
+  document.getElementById('detail-page').style.display = 'flex';
+  document.getElementById('det-title').innerText  = name;
+  document.getElementById('det-desc').innerHTML   = desc;
+  document.getElementById('det-img').src          = img;
+  document.getElementById('det-dl').onclick       = () => window.open(link, '_blank');
+};
+</script>
 </body>
 </html>
