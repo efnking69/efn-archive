@@ -20,14 +20,18 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Live Password Check
+        // UI Helpers
         window.checkPass = () => {
             const pass = document.getElementById('pass').value;
             const msg = document.getElementById('m-msg');
             if (pass.length === 0) { msg.innerText = ""; return; }
-            if (pass.length < 8) { msg.innerText = "❌ Password too short (8+ required)"; msg.style.color = "#ff4444"; }
-            else if (!/\d/.test(pass)) { msg.innerText = "❌ Add a number"; msg.style.color = "#ff4444"; }
-            else { msg.innerText = "✅ Password Valid"; msg.style.color = "#3ecf8e"; }
+            if (pass.length < 8 || !/\d/.test(pass)) {
+                msg.innerText = "❌ invalid: 8+ chars & 1 number";
+                msg.style.color = "#ff4444";
+            } else {
+                msg.innerText = "✅ password secure";
+                msg.style.color = "#3ecf8e";
+            }
         };
 
         window.signUp = async () => {
@@ -36,7 +40,7 @@
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
                 await sendEmailVerification(cred.user);
-                alert("Verification Email Sent! Check your SPAM folder too.");
+                alert("verification link sent! check your email and spam.");
             } catch (e) { alert(e.message); }
         };
 
@@ -46,26 +50,37 @@
             try {
                 const cred = await signInWithEmailAndPassword(auth, email, pass);
                 if (cred.user.emailVerified) { location.reload(); }
-                else { alert("Verify your email first! Check spam."); }
-            } catch (e) { alert("Login failed."); }
+                else { alert("please verify your email first!"); }
+            } catch (e) { alert("login failed - check credentials"); }
         };
 
         window.logout = () => signOut(auth).then(() => location.reload());
 
-        window.openDetail = (name, status, desc) => {
-            document.getElementById('main-page').style.display = 'none';
-            document.getElementById('detail-page').style.display = 'block';
-            document.getElementById('det-title').innerText = name;
-            document.getElementById('det-status').innerText = status;
-            document.getElementById('det-desc').innerText = desc;
-            window.scrollTo(0,0);
+        // Page Transitions
+        window.openDetail = (name, status, desc, img, link) => {
+            const main = document.getElementById('main-page');
+            const detail = document.getElementById('detail-page');
+            
+            main.classList.add('page-exit');
+            setTimeout(() => {
+                main.style.display = 'none';
+                detail.style.display = 'block';
+                detail.classList.add('page-enter');
+                
+                document.getElementById('det-title').innerText = name.toLowerCase();
+                document.getElementById('det-status').innerText = status.toLowerCase();
+                document.getElementById('det-desc').innerText = desc.toLowerCase();
+                document.getElementById('det-img').src = img;
+                document.getElementById('det-dl').onclick = () => window.open(link, '_blank');
+                window.scrollTo(0,0);
+            }, 300);
         };
 
         onAuthStateChanged(auth, (user) => {
             if (user && user.emailVerified) {
                 document.getElementById('nav-guest').style.display = 'none';
                 document.getElementById('nav-user').style.display = 'flex';
-                document.getElementById('user-tag').innerText = user.email.split('@')[0].toUpperCase();
+                document.getElementById('user-tag').innerText = user.email.split('@')[0];
                 document.querySelectorAll('.lock-ui').forEach(el => el.style.display = 'none');
                 document.querySelectorAll('.auth-ui').forEach(el => el.style.display = 'block');
             }
@@ -73,100 +88,117 @@
     </script>
 
     <style>
-        :root { --bg: #050505; --card: #0d0d0d; --accent: #5865F2; --border: #1a1a1a; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; }
+        :root { --bg: #030303; --card: #080808; --accent: #5865F2; --border: #121212; --red: #ff4444; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; overflow-x: hidden; }
         
-        .fade { animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Animations */
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
+        .page-enter { animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .page-exit { animation: slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index: 1000; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); position: sticky; top:0; z-index: 1000; }
         
-        .profile-area { position: relative; cursor: pointer; }
+        .btn-solid { background: #fff; color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: lowercase; transition: 0.2s; }
+        .btn-solid:hover { transform: scale(1.05); background: var(--accent); color: #fff; }
+        
+        .btn-red { background: var(--red); color: #fff; padding: 15px; border-radius: 8px; font-weight: bold; border: none; width: 100%; cursor: pointer; text-transform: lowercase; }
+
+        .container { max-width: 1100px; margin: 60px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 25px; transition: 0.4s; position: relative; text-align: center; }
+        .card:hover { border-color: var(--accent); box-shadow: 0 10px 40px rgba(88, 101, 242, 0.05); }
+        .card img { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; margin-bottom: 20px; border: 1px solid #1a1a1a; }
+
+        .profile-area { position: relative; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .dropdown { position: absolute; top: 120%; right: 0; background: #0a0a0a; border: 1px solid var(--border); border-radius: 10px; width: 160px; display: none; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .profile-area:hover .dropdown { display: block; }
-        .dropdown { position: absolute; top: 100%; right: 0; background: #0f0f0f; border: 1px solid var(--border); width: 150px; display: none; border-radius: 8px; overflow: hidden; }
-        .dropdown button { width: 100%; padding: 12px; background: none; border: none; color: #777; text-align: left; cursor: pointer; }
-        .dropdown button:hover { background: #1a1a1a; color: #fff; }
+        .dropdown button { width: 100%; padding: 12px; background: none; border: none; color: #555; text-align: left; cursor: pointer; transition: 0.2s; text-transform: lowercase; }
+        .dropdown button:hover { background: #111; color: #fff; }
 
-        .container { max-width: 1100px; margin: 50px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-        
-        .card { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; transition: 0.3s; position: relative; text-align: center; }
-        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
-
-        .btn-solid { background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .btn-solid:hover { background: var(--accent); color: #fff; }
-        .btn-discord { background: var(--accent); color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 0.8rem; margin-right: 15px; font-weight: bold; }
-
+        /* Detail View Layout */
         #detail-page { display: none; }
-        .detail-layout { display: flex; gap: 40px; margin-top: 40px; flex-wrap: wrap; }
-        .detail-main { flex: 2; background: #080808; padding: 40px; border-radius: 15px; border: 1px solid var(--border); }
-        .detail-side { flex: 1; background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--border); text-align: center; height: fit-content; }
+        .detail-layout { display: flex; gap: 50px; margin-top: 40px; flex-wrap: wrap; }
+        .detail-content { flex: 2; }
+        .detail-card { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 20px; flex: 1; height: fit-content; text-align: center; }
+        #det-img { width: 100%; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 20px; }
 
-        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .modal-box { width: 330px; background: #0a0a0a; padding: 40px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
-        input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 8px; outline: none; }
+        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(10px); }
+        .modal-box { width: 340px; background: #050505; padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; }
+        input { width: 100%; padding: 16px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 10px; outline: none; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div style="font-weight:900; letter-spacing:2px; cursor:pointer" onclick="location.reload()">EFN ARCHIVE</div>
-    <div style="display:flex; align-items:center">
-        <a href="https://discord.gg/QV69upuxbg" target="_blank" class="btn-discord">DISCORD</a>
+    <div style="font-weight:900; letter-spacing:3px; cursor:pointer" onclick="location.reload()">EFN ARCHIVE</div>
+    <div style="display:flex; align-items:center; gap: 15px;">
+        <a href="https://discord.gg/QV69upuxbg" target="_blank" style="text-decoration:none; color:var(--accent); font-weight:800; font-size:0.8rem; text-transform:lowercase;">discord</a>
         <div id="nav-guest">
-            <button class="btn-solid" onclick="document.getElementById('auth-modal').style.display='flex'">LOGIN</button>
+            <button class="btn-solid" onclick="document.getElementById('auth-modal').style.display='flex'">login</button>
         </div>
         <div id="nav-user" style="display:none;" class="profile-area">
-            <span id="user-tag" style="background:#111; padding:10px 20px; border:1px solid #222; border-radius:30px; font-size:0.7rem; letter-spacing:1px"></span>
+            <span id="user-tag" style="font-size:0.8rem; color:#444; text-transform:lowercase;"></span>
+            <div style="width:30px; height:30px; background:var(--accent); border-radius:50%"></div>
             <div class="dropdown">
-                <button onclick="alert('Profile editor coming soon!')">Edit Account</button>
-                <button onclick="logout()" style="color:#ff4444">Logout</button>
+                <button onclick="alert('coming soon')">edit account</button>
+                <button onclick="logout()" style="color:var(--red)">logout</button>
             </div>
         </div>
     </div>
 </nav>
 
-<div id="main-page" class="container fade">
-    <h1 style="font-size: 2.5rem; margin-bottom: 40px; letter-spacing: -1px;">PIXEL WORLDS TOOLS</h1>
+<div id="main-page" class="container page-enter">
+    <h1 style="font-size: 3rem; margin-bottom: 10px; letter-spacing:-2px">pixel worlds tools</h1>
+    <p style="color:#222; margin-bottom:50px; font-weight:bold">v2.1 • efn archive</p>
+    
     <div class="grid">
-        <div class="card"><h3>PW_AUTOFARM</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('PW_AUTOFARM', 'WORKING', 'Advanced autofarm tool for Pixel Worlds. Includes smart block detection and pathfinding.')">VIEW TOOL</button></div>
-        <div class="card"><h3>VISUAL_HACK</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('VISUAL_HACK', 'WORKING', 'Change item visuals locally. Supports all legendary items and wings.')">VIEW TOOL</button></div>
-        <div class="card"><h3>AUTO_BUYER</h3><p style="color:#444; font-size:0.7rem">Status: Patching</p><button class="btn-solid" style="width:100%" onclick="openDetail('AUTO_BUYER', 'PATCHING', 'Automatic shop sniper. Currently being updated for the latest PW version.')">VIEW TOOL</button></div>
-        <div class="card"><h3>SPEED_MOD</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('SPEED_MOD', 'WORKING', 'Adjust player movement speed and jump height safely.')">VIEW TOOL</button></div>
-        <div class="card"><h3>SPAMMER_PRO</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('SPAMMER_PRO', 'WORKING', 'Highly customizable chat spammer for advertising your world.')">VIEW TOOL</button></div>
-        <div class="card"><h3>ANTI_LAG</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('ANTI_LAG', 'WORKING', 'Removes particle effects and optimizes rendering for smoother gameplay.')">VIEW TOOL</button></div>
-        <div class="card"><h3>MULTI_BOX</h3><p style="color:#444; font-size:0.7rem">Status: Beta</p><button class="btn-solid" style="width:100%" onclick="openDetail('MULTI_BOX', 'BETA', 'Open multiple PW instances at once. Experimental feature.')">VIEW TOOL</button></div>
-        <div class="card"><h3>GRAVITY_SHIFT</h3><p style="color:#444; font-size:0.7rem">Status: Working</p><button class="btn-solid" style="width:100%" onclick="openDetail('GRAVITY_SHIFT', 'WORKING', 'Modify world gravity physics locally for easier parkour.')">VIEW TOOL</button></div>
+        <div class="card">
+            <img src="https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&" alt="Charon">
+            <h3 style="letter-spacing:1px; font-size:0.9rem">charon client v2.0 [free]</h3>
+            <p style="color:#333; font-size:0.7rem; margin-bottom:20px">status: working</p>
+            <button class="btn-solid" style="width:100%" onclick="openDetail('charon client v2.0 [free]', 'working', 'no description', 'https://cdn.discordapp.com/attachments/1495783572735262911/1496170026158260364/image.png?ex=69e8e86b&is=69e796eb&hm=91c64bb8c69318d8c42565b0c38edd3cd55e8446622235632bbf522c5d280782&', 'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file')">info</button>
+        </div>
+        
+        <div class="card" style="opacity:0.3"><h3>coming soon</h3><p>...</p></div>
+        <div class="card" style="opacity:0.3"><h3>coming soon</h3><p>...</p></div>
     </div>
 </div>
 
-<div id="detail-page" class="container fade">
-    <button onclick="location.reload()" style="background:none; border:1px solid #222; color:#555; padding:8px 15px; border-radius:5px; cursor:pointer">← BACK TO TOOLS</button>
+<div id="detail-page" class="container">
+    <button onclick="location.reload()" style="background:none; border:none; color:#333; cursor:pointer; font-weight:bold; text-transform:lowercase">← back to tools</button>
     <div class="detail-layout">
-        <div class="detail-main">
-            <h1 id="det-title" style="margin-top:0; letter-spacing:2px">TOOL NAME</h1>
-            <p id="det-desc" style="color:#777; line-height:1.8;"></p>
-            <div style="margin-top:30px; color:#5865F2; font-size:0.8rem; font-weight:bold">SUPPORT: Join Discord for help with this tool.</div>
+        <div class="detail-content">
+            <img id="det-img" src="" alt="preview">
+            <h1 id="det-title" style="font-size:2.5rem; margin:0; letter-spacing:-1px"></h1>
+            <p id="det-desc" style="color:#555; margin-top:20px; line-height:1.6"></p>
         </div>
-        <div class="side-box">
-            <h4 style="color:#444; margin-bottom:10px">STATUS</h4>
-            <div id="det-status" style="color:#3ecf8e; font-weight:900; font-size:1.2rem">WORKING</div>
-            <hr style="border:0; border-top:1px solid #1a1a1a; margin:25px 0">
-            <div class="lock-ui" style="color:#ff4444; font-size:0.7rem; font-weight:bold">VERIFY ACCOUNT TO DOWNLOAD</div>
-            <button class="btn-solid auth-ui" style="display:none; width:100%" onclick="alert('Download Started...')">DOWNLOAD TOOL</button>
+        <div class="detail-card">
+            <p style="color:#333; font-size:0.7rem; text-transform:lowercase; margin-bottom:5px">current status</p>
+            <div id="det-status" style="color:#3ecf8e; font-weight:900; font-size:1.4rem; text-transform:lowercase"></div>
+            <hr style="border:0; border-top:1px solid #111; margin:30px 0">
+            
+            <div class="lock-ui">
+                <button class="btn-red" onclick="document.getElementById('auth-modal').style.display='flex'">please login to download</button>
+            </div>
+            
+            <div class="auth-ui" style="display:none">
+                <button id="det-dl" class="btn-solid" style="width:100%">download tool</button>
+            </div>
         </div>
     </div>
 </div>
 
 <div id="auth-modal">
-    <div class="modal-box fade">
-        <h2 style="letter-spacing:3px; font-size:1.1rem">SYSTEM ACCESS</h2>
-        <input type="email" id="email" placeholder="EMAIL">
-        <input type="password" id="pass" placeholder="PASSWORD" oninput="checkPass()">
+    <div class="modal-box">
+        <h2 style="text-transform:lowercase; letter-spacing:2px">system login</h2>
+        <input type="email" id="email" placeholder="email">
+        <input type="password" id="pass" placeholder="password" oninput="checkPass()">
         <p id="m-msg" style="font-size:0.7rem; margin:10px 0; min-height:1.2rem"></p>
-        <button class="btn-solid" style="width:100%" onclick="login()">SIGN IN</button>
-        <button style="background:none; border:none; color:#555; margin-top:20px; cursor:pointer; font-size:0.75rem" onclick="signUp()">CREATE ACCOUNT</button>
-        <button style="background:none; border:none; color:#222; margin-top:10px; cursor:pointer" onclick="document.getElementById('auth-modal').style.display='none'">CANCEL</button>
+        <button class="btn-solid" style="width:100%" onclick="login()">sign in</button>
+        <p onclick="signUp()" style="color:#333; font-size:0.75rem; margin-top:20px; cursor:pointer">create account</p>
+        <p onclick="document.getElementById('auth-modal').style.display='none'" style="color:#111; font-size:0.7rem; margin-top:10px; cursor:pointer">close</p>
     </div>
 </div>
 
