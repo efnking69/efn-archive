@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EFN Archive | PW</title>
+    <title>EFN Archive | VAULT</title>
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -20,212 +21,144 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Validation Logic
-        const validate = (email, pass) => {
-            const msg = document.getElementById('m-msg');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            if (!emailRegex.test(email)) {
-                msg.innerText = "Invalid Email Format";
-                return false;
+        // UI Logic
+        window.switchMode = (mode) => {
+            document.getElementById('email').value = "";
+            document.getElementById('pass').value = "";
+            document.getElementById('m-msg').innerText = "";
+            const title = document.getElementById('m-title');
+            const btnBox = document.getElementById('m-btn-box');
+
+            if(mode === 'signup') {
+                title.innerText = "CREATE ACCOUNT";
+                btnBox.innerHTML = `
+                    <button class="btn-solid" style="width:100%" onclick="signUp()">REGISTER NOW</button>
+                    <p onclick="switchMode('login')" style="cursor:pointer; color:#555; font-size:0.7rem; margin-top:15px">BACK TO LOGIN</p>
+                `;
+            } else {
+                title.innerText = "MEMBER LOGIN";
+                btnBox.innerHTML = `
+                    <button class="btn-solid" style="width:100%" onclick="login()">SIGN IN</button>
+                    <p onclick="switchMode('signup')" style="cursor:pointer; color:#555; font-size:0.7rem; margin-top:15px">NEW USER? CREATE ACCOUNT</p>
+                `;
             }
-            if (pass.length < 8) {
-                msg.innerText = "Password must be at least 8 characters";
-                return false;
-            }
-            if (!/\d/.test(pass)) {
-                msg.innerText = "Password must include at least one number";
-                return false;
-            }
-            return true;
         };
 
+        // Validation & Auth
         window.signUp = async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             const msg = document.getElementById('m-msg');
             msg.style.color = "#ff4444";
 
-            if (!validate(email, pass)) return;
+            if (!email.includes('@')) { msg.innerText = "Invalid Email Format"; return; }
+            if (pass.length < 8 || !/\d/.test(pass)) { msg.innerText = "Needs 8+ characters & 1 number"; return; }
 
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-                await sendEmailVerification(userCredential.user);
+                const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                await sendEmailVerification(cred.user);
                 msg.style.color = "#3ecf8e";
-                msg.innerText = "Verification sent! Check your inbox.";
-            } catch (e) { 
-                msg.innerText = e.code === "auth/network-request-failed" ? "Error 400: Connection Failed" : e.message;
-            }
+                msg.innerText = "Verify your email! Check inbox.";
+            } catch (e) { msg.innerText = "Error 400: Connection Refused"; }
         };
 
         window.login = async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             const msg = document.getElementById('m-msg');
-            msg.style.color = "#ff4444";
-
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-                if (userCredential.user.emailVerified) { location.reload(); }
-                else { msg.style.color = "orange"; msg.innerText = "Please verify your email!"; }
-            } catch (e) { msg.innerText = "Login Failed: Check credentials or Connection"; }
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                if (cred.user.emailVerified) { location.reload(); } 
+                else { msg.style.color = "orange"; msg.innerText = "Check your email first!"; }
+            } catch (e) { msg.style.color = "#ff4444"; msg.innerText = "Invalid credentials or Network Error"; }
         };
 
         window.logout = () => signOut(auth).then(() => location.reload());
 
-        window.switchMode = (mode) => {
-            document.getElementById('email').value = "";
-            document.getElementById('pass').value = "";
-            document.getElementById('m-msg').innerText = "";
-            if(mode === 'up') {
-                document.getElementById('m-title').innerText = "CREATE ACCOUNT";
-                document.getElementById('m-btn-box').innerHTML = `<button class="btn-solid" style="width:100%" onclick="signUp()">REGISTER</button><p onclick="switchMode('in')" style="font-size:0.7rem; cursor:pointer; margin-top:10px; color:#888">ALREADY HAVE AN ACCOUNT? LOGIN</p>`;
-            } else {
-                document.getElementById('m-title').innerText = "MEMBER LOGIN";
-                document.getElementById('m-btn-box').innerHTML = `<button class="btn-solid" style="width:100%" onclick="login()">SIGN IN</button><p onclick="switchMode('up')" style="font-size:0.7rem; cursor:pointer; margin-top:10px; color:#888">NEW HERE? CREATE ACCOUNT</p>`;
-            }
-        }
-
         onAuthStateChanged(auth, (user) => {
             if (user && user.emailVerified) {
-                document.getElementById('auth-controls').classList.add('hidden');
-                document.getElementById('user-controls').classList.remove('hidden');
-                document.getElementById('user-display').innerText = user.email;
-                document.querySelectorAll('.dl-lock').forEach(el => el.classList.add('hidden'));
-                document.querySelectorAll('.dl-btn').forEach(el => el.classList.remove('hidden'));
+                document.getElementById('nav-auth').classList.add('hidden');
+                document.getElementById('nav-user').classList.remove('hidden');
+                document.getElementById('user-email').innerText = user.email;
+                document.querySelectorAll('.lock-text').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.dl-active').forEach(el => el.classList.remove('hidden'));
             }
         });
 
-        window.openAuth = () => { document.getElementById('auth-modal').style.display = 'flex'; switchMode('in'); }
-        window.closeAuth = () => { document.getElementById('auth-modal').style.display = 'none'; }
+        window.openAuth = () => { document.getElementById('auth-modal').style.display='flex'; switchMode('login'); }
+        window.closeAuth = () => { document.getElementById('auth-modal').style.display='none'; }
     </script>
 
     <style>
-        :root { --bg: #050505; --card: #0c0c0c; --border: #1a1a1a; --accent: #5865F2; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; margin: 0; overflow-x: hidden; }
+        :root { --bg: #050505; --card: #0d0d0d; --border: #1a1a1a; --accent: #5865F2; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; overflow-x: hidden; }
         
-        /* Animations */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate { animation: fadeIn 0.5s ease forwards; }
+        /* Smooth Animations */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .anim { animation: slideUp 0.6s ease forwards; opacity: 0; }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; border-bottom: 1px solid var(--border); background: rgba(5,5,5,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
-        .logo { font-weight: 900; letter-spacing: 2px; font-size: 1.2rem; background: linear-gradient(to right, #fff, #555); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .container { max-width: 1100px; margin: 60px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
-        
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; text-align: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
-        .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(88, 101, 242, 0.1); }
-        
-        .btn-solid { background: #fff; color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: 800; cursor: pointer; transition: 0.2s; }
-        .btn-solid:hover { background: var(--accent); color: #fff; }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: #fff; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 6%; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+        .btn-solid { background: #fff; color: #000; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .btn-solid:hover { background: var(--accent); color: #fff; transform: scale(1.05); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: #888; padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+        .btn-outline:hover { border-color: #555; color: #fff; }
 
-        /* Modal */
-        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px); }
-        .modal-box { width: 340px; background: #0f0f0f; border: 1px solid var(--border); padding: 40px; border-radius: 16px; animation: fadeIn 0.3s ease; }
+        .container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
         
-        input { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.2s; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 35px 25px; text-align: center; transition: 0.4s; position: relative; }
+        .card:hover { border-color: var(--accent); box-shadow: 0 0 30px rgba(88, 101, 242, 0.15); }
+        .card h3 { font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 15px; }
+        .card p { font-size: 0.75rem; color: #555; margin-bottom: 25px; }
+
+        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(8px); }
+        .modal-box { width: 350px; background: #0a0a0a; border: 1px solid var(--border); padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; outline: none; }
         input:focus { border-color: var(--accent); }
         
         .hidden { display: none; }
-        .status-tag { font-size: 0.6rem; background: #1a1a1a; padding: 4px 8px; border-radius: 4px; color: #888; position: absolute; top: 15px; right: 15px; }
+        .tag { position: absolute; top: 15px; left: 15px; font-size: 0.6rem; color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">EFN ARCHIVE</div>
-    <div id="auth-controls">
-        <button class="btn-outline" onclick="openAuth()">PORTAL ACCESS</button>
+    <div style="font-weight:900; letter-spacing:3px;">EFN ARCHIVE</div>
+    <div id="nav-auth">
+        <button class="btn-outline" onclick="openAuth()">SYSTEM LOGIN</button>
     </div>
-    <div id="user-controls" class="hidden" style="display:flex; align-items:center; gap:15px">
-        <span id="user-display" style="color:#555; font-size:0.75rem"></span>
+    <div id="nav-user" class="hidden" style="display:flex; align-items:center; gap:20px">
+        <span id="user-email" style="color:#444; font-size:0.8rem"></span>
         <button class="btn-outline" onclick="logout()">LOGOUT</button>
     </div>
 </nav>
 
 <div class="container">
-    <div style="margin-bottom: 50px;">
-        <h1 style="font-size: 2.5rem; margin: 0;">VAULT CONTENT</h1>
-        <p style="color: #555;">Encrypted Database Access • v1.0.4</p>
+    <div style="margin-bottom:60px">
+        <h1 style="font-size: 3rem; margin:0">VAULT v1.4</h1>
+        <p style="color:#444">8 Active Modules Detected. Login required for decrypting.</p>
     </div>
 
     <div class="grid">
-        <div class="card animate" style="animation-delay: 0.1s;">
-            <div class="status-tag">STABLE</div>
-            <h3>ARCHIVE_01</h3>
-            <p style="font-size:0.7rem; color:#444; margin-bottom:20px">Internal testing build for Archive 01.</p>
-            <p class="dl-lock" style="color:#ff4444; font-size:0.6rem">LOCKED</p>
-            <button class="btn-solid dl-btn hidden" onclick="alert('Downloading...')">DOWNLOAD</button>
-        </div>
-
-        <div class="card animate" style="animation-delay: 0.15s;">
-            <div class="status-tag">STABLE</div>
-            <h3>ARCHIVE_02</h3>
-            <p style="font-size:0.7rem; color:#444; margin-bottom:20px">Internal testing build for Archive 02.</p>
-            <p class="dl-lock" style="color:#ff4444; font-size:0.6rem">LOCKED</p>
-            <button class="btn-solid dl-btn hidden" onclick="alert('Downloading...')">DOWNLOAD</button>
-        </div>
-
-        <div class="card animate" style="animation-delay: 0.2s;">
-            <div class="status-tag" style="color:orange">BETA</div>
-            <h3>PROJECT_X</h3>
-            <p style="font-size:0.7rem; color:#444; margin-bottom:20px">Experimental module for project X.</p>
-            <p class="dl-lock" style="color:#ff4444; font-size:0.6rem">LOCKED</p>
-            <button class="btn-solid dl-btn hidden" onclick="alert('Downloading...')">DOWNLOAD</button>
-        </div>
-
-        <div class="card animate" style="animation-delay: 0.25s;">
-            <div class="status-tag">STABLE</div>
-            <h3>LEGACY_V3</h3>
-            <p style="font-size:0.7rem; color:#444; margin-bottom:20px">Older version build for v3.</p>
-            <p class="dl-lock" style="color:#ff4444; font-size:0.6rem">LOCKED</p>
-            <button class="btn-solid dl-btn hidden" onclick="alert('Downloading...')">DOWNLOAD</button>
-        </div>
-
-        <div class="card animate" style="animation-delay: 0.3s;">
-            <div class="status-tag">STABLE</div>
-            <h3>ARCHIVE_03</h3>
-            <p style="font-size:0.7rem; color:#444; margin-bottom:20px">Public build for Archive 03.</p>
-            <p class="dl-lock" style="color:#ff4444; font-size:0.6rem">LOCKED</p>
-            <button class="btn-solid dl-btn hidden" onclick="alert('Downloading...')">DOWNLOAD</button>
-        </div>
-
-        <div class="card animate" style="animation-delay: 0.35s;">
-            <div class="status-tag" style="color:cyan">DEV</div>
-            <h3>KERNEL_TEST</h3>
-            <p style="font-size:0.7rem; color:#444; margin-bottom:20px">Kernel level module testing.</p>
-            <p class="dl-lock" style="color:#ff4444; font-size:0.6rem">LOCKED</p>
-            <button class="btn-solid dl-btn hidden" onclick="alert('Downloading...')">DOWNLOAD</button>
-        </div>
-
-        <div class="card animate" style="animation-delay: 0.4s;">
-            <div class="status-tag">STABLE</div>
-            <h3>BYPASS_M1</h3>
-            <p style="font-size:0.7rem; color:#444; margin-bottom:20px">Secondary module for bypass M1.</p>
-            <p class="dl-lock" style="color:#ff4444; font-size:0.6rem">LOCKED</p>
-            <button class="btn-solid dl-btn hidden" onclick="alert('Downloading...')">DOWNLOAD</button>
-        </div>
-
-        <div class="card animate" style="animation-delay: 0.45s;">
-            <div class="status-tag">STABLE</div>
-            <h3>GLOBAL_V4</h3>
-            <p style="font-size:0.7rem; color:#444; margin-bottom:20px">Global version rollout build.</p>
-            <p class="dl-lock" style="color:#ff4444; font-size:0.6rem">LOCKED</p>
-            <button class="btn-solid dl-btn hidden" onclick="alert('Downloading...')">DOWNLOAD</button>
-        </div>
+        <div class="card anim" style="animation-delay: 0.1s;"><div class="tag">001</div><h3>BYPASS_X</h3><p>Internal kernel-level module.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
+        <div class="card anim" style="animation-delay: 0.15s;"><div class="tag">002</div><h3>ARCHIVE_B</h3><p>Legacy stable archive files.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
+        <div class="card anim" style="animation-delay: 0.2s;"><div class="tag">003</div><h3>KERNEL_V4</h3><p>Core system injection tool.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
+        <div class="card anim" style="animation-delay: 0.25s;"><div class="tag">004</div><h3>SENTRY_FIX</h3><p>Security bypass for v2 sentry.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
+        <div class="card anim" style="animation-delay: 0.3s;"><div class="tag">005</div><h3>MODULE_Z</h3><p>Beta testing module Z.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
+        <div class="card anim" style="animation-delay: 0.35s;"><div class="tag">006</div><h3>PROTO_7</h3><p>Prototype module level 7.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
+        <div class="card anim" style="animation-delay: 0.4s;"><div class="tag">007</div><h3>GLOBAL_V2</h3><p>Global rollout archive build.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
+        <div class="card anim" style="animation-delay: 0.45s;"><div class="tag">008</div><h3>VOID_SYNC</h3><p>Sync tool for void databases.</p><div class="lock-text" style="color:#ff4444; font-size:0.6rem">LOCKED</div><button class="btn-solid dl-active hidden" onclick="alert('Downloading...')">DOWNLOAD</button></div>
     </div>
 </div>
 
 <div id="auth-modal">
     <div class="modal-box">
-        <h2 id="m-title" style="letter-spacing: 2px; font-size: 1rem; margin-bottom: 30px;">LOGIN</h2>
-        <input type="email" id="email" placeholder="EMAIL ADDRESS">
+        <h2 id="m-title" style="letter-spacing:4px; font-size:1.2rem; margin-bottom:30px">LOGIN</h2>
+        <input type="email" id="email" placeholder="EMAIL">
         <input type="password" id="pass" placeholder="PASSWORD">
-        <p id="m-msg" style="font-size:0.7rem; margin: 10px 0; min-height: 1rem;"></p>
+        <p id="m-msg" style="font-size:0.75rem; margin:15px 0; min-height:1rem;"></p>
         <div id="m-btn-box"></div>
-        <button class="btn-outline" style="width:100%; margin-top:20px; border:none; color:#444" onclick="closeAuth()">CLOSE</button>
+        <p onclick="closeAuth()" style="margin-top:20px; color:#333; cursor:pointer; font-size:0.7rem">EXIT SYSTEM</p>
     </div>
 </div>
 
