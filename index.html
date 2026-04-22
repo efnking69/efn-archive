@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="google-site-verification" content="PASTE_CODE_HERE" />
+<meta name="google-site-verification" content="qsdras5K8P_fgKI55gOaDtarJHfwVBiPZdiDCLuMN4E" />
 <title>pixelworldscheats.xyz | The #1 PW cheat site</title>
 
 <meta name="title"       content="pixelworldscheats.xyz | Free PW Cheats <3">
@@ -944,7 +944,7 @@ nav {
     <div class="resend-ui" id="resend-ui-log">
       <div class="resend-bar-wrap">
         <div class="resend-bar-fill" id="resend-fill-log" style="width:100%"></div>
-        <div class="resend-bar-text" id="resend-text-log">Verification email sent</div>
+        <div class="resend-bar-text" id="resend-text-log">Verification email sent, check spam</div>
       </div>
     </div>
     <div class="resend-ready" id="resend-ready-log">
@@ -974,7 +974,7 @@ nav {
     <div class="resend-ui" id="resend-ui-reg">
       <div class="resend-bar-wrap">
         <div class="resend-bar-fill" id="resend-fill-reg" style="width:100%"></div>
-        <div class="resend-bar-text" id="resend-text-reg">Check your inbox…</div>
+        <div class="resend-bar-text" id="resend-text-reg">Check your inbox and spam folders…</div>
       </div>
     </div>
     <div class="resend-ready" id="resend-ready-reg">
@@ -1121,20 +1121,19 @@ CHARON CLIENT — POSSIBLE CAUSES & FIXES
     name:'TicTacToe Bot v3.1',
     img:'https://cdn.discordapp.com/attachments/1492915866797342976/1495336661331214366/image.png?ex=69e8834a&is=69e731ca&hm=7fc23cf25aa9f324555d7749935e95dfc6f7e924caf9bd6fa65b47d9b8aefdcd&',
     url:'https://cdn.discordapp.com/attachments/1492915866797342976/1495336594624741517/Efns_Tictactoe_Bot_v3.1.html?ex=69e8833a&is=69e731ba&hm=2e2bb4c4efb795ecf211618a8c87476d707bf45b120f95a048962ade4372d05e&',
-    desc:`EFN's TicTacToe Bot lets you play classic TicTacToe directly inside Discord.
+    desc:`ttt bot to win in p2p worlds, html file easy to use.
 
-Supports:
-  • Single-player vs AI
-  • Two-player head-to-head mode
+Update log:
+v3.1 added no mid gamemode, optimized tool
 
-Lightweight, fast, and fun.
+very good <3
 Download the HTML file and host it or open it directly.`
   },
   hyx:{
     name:'Hyx Cheat',
     img:'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg',
     url:'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx',
-    desc:`Make sure this is installed if you don't have it already:\nvcredist AIO\n\nSetup steam launch settings for the game or the menu wont appear: -force-d3d11\n\nAlso remove charon client folders from pixel worlds folder if not working!`
+    desc:`Make you have installed this or it won't work :\nvcredist AIO\n\nSetup steam launch settings for the game or the menu wont appear: -force-d3d11\n\nAlso remove charon client folders from pixel worlds folder if not working! TUTORIAL: https://www.youtube.com/watch?v=FnPP2weLLfk`
   }
 };
 
@@ -1195,7 +1194,7 @@ window.openDetail = (key) => {
     dlBtn.onclick   = () => { if (c.url && c.url !== '#') window.open(c.url, '_blank'); };
   } else {
     dlBtn.className = 'btn btn-locked btn-sm';
-    dlBtn.innerText = '🔒 Login to Download';
+    dlBtn.innerText = 'login to download';
     dlBtn.onclick   = () => {
       showPage('main');
       openModal('login-modal');
@@ -1255,7 +1254,7 @@ window.signUp = async () => {
     const cred = await createUserWithEmailAndPassword(auth, e, p);
     await sendEmailVerification(cred.user);
     lastMailSent.reg = Date.now();
-    notify('reg-notifs', 'Account created! Check your email to verify.', 'success');
+    notify('reg-notifs', 'Account created! Check your email and spam mail to verify.', 'success');
     showResendUI('reg');
   } catch (err) {
     const msgs = {
@@ -1273,7 +1272,7 @@ window.login = async () => {
   try {
     const cred = await signInWithEmailAndPassword(auth, e, p);
     if (!cred.user.emailVerified) {
-      notify('login-notifs', 'Email not verified. Check your inbox.');
+      notify('login-notifs', 'Email not verified. Check your inbox and spam if you cant find it.');
       showResendUI('log');
       await signOut(auth); return;
     }
