@@ -1040,16 +1040,12 @@ nav{
 </div>
 
 <script type="module">
+// 1. ALL IMPORTS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getAuth, 
-  onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { 
-  getDatabase, ref, push, onChildAdded, query, limitToLast 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, set, get, push, onValue, query, limitToLast, onChildAdded, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// 1. YOUR FIREBASE CONFIG (Required to make it work)
+// 2. FIREBASE CONFIG & INIT (Only once!)
 const firebaseConfig = {
   apiKey: "AIzaSyCM-ySTXgy37zVUMB2vy4ZJQ3MWlDD5g4E",
   authDomain: "efn-archive.firebaseapp.com",
@@ -1060,85 +1056,32 @@ const firebaseConfig = {
   databaseURL: "https://efn-archive-default-rtdb.firebaseio.com"
 };
 
-// 2. INITIALIZE
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// 3. STATE
-let currentUser = null;
-
-// Track Auth State so we know who is sending messages
-onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-});
-
-/* ── CHAT LOGIC ── */
-const chatBox = document.getElementById('chat-messages');
-const chatInput = document.getElementById('chat-input');
-const sendBtn = document.getElementById('chat-send-btn');
-
-// 1. Listen for new messages
-const chatRef = ref(db, 'chat');
-const chatQuery = query(chatRef, limitToLast(50));
-
-onChildAdded(chatQuery, (snapshot) => {
-    const msg = snapshot.val();
-    if (msg) renderMessage(msg);
-});
-
-function renderMessage(msg) {
-    if (!chatBox) return; // Safety check
-    const div = document.createElement('div');
-    div.className = 'chat-msg';
-    div.innerHTML = `<b>${msg.username || "Anonymous"}:</b> ${msg.text}`;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
-}
-
-// 2. Send Message function
-if (sendBtn) {
-    sendBtn.onclick = () => {
-        if (!currentUser) return alert("Log in first!");
-        const text = chatInput.value.trim();
-        if (text === "") return;
-
-        push(ref(db, 'chat'), {
-            username: currentUser.displayName || currentUser.email.split('@')[0] || "Anonymous",
-            text: text,
-            timestamp: Date.now(),
-            uid: currentUser.uid
-        });
-        chatInput.value = "";
-    };
-}
-
-/* ═══════════════════════
-   ADMIN CONFIG & STATE
-═══════════════════════ */
+// 3. GLOBAL STATE
 const ADMIN_EMAIL = 'djfkfk186@gmail.com';
+let currentUser      = null;
+let userBalance      = 0;
+let lastMsgSent      = 0;
+let lastMailSent     = { log:0, reg:0 };
+let replyingTo       = null;
+let userIsMuted      = false;
+let adminSearchFilter= 'all';
+
+// Helper
 function isAdmin(u) { return u && u.emailVerified && u.email === ADMIN_EMAIL; }
-  
-const app = initializeApp({
-  apiKey:            "AIzaSyCM-ySTXgy37zVUMB2vy4ZJQ3MWlDD5g4E",
-  authDomain:        "efn-archive.firebaseapp.com",
-  projectId:         "efn-archive",
-  storageBucket:     "efn-archive.firebasestorage.app",
-  messagingSenderId: "1073610968306",
-  appId:             "1:1073610968306:web:72e03b6f43decbb636546b",
-  databaseURL:       "https://efn-archive-default-rtdb.firebaseio.com"
-  /* ═══════════════════════
-   SPLASH SCREEN (FIXED)
-═══════════════════════ */
-window.addEventListener('load', () => { // Changed to 'load' to ensure everything is ready
+
+// 4. SPLASH SCREEN (Fixed placement)
+window.addEventListener('load', () => {
   const bar    = document.getElementById('splash-bar');
   const label  = document.getElementById('splash-label');
   const splash = document.getElementById('splash');
 
   if (bar) bar.style.width = '100%';
-  if (label) label.textContent = 'loading...';
+  if (label) label.textContent = 'ready';
 
-  // Hide splash after 2.2s
   setTimeout(() => {
     if (splash) {
       splash.style.opacity = '0';
@@ -1149,25 +1092,41 @@ window.addEventListener('load', () => { // Changed to 'load' to ensure everythin
     }
   }, 2200);
 });
-});
-const auth = getAuth(app);
-const db   = getDatabase(app);
 
-/* ── STATE ── */
-let currentUser      = null;
-let userBalance      = 0;          // ← Fixed: declared here, populated by onValue listener
-let lastMsgSent      = 0;
-let lastMailSent     = { log:0, reg:0 };
-let replyingTo       = null;
-let jailListener     = null;
-let jailTimerInterval= null;
-let userIsMuted      = false;
-let adminSearchFilter= 'all';      // filter for user search
+// 5. AUTH TRACKER & BALANCE
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  if (user) {
+    onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
+      userBalance = snap.val() || 0;
+      const balEl = document.getElementById('balance-amount');
+      if (balEl) balEl.innerText = userBalance.toLocaleString();
+    });
+  }
+});
+
+// 6. ONLINE COUNTER (Fixed)
+const presenceKey = `p_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+const presRef = ref(db, `presence/${presenceKey}`);
+onValue(ref(db, '.info/connected'), snap => {
+  if (snap.val() === true) {
+    set(presRef, { ts: Date.now() });
+    onDisconnect(presRef).remove();
+  }
+});
+
+onValue(ref(db, 'presence'), snap => {
+  const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+  const txt = `${count} online`;
+  if (document.getElementById('online-count')) document.getElementById('online-count').innerText = txt;
+  if (document.getElementById('chat-online-badge')) document.getElementById('chat-online-badge').innerText = txt;
+});
 
 /* ── TAB TITLE ── */
 const tabTitles = ['pixelworldscheats.xyz','free pw cheats <3'];
 let tabIdx = 0;
 setInterval(() => { tabIdx=(tabIdx+1)%2; document.title=tabTitles[tabIdx]; }, 2000);
+
 
 /* ── FORCE RELOAD ── */
 let siteVersionLoaded=false, currentSiteVersion=null;
@@ -1181,29 +1140,6 @@ window.adminForceReload=async()=>{
   await set(ref(db,'siteVersion'),Date.now().toString());
   notify('reload-notif','Deployed — all clients will reload.','success');
 };
-
-/* ═══════════════════════
-   REAL-TIME ONLINE COUNTER
-   Fixed: uses onDisconnect + presence pattern correctly
-═══════════════════════ */
-const presenceKey = `p_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-const presRef     = ref(db, `presence/${presenceKey}`);
-// Only write presence once connected; remove on disconnect
-onValue(ref(db, '.info/connected'), snap => {
-  if (snap.val() === true) {
-    set(presRef, { ts: Date.now() });
-    onDisconnect(presRef).remove();
-  }
-});
-// Count all presence keys and update both displays
-onValue(ref(db, 'presence'), snap => {
-  const count = snap.exists() ? Object.keys(snap.val()).length : 0;
-  const txt   = `${count} online`;
-  const el1   = document.getElementById('online-count');
-  const el2   = document.getElementById('chat-online-badge');
-  if (el1) el1.innerText = txt;
-  if (el2) el2.innerText = txt;
-});
 
 /* ── CHEAT DATA ── */
 const CHEATS = {
