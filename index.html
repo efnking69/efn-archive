@@ -168,19 +168,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:15px 3
           <div class="card-desc">Advanced PW cheat client. BepInEx injection, F2/FN+2 menu toggle.</div>
         </div>
         <div class="card-footer">
-          <button class="btn btn-sm dl-btn" data-key="charon" data-url="https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file" onclick="event.stopPropagation();handleDl(this)">Download</button>
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openDetail('charon')">Info</button>
         </div>
       </div>
 
       <!-- AUTOMATH -->
       <div class="card" onclick="openDetail('automath')">
-        <img class="card-img" src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a09e28ba5b9ebc6ae95efa525deaf8dc32c261c5&" alt="AutoMath" onerror="this.style.background='#16152a';this.removeAttribute('src')">
+        <img class="card-img" src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&" alt="AutoMath" onerror="this.style.background='#16152a';this.removeAttribute('src')">
         <div class="card-body">
           <div class="card-name">AutoMath</div>
           <div class="card-desc">Real-time math solver Discord bot. Algebra, calculus, expression parsing.</div>
         </div>
         <div class="card-footer">
-          <button class="btn btn-sm dl-btn" data-key="automath" data-url="#" onclick="event.stopPropagation();handleDl(this)">Download</button>
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openDetail('automath')">Info</button>
         </div>
       </div>
 
@@ -192,19 +192,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:15px 3
           <div class="card-desc">Play TicTacToe in Discord — solo vs AI or head-to-head with a friend.</div>
         </div>
         <div class="card-footer">
-          <button class="btn btn-sm dl-btn" data-key="tictactoe" data-url="https://cdn.discordapp.com/attachments/1492915866797342976/1495336594624741517/Efns_Tictactoe_Bot_v3.1.html?ex=69e8833a&is=69e731ba&hm=2e2bb4c4efb795ecf211618a8c87476d707bf45b120f95a048962ade4372d05e&" onclick="event.stopPropagation();handleDl(this)">Download</button>
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openDetail('tictactoe')">Info</button>
         </div>
       </div>
 
       <!-- HYX -->
       <div class="card" onclick="openDetail('hyx')">
-        <div class="card-img" style="background:linear-gradient(135deg,#16152a,#1e1a36);display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:900;color:var(--accent2);letter-spacing:.1em">HYX</div>
+        <img class="card-img" src="https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg" alt="Hyx" onerror="this.style.background='#16152a';this.removeAttribute('src')">
         <div class="card-body">
           <div class="card-name">Hyx Cheat</div>
           <div class="card-desc">EFN's Hyx cheat tool for Pixel Worlds. Lightweight and reliable.</div>
         </div>
         <div class="card-footer">
-          <button class="btn btn-sm dl-btn" data-key="hyx" data-url="#" onclick="event.stopPropagation();handleDl(this)">Download</button>
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openDetail('hyx')">Info</button>
         </div>
       </div>
 
@@ -373,13 +373,9 @@ CHARON CLIENT — POSSIBLE CAUSES & FIXES
   },
   automath:{
     name:'AutoMath',
-    img:'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a09e28ba5b9ebc6ae95efa525deaf8dc32c261c5&',
-    url:'#',
-    desc:`AutoMath is a Discord bot that solves mathematical expressions in real-time.
-
-Supports algebra, calculus snippets, and expression parsing — all directly in your server chat.
-
-Add the bot to your server and use the /math command to get started.`
+    img:'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e89e06&is=69e74c86&hm=1ec8dee2bac62cb536d32943a39e28ba5b9ebc6ae95efa525deaf8dc32c261c5&',
+    url:'https://gofile.io/d/9sUpZS',
+    desc:`Automate your math questions in Pixel Worlds. Tutorial is included in the zip folder! ❤️`
   },
   tictactoe:{
     name:'TicTacToe Bot v3.1',
@@ -396,12 +392,9 @@ Download the HTML file and host it or open it directly.`
   },
   hyx:{
     name:'Hyx Cheat',
-    img:null,
-    url:'#',
-    desc:`Hyx is EFN's lightweight cheat tool for Pixel Worlds.
-
-Reliable and easy to use.
-More details and download coming soon.`
+    img:'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg',
+    url:'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx',
+    desc:`Make sure this is installed if you don't have it already:\nvcredist AIO\n\nSetup steam launch settings for the game or the menu wont appear: -force-d3d11\n\nAlso remove charon client folders from pixel worlds folder if not working!`
   }
 };
 
@@ -598,4 +591,4 @@ window.openDetail=(key)=>{
 };
 </script>
 </body>
-</html>      
+</html>
