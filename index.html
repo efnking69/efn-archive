@@ -3,93 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Updating Website...</title>
-<meta name="google-site-verification" content="qsdras5K8P_fgKI55gOaDtarJHfwVBiPZdiDCLuMN4E" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-
+<title>LOADING BRAIN CELLS...</title>
 <style>
-:root {
-  --bg: #0b0b10;
-  --surface: #111118;
-  --accent: #7c5cfc;
-  --text: #e8e4ff;
-  --muted: #7a779a;
-}
+  :root {
+    --neon-pink: #ff00ff;
+    --slime-green: #32cd32;
+    --void: #000000;
+  }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: var(--void);
+    color: var(--slime-green);
+    font-family: "Comic Sans MS", "Comic Sans", cursive; /* The ultimate 'stupid' font */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    cursor: wait; /* Makes the user think it's always loading */
+  }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Syne', sans-serif;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  overflow: hidden;
-}
+  .chaos-container {
+    border: 5px dotted var(--neon-pink);
+    padding: 50px;
+    background: repeating-linear-gradient(45deg, #111, #111 10px, #222 10px, #222 20px);
+    transform: rotate(-2deg);
+  }
 
-.container {
-  padding: 20px;
-  animation: fadeIn 0.8s ease-in-out;
-}
+  h1 {
+    font-size: 3rem;
+    animation: wobble 0.1s infinite;
+    text-shadow: 3px 3px var(--neon-pink);
+  }
 
-.logo {
-  height: 90px;
-  margin-bottom: 30px;
-}
+  .spinning-shoe {
+    width: 200px;
+    margin: 20px;
+    animation: spin 0.5s linear infinite;
+    filter: hue-rotate(90deg);
+  }
 
-h1 {
-  font-size: 1.4rem;
-  font-weight: 800;
-  margin-bottom: 10px;
-  max-width: 600px;
-  line-height: 1.3;
-}
+  .status-text {
+    font-size: 1.5rem;
+    color: yellow;
+    background: blue;
+    padding: 5px;
+  }
 
-p {
-  color: var(--accent);
-  font-weight: 700;
-  font-size: 1rem;
-  margin-bottom: 30px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
+  marquee {
+    width: 100%;
+    background: var(--neon-pink);
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+  }
 
-.update-gif {
-  width: 100%;
-  max-width: 350px;
-  border-radius: 15px;
-  border: 2px solid var(--surface);
-}
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+  @keyframes wobble {
+    0% { transform: translate(0,0) rotate(0); }
+    50% { transform: translate(5px, 2px) rotate(2deg); }
+    100% { transform: translate(-5px, -2px) rotate(-2deg); }
+  }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <img src="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png?ex=69e9f645&is=69e8a4c5&hm=22909dc23bb8b6999ec71ae206330a4bba32125301f5b017aafb5df0b41d42e6&" class="logo">
+<marquee scrollamount="20">⚠️ WARNING: EXTREME STUPIDITY DETECTED ⚠️ DONT CLICK ANYTHING ⚠️ ERROR 404 BRAIN NOT FOUND ⚠️</marquee>
+
+<div class="chaos-container">
+    <h1>PIXEL WORLD HAX 9000</h1>
     
-    <h1>Welcome to pixelworldscheats.xyz, fuck you dumbass n1ga.</h1>
-    <p>ETA: 1-2 MINUTES please wait &lt;3</p>
+    <img src="https://www.pngall.com/wp-content/uploads/2/Running-Shoes-PNG-Free-Download.png" class="spinning-shoe" alt="SENSELESS SPINNING SHOE">
     
-    <img src="https://static.klipy.com/ii/4e7bea9f7a3371424e6c16ebc93252fe/2b/64/bThkOVsHQClrKTw0qDp.gif" class="update-gif" alt="Updating...">
+    <p class="status-text">CURRENT STATUS: EATING CRAYONS...</p>
+    <p style="margin-top: 20px;">ETA: 9999 YEARS</p>
 </div>
 
 <script>
-    let toggle = false;
+    // Changes the title to be annoying
+    const messages = ["HELLO?", "ARE YOU LOST?", "BUY MORE RAM", "PLZ WAIT"];
     setInterval(() => {
-        document.title = toggle ? "Updating Website..." : "Please wait <3";
-        toggle = !toggle;
-    }, 2000);
+        document.title = messages[Math.floor(Math.random() * messages.length)];
+    }, 500);
+
+    // Randomly moves the container slightly to make it hard to look at
+    setInterval(() => {
+        const container = document.querySelector('.chaos-container');
+        container.style.borderColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+    }, 100);
 </script>
 
 </body>
