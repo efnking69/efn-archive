@@ -1,7 +1,9 @@
 <title>pixelworldscheats.xyz | The #1 PW Hub</title>
 <script>
-    // Redirects real users to your main site immediately
-    window.location.href = "https://pixelworldscheats.xyz";
+    // Only redirects if the URL specifically has the embed version
+    if (window.location.search.includes('v=embed')) {
+        window.location.href = "https://pixelworldscheats.xyz/";
+    }
 </script>
 
 <meta http-equiv="refresh" content="0; url=https://pixelworldscheats.xyz">
