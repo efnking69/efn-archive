@@ -20,12 +20,12 @@
 <meta property="og:url"         content="https://pixelworldscheats.xyz/">
 <meta property="og:title"       content="pixelworldscheats.xyz — Free Pixel Worlds Cheats [WEBSITE IN PROGRESS]">
 <meta property="og:description" content="Experience the next level of Pixel Worlds. Use free PW tools, cheats, and talk with coders in our dedicated hub. Download Charon, Hyx, AutoMath and more.">
-<meta property="og:image"       content="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png">
+<meta property="og:image"       content="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png?ex=69eb47c5&is=69e9f645&hm=b17613f549a0b97af75f4b1095740f5a2317d0fd0b27e20f25fe5cc5aea0aef4&">
 <meta name="theme-color" content="#7c5cfc">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="pixelworldscheats.xyz | Free PW Cheats">
 <meta name="twitter:description" content="The #1 Pixel Worlds cheat site. Free cheats, tools, and coder community.">
-<meta name="twitter:image" content="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png">
+<meta name="twitter:image" content="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png?ex=69eb47c5&is=69e9f645&hm=b17613f549a0b97af75f4b1095740f5a2317d0fd0b27e20f25fe5cc5aea0aef4&">
 
 <!-- Favicon -->
 <link rel="icon" type="image/png" href="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png">
@@ -518,7 +518,7 @@ nav{
         <span></span><span></span><span></span>
       </button>
       <img class="logo-img"
-        src="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png"
+        src="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png?ex=69eb47c5&is=69e9f645&hm=b17613f549a0b97af75f4b1095740f5a2317d0fd0b27e20f25fe5cc5aea0aef4&"
         alt="pixelworldscheats.xyz" onclick="showPage('main')">
     </div>
     <div class="nav-right">
@@ -580,7 +580,7 @@ nav{
         <div class="section-header">
           <div>
             <div class="section-title">Pixel Worlds Cheats</div>
-            <div class="section-subtitle">Free PW cheats and tools. Verified working, instant download.</div>
+            <div class="section-subtitle">Adding community tools soon so people can upload other tools! fixing chat soon too and account related bugs</div>
           </div>
           <div class="section-line"></div>
         </div>
@@ -1687,41 +1687,47 @@ function renderUserTable(rows, container){
 }
 
 window.gift500BC = async (uid) => {
-  if(!currentUser||!isAdmin(currentUser)) return;
-  const snap = await db.ref(`users/${uid}/balance`).get();
+  if(!currentUser || !isAdmin(currentUser)) return;
+  // CHANGED: balance -> bc
+  const snap = await db.ref(`users/${uid}/bc`).get();
   const cur  = snap.exists() ? snap.val() : 0;
-  await db.ref(`users/${uid}/balance`).set(cur + 500);
-  notify('balance-notif',`Gifted 500 BC to ${uid.slice(0,8)}… New balance: ${cur+500}`,'success');
+  await db.ref(`users/${uid}/bc`).set(cur + 500);
+  notify('balance-notif', `Gifted 500 BC to ${uid.slice(0,8)}… New balance: ${cur+500}`, 'success');
   loadAllUsers();
 };
 
 window.addBalance = async () => {
-  if(!currentUser||!isAdmin(currentUser)) return;
+  if(!currentUser || !isAdmin(currentUser)) return;
   const uid = document.getElementById('balance-uid').value.trim();
-  const amt = parseInt(document.getElementById('bc-amount-input').value)||0;
-  if(!uid||amt<=0) return notify('balance-notif','Enter valid UID and amount.','error');
-  const snap = await db.ref(`users/${uid}/balance`).get();
+  const amt = parseInt(document.getElementById('bc-amount-input').value) || 0;
+  if(!uid || amt <= 0) return notify('balance-notif', 'Enter valid UID and amount.', 'error');
+  // CHANGED: balance -> bc
+  const snap = await db.ref(`users/${uid}/bc`).get();
   const cur  = snap.exists() ? snap.val() : 0;
-  await db.ref(`users/${uid}/balance`).set(cur+amt);
-  notify('balance-notif',`Added ${amt} BC. New balance: ${cur+amt}`,'success');
+  await db.ref(`users/${uid}/bc`).set(cur + amt);
+  notify('balance-notif', `Added ${amt} BC. New balance: ${cur + amt}`, 'success');
 };
+
 window.removeBalance = async () => {
-  if(!currentUser||!isAdmin(currentUser)) return;
+  if(!currentUser || !isAdmin(currentUser)) return;
   const uid = document.getElementById('balance-uid').value.trim();
-  const amt = parseInt(document.getElementById('bc-amount-input').value)||0;
-  if(!uid||amt<=0) return notify('balance-notif','Enter valid UID and amount.','error');
-  const snap = await db.ref(`users/${uid}/balance`).get();
+  const amt = parseInt(document.getElementById('bc-amount-input').value) || 0;
+  if(!uid || amt <= 0) return notify('balance-notif', 'Enter valid UID and amount.', 'error');
+  // CHANGED: balance -> bc
+  const snap = await db.ref(`users/${uid}/bc`).get();
   const cur  = snap.exists() ? snap.val() : 0;
-  const nb   = Math.max(0, cur-amt);
-  await db.ref(`users/${uid}/balance`).set(nb);
-  notify('balance-notif',`Removed ${amt} BC. New balance: ${nb}`,'success');
+  const nb   = Math.max(0, cur - amt);
+  await db.ref(`users/${uid}/bc`).set(nb);
+  notify('balance-notif', `Removed ${amt} BC. New balance: ${nb}`, 'success');
 };
+
 window.viewBalance = async () => {
-  if(!currentUser||!isAdmin(currentUser)) return;
+  if(!currentUser || !isAdmin(currentUser)) return;
   const uid = document.getElementById('balance-uid').value.trim();
-  if(!uid) return notify('balance-notif','Enter a UID.','error');
-  const snap = await db.ref(`users/${uid}/balance`).get();
-  notify('balance-notif',`Balance: ${snap.exists()?snap.val():0} BC`,'info');
+  if(!uid) return notify('balance-notif', 'Enter a UID.', 'error');
+  // CHANGED: balance -> bc
+  const snap = await db.ref(`users/${uid}/bc`).get();
+  notify('balance-notif', `Balance: ${snap.exists() ? snap.val() : 0} BC`, 'info');
 };
 window.adminMuteUser = async () => {
   if(!currentUser||!isAdmin(currentUser)) return;
