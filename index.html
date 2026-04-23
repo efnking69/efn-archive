@@ -3,94 +3,2031 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Updating Website...</title>
 <meta name="google-site-verification" content="qsdras5K8P_fgKI55gOaDtarJHfwVBiPZdiDCLuMN4E" />
+<title>pixelworldscheats.xyz | The #1 PW cheat site</title>
+
+<!-- SEO Meta -->
+<meta name="title"       content="pixelworldscheats.xyz | Free Pixel Worlds Cheats & Hacks 2026">
+<meta name="description" content="The #1 community for Pixel Worlds cheats, free hacks, and tools. Download Charon Client, Hyx Client, AutoMath, TTT Bot and more. Coder discussion, Bytecoin Mines game, and free PW resources.">
+<meta name="keywords"    content="Pixel Worlds cheats, Pixel Worlds hacks, free PW cheats, Charon client, Hyx client, Pixel Worlds autofarm, PW autofarm, Pixel Worlds tools, Bytecoin, pixelworldscheats, PW cheat site, Pixel Worlds exploit, free Pixel Worlds hack, Pixel Worlds scripts, PW tools 2026, Pixel Worlds download, Pixel Worlds cheat codes, PW nether hack, Pixel Worlds automine, PW autofish, Pixel Worlds modded client, free gaming cheats, Pixel Worlds community, PW coder, Pixel Worlds BepInEx, Pixel Worlds mod menu, pixelworldscheats.xyz, PW tictactoe bot, AutoMath PW, Pixel Worlds warp hack, PW fly hack, Pixel Worlds godmode, trade hack PW, Pixel Worlds gem calculator, Bytecoin mines game">
+<meta name="robots" content="index, follow">
+<meta name="author" content="pixelworldscheats.xyz">
+<meta name="language" content="English">
+<meta name="revisit-after" content="3 days">
+
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://pixelworldscheats.xyz/">
+<meta property="og:title"       content="pixelworldscheats.xyz — Free Pixel Worlds Cheats [WEBSITE IN PROGRESS]">
+<meta property="og:description" content="Experience the next level of Pixel Worlds. Use free PW tools, cheats, and talk with coders in our dedicated hub. Download Charon, Hyx, AutoMath and more.">
+<meta property="og:image"       content="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png">
+<meta name="theme-color" content="#7c5cfc">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="pixelworldscheats.xyz | Free PW Cheats">
+<meta name="twitter:description" content="The #1 Pixel Worlds cheat site. Free cheats, tools, and coder community.">
+<meta name="twitter:image" content="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png">
+<link rel="shortcut icon" href="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png">
+
+<!-- Fonts & Icons -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
+/* ── RESET & VARIABLES ── */
 :root {
-  --bg: #0b0b10;
-  --surface: #111118;
-  --accent: #7c5cfc;
-  --text: #e8e4ff;
-  --muted: #7a779a;
+  --bg:#050508;
+  --surface:rgba(18,18,26,0.75);
+  --surface2:rgba(24,24,35,0.85);
+  --border:rgba(255,255,255,0.05);
+  --border2:rgba(255,255,255,0.08);
+  --accent-gradient:linear-gradient(135deg,#7c5cfc 0%,#5a3edb 100%);
+  --accent:#7c5cfc;
+  --accent2:#b48dff;
+  --discord:#5865F2;
+  --text:#e8e4ff;
+  --muted:#7a779a;
+  --success:#4ade80;
+  --error:#f87171;
+  --warn:#fbbf24;
+  --radius:10px;
+  --radius-sm:6px;
+  --nav-h:58px;
+  --bnav-h:56px;
+  --chat-w:320px;
+  --sidebar-w:240px;
+  --sidebar-collapsed:60px;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Inter',sans-serif;letter-spacing:-0.025em;background:var(--bg);color:var(--text);overflow:hidden}
+#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Syne', sans-serif;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  overflow: hidden;
+/* ── SPLASH ── */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
+  transition:opacity .5s ease, visibility .5s ease;
 }
+#splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
+#splash-logo{height:90px;object-fit:contain;animation:splashPulse 1.5s ease-in-out infinite}
+@keyframes splashPulse{0%,100%{opacity:.9;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
+#splash-bar-wrap{width:260px;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+#splash-bar{height:100%;width:0%;background:var(--accent-gradient);border-radius:99px;transition:width 2s cubic-bezier(.4,0,.2,1)}
+#splash-label{font-size:.7rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
 
-.container {
-  padding: 20px;
-  animation: fadeIn 0.8s ease-in-out;
+/* ── CENTER NOTIFICATION ── */
+#center-notif-overlay{
+  display:none;position:fixed;inset:0;z-index:8000;
+  background:rgba(5,5,8,.85);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
 }
-
-.logo {
-  height: 90px;
-  margin-bottom: 30px;
+#center-notif-overlay.active{display:flex;animation:overlayIn .3s ease}
+#center-notif-box{
+  background:var(--surface);border:1px solid rgba(124,92,252,.3);
+  border-radius:16px;padding:36px 38px 30px;width:440px;max-width:92vw;
+  position:relative;text-align:center;
+  animation:modalSlide .35s cubic-bezier(.34,1.4,.64,1) forwards;
+  transform:scale(.9) translateY(20px);opacity:0;
 }
-
-h1 {
-  font-size: 1.4rem;
-  font-weight: 800;
-  margin-bottom: 10px;
-  max-width: 600px;
-  line-height: 1.3;
+@keyframes modalSlide{to{transform:scale(1) translateY(0);opacity:1}}
+#center-notif-icon{font-size:2.6rem;margin-bottom:14px}
+#center-notif-title{font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;color:var(--text);margin-bottom:10px}
+#center-notif-desc{font-family:'Inter',sans-serif;font-size:.78rem;color:var(--muted);line-height:1.7;margin-bottom:24px}
+#center-notif-close{
+  background:var(--accent-gradient);color:#fff;border:none;border-radius:8px;
+  padding:11px 28px;font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;cursor:not-allowed;opacity:.45;
+  transition:all .2s;
 }
+#center-notif-close.ready{cursor:pointer;opacity:1}
+#center-notif-close.ready:hover{opacity:.88;transform:translateY(-1px)}
+#center-notif-timer-txt{font-size:.63rem;color:var(--muted);margin-top:10px;font-family:'Inter',sans-serif}
 
-p {
-  color: var(--accent);
-  font-weight: 700;
-  font-size: 1rem;
-  margin-bottom: 30px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+/* ── TOP NAV ── */
+nav{
+  flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;height:var(--nav-h);border-bottom:1px solid var(--border);
+  background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  z-index:100;animation:navSlide .4s ease forwards;
 }
-
-.update-gif {
-  width: 100%;
-  max-width: 350px;
-  border-radius: 15px;
-  border: 2px solid var(--surface);
+@keyframes navSlide{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.nav-left{display:flex;align-items:center;gap:16px}
+.hamburger{width:36px;height:36px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s}
+.hamburger:hover{background:var(--surface2);border-color:var(--border2)}
+.hamburger span{width:18px;height:2px;background:var(--muted);transition:all .3s cubic-bezier(.4,0,.2,1)}
+.hamburger.active span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.hamburger.active span:nth-child(2){opacity:0}
+.hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+.logo-img{height:40px;cursor:pointer;display:block;object-fit:contain;transition:opacity .2s}
+.logo-img:hover{opacity:.82}
+.nav-right{display:flex;gap:8px;align-items:center}
+#nav-guest{display:flex;gap:8px;align-items:center}
+#nav-user{display:none;gap:8px;align-items:center}
+.user-tag{font-size:.73rem;font-weight:500;color:var(--accent2);background:rgba(124,92,252,.1);border:1px solid var(--border2);padding:5px 12px;border-radius:var(--radius-sm)}
+#balance-display{
+  display:none;align-items:center;gap:6px;
+  background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);
+  border-radius:var(--radius-sm);padding:5px 10px;
+  font-size:.72rem;font-weight:600;color:var(--warn);
+  cursor:pointer;transition:background .18s;
 }
+#balance-display:hover{background:rgba(251,191,36,.14)}
+#balance-display .bc-icon{width:18px;height:18px;object-fit:contain;vertical-align:middle}
+#balance-amount{font-variant-numeric:tabular-nums}
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ── CONTENT ROW ── */
+#content-row{flex:1;display:flex;min-height:0;overflow:hidden}
+
+/* ── LEFT SIDEBAR ── */
+#left-sidebar{
+  flex-shrink:0;width:var(--sidebar-w);display:flex;flex-direction:column;
+  border-right:1px solid var(--border);background:var(--surface);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  overflow-y:auto;overflow-x:hidden;transition:width .32s cubic-bezier(.4,0,.2,1);
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+#left-sidebar::-webkit-scrollbar{width:3px}
+#left-sidebar::-webkit-scrollbar-thumb{background:var(--border2)}
+#left-sidebar.collapsed{width:var(--sidebar-collapsed)}
+#left-sidebar.collapsed .sidebar-label,
+#left-sidebar.collapsed .sidebar-section-title{display:none}
+#left-sidebar.collapsed .sidebar-item{justify-content:center;padding:12px}
+#left-sidebar.collapsed .sidebar-item i{margin:0;font-size:1.1rem}
+.sidebar-online{margin:12px;padding:10px 14px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:var(--radius-sm);display:flex;align-items:center;gap:8px}
+.sidebar-online-dot{width:7px;height:7px;border-radius:50%;background:var(--success);animation:pulse 2.5s infinite}
+.sidebar-online-text{font-size:.72rem;color:var(--success);white-space:nowrap}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.sidebar-section{padding:16px 12px 8px}
+.sidebar-section-title{font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;padding-left:8px}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:var(--radius-sm);cursor:pointer;font-size:.8rem;font-weight:500;color:var(--muted);transition:all .18s;margin-bottom:2px}
+.sidebar-item:hover{background:var(--surface2);color:var(--text)}
+.sidebar-item.active{background:rgba(124,92,252,.12);color:var(--accent2);border-left:2px solid var(--accent)}
+.sidebar-item i{font-size:.9rem;width:20px;text-align:center}
+.sidebar-label{white-space:nowrap}
+
+/* ── PAGE AREA ── */
+#page-area{flex:1;position:relative;overflow:hidden;min-width:0}
+.page{position:absolute;inset:0;display:none;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.page::-webkit-scrollbar{width:4px}
+.page::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.page.active{display:block;animation:pageIn .28s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PAGE: MAIN ── */
+#page-main{padding:24px 28px}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.section-title{font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-subtitle{font-size:.72rem;color:var(--muted);margin-top:2px}
+.section-line{flex:1;height:1px;background:var(--border)}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--border);backdrop-filter:blur(16px);border-radius:var(--radius);overflow:hidden;opacity:0;transform:translateY(18px);animation:cardFade .5s ease forwards;transition:border-color .2s,transform .2s,box-shadow .2s;display:flex;flex-direction:column;position:relative}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 8px 32px rgba(124,92,252,.15)}
+@keyframes cardFade{to{opacity:1;transform:translateY(0)}}
+.card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.12s}.card:nth-child(4){animation-delay:.16s}
+.card-badge{position:absolute;top:8px;left:8px;background:var(--success);color:#000;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 8px;border-radius:4px;z-index:2}
+.card-img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-bottom:1px solid var(--border);background:var(--surface2);transition:filter .25s}
+.card:hover .card-img{filter:brightness(1.1)}
+.card-body{padding:12px 14px;flex:1;text-align:center}
+.card-name{font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.02em;color:var(--text)}
+.card-subtitle{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.card-footer{padding:10px 14px 12px;display:flex;align-items:center;justify-content:center;border-top:1px solid var(--border);gap:8px}
+
+/* SEO Footer */
+.seo-footer{margin-top:36px;padding:32px;border-radius:var(--radius);background-image:url('https://shared.fastly.steamstatic.com/community_assets/images/items/636040/931ed57533d122554b8acedc56d55985a81bd928.jpg');background-size:cover;background-position:center;position:relative;overflow:hidden}
+.seo-footer::before{content:'';position:absolute;inset:0;background:rgba(5,5,8,.88);backdrop-filter:blur(4px)}
+.seo-footer-inner{position:relative;z-index:1}
+.seo-footer-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.seo-footer-title{font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:700;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.seo-footer-close{width:28px;height:28px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem;transition:all .2s}
+.seo-footer-close:hover{background:rgba(248,113,113,.15);color:var(--error)}
+.seo-footer p{font-size:.72rem;color:var(--muted);line-height:1.9}
+.seo-footer.collapsed{display:none}
+
+/* ── PAGE: DETAIL ── */
+#page-detail{padding:36px 48px}
+.det-back{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;color:var(--muted);cursor:pointer;margin-bottom:24px;transition:color .2s}
+.det-back:hover{color:var(--accent2)}
+.det-title{font-family:'Outfit',sans-serif;font-size:1.65rem;font-weight:800;color:var(--text);margin-bottom:16px}
+.det-img{width:100%;max-width:560px;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:22px;display:block}
+.det-desc{font-family:'Inter',monospace;font-size:.73rem;color:var(--muted);line-height:1.9;background:var(--surface);border:1px solid var(--border);backdrop-filter:blur(16px);border-radius:var(--radius);padding:18px 20px;white-space:pre-wrap;word-break:break-word;margin-bottom:16px}
+.det-features-title{font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.det-features-box{font-size:.73rem;color:var(--text);line-height:1.8;padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:18px;white-space:pre-wrap;word-break:break-word}
+
+/* ── PAGE: ACCOUNT ── */
+#page-account{padding:32px 28px}
+.account-box{max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);backdrop-filter:blur(16px);padding:28px 28px 24px;margin-bottom:16px}
+.account-box-title{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:.02em;margin-bottom:4px}
+.account-box-sub{font-size:.71rem;color:var(--muted);margin-bottom:20px}
+.account-info-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:.74rem}
+.account-info-row:last-of-type{border-bottom:none}
+.account-info-label{color:var(--muted);font-size:.66rem;text-transform:uppercase;letter-spacing:.08em}
+.account-info-value{color:var(--accent2)}
+.account-actions{margin-top:18px;display:flex;gap:8px}
+.uname-box{max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);backdrop-filter:blur(16px);padding:22px 28px;margin-bottom:16px}
+.uname-box-title{font-family:'Outfit',sans-serif;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:14px}
+.uname-row{display:flex;gap:8px;align-items:center}
+.uname-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text);font-size:.75rem;outline:none;transition:border-color .18s}
+.uname-input:focus{border-color:var(--accent)}
+.uname-input::placeholder{color:var(--muted)}
+#uname-notif{margin-top:10px}
+
+/* Account guest state */
+.acct-guest-box{max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);backdrop-filter:blur(16px);padding:40px 36px;text-align:center}
+.acct-guest-icon{font-size:3rem;margin-bottom:16px;opacity:.4}
+.acct-guest-title{font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:8px}
+.acct-guest-sub{font-size:.78rem;color:var(--muted);margin-bottom:28px;line-height:1.6}
+.acct-guest-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ── PAGE: ADMIN ── */
+#page-admin{padding:28px 28px}
+.admin-header{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.admin-badge{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--error);font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.1em}
+.admin-title{font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800}
+.admin-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:16px;max-width:740px;backdrop-filter:blur(16px)}
+.admin-section-title{font-family:'Outfit',sans-serif;font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.admin-section-title i{color:var(--accent2)}
+.admin-input-row{display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap}
+.admin-input{flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-size:.73rem;outline:none;transition:border-color .18s}
+.admin-input:focus{border-color:var(--accent)}
+.admin-input::placeholder{color:var(--muted)}
+.admin-notif{margin-top:8px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-label{font-size:.75rem;color:var(--text)}
+.toggle-switch{position:relative;width:44px;height:24px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s}
+.toggle-switch.active{background:var(--accent);border-color:var(--accent)}
+.toggle-switch::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle-switch.active::after{transform:translateX(20px)}
+.jailed-list{display:flex;flex-direction:column;gap:8px}
+.jailed-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:.72rem}
+.jailed-email{color:var(--error)}
+.jailed-time{color:var(--muted);font-size:.65rem}
+.user-table{width:100%;border-collapse:collapse;font-size:.72rem}
+.user-table th{text-align:left;padding:10px 12px;background:var(--surface2);border-bottom:1px solid var(--border);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:.65rem}
+.user-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);word-break:break-all}
+.user-table tr:last-child td{border-bottom:none}
+.user-table tr:hover td{background:rgba(124,92,252,.05)}
+.search-filter-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.search-filter-btn{padding:4px 12px;border-radius:99px;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s}
+.search-filter-btn.active,.search-filter-btn:hover{background:rgba(124,92,252,.12);color:var(--accent2);border-color:var(--accent)}
+
+/* ── MINES GAME ── */
+#page-minigames{padding:20px 24px;overflow-y:auto}
+.mines-layout{display:grid;grid-template-columns:300px 1fr auto;gap:16px;max-width:1100px;align-items:start}
+.mines-left{background:rgba(18,18,28,.9);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.mines-tab-row{display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.05);border-radius:8px;padding:3px;gap:3px}
+.mines-tab{padding:9px;border:none;border-radius:6px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .2s;background:transparent;color:var(--muted)}
+.mines-tab.active{background:var(--accent-gradient);color:#fff;box-shadow:0 2px 10px rgba(124,92,252,.35)}
+.mines-field{display:flex;flex-direction:column;gap:6px}
+.mines-field-label{font-size:.68rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.mines-bet-row{display:flex;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden}
+.mines-bet-input{flex:1;background:transparent;border:none;padding:10px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;outline:none}
+.mines-bet-input::placeholder{color:var(--muted)}
+.mines-coin-icon{padding:0 10px;cursor:pointer;display:flex;align-items:center}
+.mines-coin-icon img{width:22px;height:22px;object-fit:contain}
+.mines-bet-half,.mines-bet-2x{padding:0 10px;border-left:1px solid rgba(255,255,255,.06);background:transparent;border-top:none;border-bottom:none;border-right:none;color:var(--muted);font-size:.75rem;font-weight:700;cursor:pointer;height:100%;transition:all .18s;white-space:nowrap}
+.mines-bet-half:hover,.mines-bet-2x:hover{color:var(--accent2);background:rgba(124,92,252,.1)}
+.grid-size-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.grid-size-btn{padding:9px 0;border-radius:6px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .18s;text-align:center}
+.grid-size-btn.active{background:rgba(124,92,252,.2);border-color:rgba(124,92,252,.5);color:var(--accent2)}
+.grid-size-btn:hover{border-color:rgba(124,92,252,.35);color:var(--accent2)}
+.mines-count-row{display:flex;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden}
+.mines-count-val-display{flex:1;padding:10px 12px;display:flex;align-items:center;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;color:var(--text)}
+.mines-count-badge{background:rgba(248,113,113,.15);border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;margin-right:6px;font-size:.7rem}
+.mines-count-btn{width:38px;height:38px;border:none;border-left:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.04);color:var(--muted);cursor:pointer;font-size:.95rem;transition:all .18s;display:flex;align-items:center;justify-content:center}
+.mines-count-btn:hover{background:rgba(124,92,252,.15);color:var(--accent2)}
+.mines-bet-btn{width:100%;padding:14px;border:none;border-radius:8px;background:var(--accent-gradient);color:#fff;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .2s;box-shadow:0 4px 18px rgba(124,92,252,.3)}
+.mines-bet-btn:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 6px 24px rgba(124,92,252,.4)}
+.mines-bet-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.mines-cashout-btn{width:100%;padding:14px;border:none;border-radius:8px;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .2s;display:none;box-shadow:0 4px 18px rgba(22,163,74,.3)}
+.mines-cashout-btn:hover{opacity:.9;transform:translateY(-1px)}
+.mines-cashout-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.mines-cashout-btn.visible{display:block}
+.mines-grid-wrap{display:flex;flex-direction:column;gap:10px}
+.mines-grid{display:grid;gap:8px}
+.mines-grid.g25{grid-template-columns:repeat(5,1fr)}
+.mines-grid.g36{grid-template-columns:repeat(6,1fr)}
+.mines-grid.g49{grid-template-columns:repeat(7,1fr)}
+.mines-grid.g64{grid-template-columns:repeat(8,1fr)}
+.mines-tile{aspect-ratio:1;background:linear-gradient(145deg,#1e1e30,#161622);border:1px solid rgba(255,255,255,.07);border-radius:10px;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;font-size:1.4rem;position:relative;overflow:hidden}
+.mines-tile:hover:not(.revealed){border-color:rgba(124,92,252,.5);background:linear-gradient(145deg,#252540,#1a1a32);transform:scale(1.04);box-shadow:0 4px 16px rgba(124,92,252,.2)}
+.mines-tile.revealed{cursor:default;animation:tileReveal .25s ease forwards}
+@keyframes tileReveal{0%{transform:scale(.85);opacity:.6}100%{transform:scale(1);opacity:1}}
+.mines-tile.gem{background:linear-gradient(145deg,#1a2e20,#14201a);border-color:rgba(74,222,128,.4);box-shadow:0 0 18px rgba(74,222,128,.2)}
+.mines-tile.mine-hit{background:linear-gradient(145deg,#3a1a1a,#2a1212);border-color:rgba(248,113,113,.6);animation:mineShake .4s ease}
+.mines-tile.mine-safe{background:linear-gradient(145deg,#2a1a1a,#1e1212);border-color:rgba(248,113,113,.3);opacity:.7}
+@keyframes mineShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mines-winpill{display:none;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:8px;font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:700;color:var(--success)}
+.mines-winpill.visible{display:flex}
+.mines-payout-col{display:flex;flex-direction:column;gap:4px;min-width:90px}
+.mines-payout-item{display:flex;flex-direction:column;align-items:center;padding:9px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:700;color:var(--muted);transition:all .2s;cursor:default}
+.mines-payout-item.current{background:rgba(124,92,252,.18);border-color:rgba(124,92,252,.5);color:var(--accent2);transform:scale(1.06);box-shadow:0 0 14px rgba(124,92,252,.2)}
+.mines-payout-item.passed{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.25);color:var(--success)}
+.mines-payout-mult{font-size:.72rem;font-weight:600;margin-top:1px}
+.payout-scroll-btn{width:100%;padding:7px 0;border:1px solid rgba(255,255,255,.07);border-radius:8px;background:rgba(255,255,255,.04);color:var(--muted);cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.payout-scroll-btn:hover{background:rgba(124,92,252,.12);color:var(--accent2)}
+
+/* ── JAIL ── */
+#page-jail{display:none;position:fixed;inset:0;z-index:999;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+#page-jail.active{display:flex;animation:pageIn .35s ease forwards}
+.jail-gif{width:200px;height:200px;object-fit:cover;border-radius:var(--radius);border:2px solid var(--border2);margin-bottom:28px}
+.jail-title{font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;color:var(--error);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em}
+.jail-sub{font-size:.8rem;color:var(--muted);margin-bottom:28px;line-height:1.7}
+.jail-timer{font-family:monospace;font-size:2.4rem;font-weight:700;color:var(--warn);margin-bottom:20px;letter-spacing:.08em}
+.jail-timer-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:32px}
+.jail-admin-release{margin-top:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 28px;backdrop-filter:blur(16px)}
+.jail-admin-release-title{font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:12px}
+.jail-admin-input-row{display:flex;gap:8px}
+
+/* ── CHAT SIDEBAR ── */
+#chat-sidebar{flex-shrink:0;width:var(--chat-w);display:flex;flex-direction:column;border-left:1px solid var(--border);background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);position:relative;transition:transform .32s cubic-bezier(.4,0,.2,1),width .32s cubic-bezier(.4,0,.2,1);overflow:hidden}
+#chat-sidebar.minimized{transform:translateX(100%);width:0;border-left-color:transparent}
+#chat-toggle{position:absolute;left:-32px;top:50%;transform:translateY(-50%);width:32px;height:56px;background:var(--surface);border:1px solid var(--border);border-right:none;border-radius:8px 0 0 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem;transition:all .2s;z-index:10;backdrop-filter:blur(16px)}
+#chat-toggle:hover{color:var(--accent2);background:var(--surface2)}
+#chat-inner{width:var(--chat-w);flex:1;display:flex;flex-direction:column;overflow:hidden}
+.chat-header{flex-shrink:0;padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.chat-header-left{display:flex;align-items:center;gap:10px}
+.chat-dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 2.5s infinite}
+.chat-header-title{font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text)}
+.chat-online-count{font-size:.65rem;color:var(--success)}
+#chat-messages{flex:1;min-height:0;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+#chat-messages::-webkit-scrollbar{width:3px}
+#chat-messages::-webkit-scrollbar-thumb{background:var(--border2)}
+.chat-msg{flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:.74rem;line-height:1.5;animation:msgPop .2s ease forwards;opacity:0;transform:translateY(4px);position:relative}
+@keyframes msgPop{to{opacity:1;transform:translateY(0)}}
+.chat-user{display:block;font-size:.65rem;color:var(--accent2);margin-bottom:3px;font-weight:600}
+.chat-msg:hover .msg-actions{opacity:1}
+.msg-actions{position:absolute;top:4px;right:6px;display:flex;gap:3px;opacity:0;transition:opacity .15s}
+.msg-action-btn{background:rgba(124,92,252,.15);border:1px solid var(--border2);border-radius:4px;color:var(--muted);font-size:.58rem;padding:2px 6px;cursor:pointer;transition:all .15s}
+.msg-action-btn:hover{color:var(--accent2);background:rgba(124,92,252,.25)}
+.msg-action-btn.delete-btn:hover{color:var(--error);background:rgba(248,113,113,.15)}
+.chat-reply-quote{font-size:.62rem;color:var(--muted);border-left:2px solid var(--accent);padding-left:6px;margin-bottom:4px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#reply-preview{display:none;padding:6px 10px;background:rgba(124,92,252,.08);border-top:1px solid var(--border);font-size:.62rem;color:var(--muted);align-items:center;gap:6px;flex-shrink:0}
+#reply-preview.active{display:flex}
+.reply-preview-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--accent2)}
+.reply-clear{cursor:pointer;color:var(--muted);font-size:.7rem;transition:color .15s}
+.reply-clear:hover{color:var(--error)}
+.chat-muted-banner{display:none;padding:8px 12px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:var(--radius-sm);font-size:.66rem;color:var(--error);margin:6px 10px;text-align:center}
+#chat-footer{flex-shrink:0;border-top:1px solid var(--border)}
+.typing-bar{padding:3px 12px;font-size:.66rem;color:var(--muted);min-height:20px;transition:opacity .3s}
+.chat-hint{padding:10px 12px 12px;text-align:center;font-size:.68rem;color:var(--muted);line-height:1.6}
+.chat-hint a{color:var(--accent2);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.chat-hint a:hover{color:var(--text)}
+#chat-user-ui{display:none;flex-direction:column;gap:5px;padding:10px}
+.chat-input-row{display:flex;gap:6px;align-items:center}
+.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-size:.74rem;outline:none;transition:border-color .18s}
+.chat-input:focus{border-color:var(--accent)}
+.chat-input::placeholder{color:var(--muted)}
+.char-count{font-size:.63rem;color:var(--muted);text-align:right}
+.chat-send-btn{width:36px;height:36px;background:var(--accent-gradient);border:none;border-radius:var(--radius-sm);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .2s;flex-shrink:0}
+.chat-send-btn:hover{opacity:.85}
+.chat-send-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── BOTTOM NAV ── */
+#bottom-nav{flex-shrink:0;height:var(--bnav-h);background:var(--surface);border-top:1px solid var(--border);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;gap:4px;padding:0 12px;z-index:90}
+.bnav-btn{flex:1;max-width:90px;height:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:.56rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border:none;cursor:pointer;border-radius:var(--radius-sm);color:var(--muted);background:transparent;transition:all .18s}
+.bnav-btn:hover{color:var(--text);background:var(--surface2)}
+.bnav-btn.active{color:var(--accent2);background:rgba(124,92,252,.12)}
+.bnav-btn i{font-size:1rem}
+#mobile-chat-bubble{display:none;position:fixed;bottom:70px;right:16px;width:54px;height:54px;background:var(--accent-gradient);border-radius:50%;cursor:pointer;box-shadow:0 4px 20px rgba(124,92,252,.4);z-index:95;align-items:center;justify-content:center;color:#fff;font-size:1.3rem;transition:transform .2s}
+#mobile-chat-bubble:hover{transform:scale(1.05)}
+#bnav-admin{display:none}
+#sidebar-admin{display:none}
+
+/* ── BUTTONS ── */
+.btn{font-size:.72rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;padding:8px 16px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all .18s ease;font-family:'Inter',sans-serif}
+.btn:active{transform:scale(.97)}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent2);background:rgba(124,92,252,.06)}
+.btn-primary{background:var(--accent-gradient);color:#fff}
+.btn-primary:hover{opacity:.9}
+.btn-discord{background:var(--discord);color:#fff;display:flex;align-items:center;gap:6px}
+.btn-discord:hover{background:#4752c4}
+.btn-sm{padding:6px 12px;font-size:.66rem}
+.btn-danger{background:rgba(248,113,113,.1);color:var(--error);border:1px solid rgba(248,113,113,.25)}
+.btn-danger:hover{background:rgba(248,113,113,.2)}
+.btn-warn{background:rgba(251,191,36,.1);color:var(--warn);border:1px solid rgba(251,191,36,.25)}
+.btn-warn:hover{background:rgba(251,191,36,.2)}
+.btn-locked{background:rgba(122,119,154,.08);color:var(--muted);border:1px solid var(--border);cursor:not-allowed;font-size:.62rem;padding:5px 10px}
+.btn-locked:hover{background:rgba(122,119,154,.14)}
+
+/* ── MODALS ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(5,5,8,.92);backdrop-filter:blur(8px);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.active{display:flex;animation:overlayIn .2s ease}
+@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+.auth-box{background:var(--surface);border:1px solid var(--border);backdrop-filter:blur(16px);border-radius:14px;padding:30px 30px 26px;width:400px;max-width:95vw;position:relative;animation:modalSlide .28s cubic-bezier(.34,1.4,.64,1) forwards;transform:scale(.92) translateY(14px);opacity:0}
+.modal-close{position:absolute;top:11px;right:11px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;color:var(--muted);width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;transition:all .18s}
+.modal-close:hover{background:rgba(248,113,113,.12);color:var(--error);border-color:rgba(248,113,113,.28)}
+.auth-title{font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:.02em;margin-bottom:4px}
+.auth-subtitle{font-size:.72rem;color:var(--muted);margin-bottom:18px}
+.notif-area{margin-bottom:10px}
+.menu-notif{padding:8px 12px;border-radius:var(--radius-sm);font-size:.72rem;line-height:1.4;animation:notifIn .2s ease}
+@keyframes notifIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.menu-notif.error{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.22);color:var(--error)}
+.menu-notif.success{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.22);color:var(--success)}
+.menu-notif.info{background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.22);color:var(--accent2)}
+.auth-field{margin-bottom:12px;position:relative}
+.auth-label{display:block;font-size:.67rem;color:var(--muted);margin-bottom:5px;letter-spacing:.06em;text-transform:uppercase}
+.auth-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;color:var(--text);font-size:.78rem;outline:none;transition:border-color .18s;font-family:'Inter',sans-serif}
+.auth-input:focus{border-color:var(--accent)}
+.auth-input.with-eye{padding-right:42px}
+.eye-toggle{position:absolute;right:12px;bottom:11px;color:var(--muted);cursor:pointer;font-size:.85rem;transition:color .18s}
+.eye-toggle:hover{color:var(--accent2)}
+.auth-switch{margin-top:14px;text-align:center;font-size:.68rem;color:var(--muted)}
+.auth-link{color:var(--accent2);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.auth-link:hover{color:var(--text)}
+
+/* Auth segmented toggle */
+.auth-seg-wrap{display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.05);border-radius:8px;padding:3px;gap:3px;margin-bottom:20px}
+.auth-seg-btn{padding:9px;border:none;border-radius:6px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .2s;background:transparent;color:var(--muted)}
+.auth-seg-btn.active{background:var(--accent-gradient);color:#fff;box-shadow:0 2px 10px rgba(124,92,252,.35)}
+
+/* Password validators */
+.pw-validators{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.pw-check{display:flex;align-items:center;gap:8px;font-size:.67rem;color:var(--muted);transition:color .2s}
+.pw-check.ok{color:var(--accent2)}
+.pw-check-icon{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--muted);display:flex;align-items:center;justify-content:center;font-size:.5rem;flex-shrink:0;transition:all .2s}
+.pw-check.ok .pw-check-icon{border-color:var(--accent);background:rgba(124,92,252,.18);color:var(--accent)}
+
+/* ToS checkbox */
+.tos-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;font-size:.67rem;color:var(--muted);line-height:1.5}
+.tos-row input[type=checkbox]{width:15px;height:15px;margin-top:1px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+
+/* Resend UI */
+.resend-ui{display:none;margin-top:9px}
+.resend-bar-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;height:30px;position:relative;display:flex;align-items:center}
+.resend-bar-fill{position:absolute;left:0;top:0;bottom:0;background:rgba(124,92,252,.16);border-radius:var(--radius-sm)}
+.resend-bar-text{position:relative;z-index:1;width:100%;text-align:center;font-size:.67rem;color:var(--muted)}
+.resend-ready{display:none;margin-top:7px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  #left-sidebar{display:none}
+  .hamburger{display:none}
+  #bottom-nav{display:flex}
+  #mobile-chat-bubble{display:flex}
+  #chat-sidebar{position:fixed;top:0;right:0;bottom:0;z-index:150;width:100%;max-width:340px;transform:translateX(100%)}
+  #chat-sidebar.mobile-open{transform:translateX(0)}
+  #chat-toggle{display:none}
+  .cards-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  #page-main,#page-minigames,#page-account,#page-admin{padding:16px}
+  #page-detail{padding:20px}
+  .mines-layout{grid-template-columns:1fr;gap:12px}
+  .mines-payout-col{flex-direction:row;flex-wrap:wrap;gap:6px;min-width:unset}
+  .mines-payout-item{flex:0 0 auto}
+}
+@media(min-width:901px){
+  #bottom-nav{display:none}
+  #mobile-chat-bubble{display:none}
 }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <img src="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png?ex=69e9f645&is=69e8a4c5&hm=22909dc23bb8b6999ec71ae206330a4bba32125301f5b017aafb5df0b41d42e6&" class="logo">
-    
-    <h1>Welcome to pixelworldscheats.xyz, updating the website.</h1>
-    <p>ETA: 10-30 MINUTES please wait &lt;3</p>
-    
-    <img src="https://static.klipy.com/ii/4e7bea9f7a3371424e6c16ebc93252fe/2b/64/bThkOVsHQClrKTw0qDp.gif" class="update-gif" alt="Updating...">
+<!-- ═══════════════ SPLASH ═══════════════ -->
+<div id="splash">
+  <img id="splash-logo"
+    src="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png"
+    alt="pixelworldscheats.xyz">
+  <div id="splash-bar-wrap"><div id="splash-bar"></div></div>
+  <div id="splash-label">Loading…</div>
 </div>
 
-<script>
-    let toggle = false;
-    setInterval(() => {
-        document.title = toggle ? "Updating Website..." : "Please wait <3";
-        toggle = !toggle;
-    }, 2000);
-</script>
+<!-- ═══════════════ CENTER NOTIFICATION (shown to guests after splash) ═══════════════ -->
+<div id="center-notif-overlay">
+  <div id="center-notif-box">
+    <div id="center-notif-icon">⚠️</div>
+    <div id="center-notif-title">Please make a new account</div>
+    <div id="center-notif-desc">Hello, I have updated the website and had to remove old accounts so if you want to use the website you will have to create a new account.</div>
+    <button id="center-notif-close" disabled onclick="dismissCenterNotif()">Got it</button>
+    <div id="center-notif-timer-txt">Please wait 3.5 seconds…</div>
+  </div>
+</div>
 
+<div id="app">
+
+  <!-- TOP NAV -->
+  <nav>
+    <div class="nav-left">
+      <button class="hamburger" id="hamburger-btn" onclick="toggleSidebar()">
+        <span></span><span></span><span></span>
+      </button>
+      <img class="logo-img"
+        src="https://cdn.discordapp.com/attachments/1492585431949377666/1496459777210060810/Gemini_Generated_Image_rygx4prygx4prygx-removebg-preview.png"
+        alt="pixelworldscheats.xyz" onclick="showPage('main')">
+    </div>
+    <div class="nav-right">
+      <a href="https://discord.gg/QV69upuxbg" target="_blank" style="text-decoration:none">
+        <button class="btn btn-discord btn-sm"><i class="fab fa-discord"></i> discord server</button>
+      </a>
+      <div id="balance-display" onclick="showPage('minigames')" title="Play Mines">
+        <img class="bc-icon" src="https://cdn.discordapp.com/emojis/1495147175489962214.webp?size=96" alt="BC">
+        <span id="balance-amount">0</span> BC
+      </div>
+      <div id="nav-guest">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('login-modal')">Log In</button>
+        <button class="btn btn-primary btn-sm" onclick="openModal('reg-modal')">register</button>
+      </div>
+      <div id="nav-user">
+        <span class="user-tag" id="user-tag">—</span>
+        <button class="btn btn-danger btn-sm" onclick="doSignOut()">log out ):</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT ROW -->
+  <div id="content-row">
+
+    <!-- LEFT SIDEBAR -->
+    <div id="left-sidebar">
+      <div class="sidebar-online">
+        <div class="sidebar-online-dot"></div>
+        <span class="sidebar-online-text" id="online-count">... online</span>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Main</div>
+        <div class="sidebar-item active" id="si-main" onclick="showPage('main')">
+          <i class="fas fa-th-large"></i><span class="sidebar-label">Pixel Worlds Cheats</span>
+        </div>
+        <div class="sidebar-item" id="si-minigames" onclick="showPage('minigames')">
+          <i class="fas fa-bomb"></i><span class="sidebar-label">Mines</span>
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Profile</div>
+        <div class="sidebar-item" id="si-account" onclick="showPage('account')">
+          <i class="fas fa-user"></i><span class="sidebar-label">Account</span>
+        </div>
+      </div>
+      <div class="sidebar-section" id="sidebar-admin">
+        <div class="sidebar-section-title">Warden</div>
+        <div class="sidebar-item" id="si-admin" onclick="showPage('admin')">
+          <i class="fas fa-shield-alt"></i><span class="sidebar-label">Warden Panel</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE AREA -->
+    <div id="page-area">
+
+      <!-- PAGE: MAIN -->
+      <div id="page-main" class="page active">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Pixel Worlds Cheats</div>
+            <div class="section-subtitle">Free PW cheats and tools. Verified working, instant download.</div>
+          </div>
+          <div class="section-line"></div>
+        </div>
+        <div class="cards-grid">
+          <div class="card">
+            <span class="card-badge">New</span>
+            <img class="card-img" src="https://cdn.discordapp.com/attachments/1492616427230728415/1492616755439341678/image.png?ex=69e9d2ed&is=69e8816d&hm=f162004925efa7e603e5090cd61815ec2cc493316d838d71f9d94eb053634f76&" alt="Charon" onerror="this.style.background='#18181f';this.removeAttribute('src')">
+            <div class="card-body"><div class="card-name">charon v2.0 [best cracked]</div><div class="card-subtitle">Pixelworldscheats</div></div>
+            <div class="card-footer"><button class="btn btn-ghost btn-sm" onclick="openDetail('charon')">Information</button></div>
+          </div>
+          <div class="card">
+            <img class="card-img" src="https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e9ef86&is=69e89e06&hm=cef7c89730fecdeadf415a3997c4857ac7a78da6e63674ffa3e9c1e5805f81da&" alt="AutoMath" onerror="this.style.background='#18181f';this.removeAttribute('src')">
+            <div class="card-body"><div class="card-name">AutoMath pixelworlds [free]</div><div class="card-subtitle">Pixelworldscheats</div></div>
+            <div class="card-footer"><button class="btn btn-ghost btn-sm" onclick="openDetail('automath')">Information</button></div>
+          </div>
+          <div class="card">
+            <img class="card-img" src="https://cdn.discordapp.com/attachments/1492915866797342976/1495336661331214366/image.png?ex=69e9d4ca&is=69e8834a&hm=7a66d41fc4485762ba4be823cfa3e9c1e5805f81da4" alt="TTT Bot" onerror="this.style.background='#18181f';this.removeAttribute('src')">
+            <div class="card-body"><div class="card-name">Tictactoe bot v3.1 [free html]</div><div class="card-subtitle">Pixelworldscheats</div></div>
+            <div class="card-footer"><button class="btn btn-ghost btn-sm" onclick="openDetail('tictactoe')">Information</button></div>
+          </div>
+          <div class="card">
+            <img class="card-img" src="https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg" alt="Hyx" onerror="this.style.background='#18181f';this.removeAttribute('src')">
+            <div class="card-body"><div class="card-name">Hyx Client Free [good autonether]</div><div class="card-subtitle">Pixelworldscheats</div></div>
+            <div class="card-footer"><button class="btn btn-ghost btn-sm" onclick="openDetail('hyx')">Information</button></div>
+          </div>
+        </div>
+        <div class="seo-footer" id="seo-footer">
+          <div class="seo-footer-inner">
+            <div class="seo-footer-header">
+              <h1 class="seo-footer-title">About pixelworldscheats.xyz &amp; Tools</h1>
+              <button class="seo-footer-close" onclick="document.getElementById('seo-footer').classList.add('collapsed')"><i class="fas fa-times"></i></button>
+            </div>
+            <p>Welcome to <strong>pixelworldscheats.xyz</strong> — the ultimate hub for <strong>Pixel Worlds cheats</strong>, <strong>free PW hacks</strong>, and tools. Our platform is the #1 destination for anyone searching for <strong>Pixel Worlds exploit downloads</strong>, <strong>Charon Client</strong>, <strong>Hyx Client</strong>, PW autofarm scripts, and free resources. We host verified working cheats for Pixel Worlds including autofarm, automine, autofish, nether hacks, godmode, fly, warp hacks, and much more. Join our coder discussion community, use our Bytecoin Mines game, and download the latest free tools updated for 2026. All cheats are tested and safe for download. Whether you're looking for <strong>Pixel Worlds scripts</strong>, <strong>BepInEx mods</strong>, or just want to explore free gaming resources, pixelworldscheats.xyz is your go-to community site.</p>
+          </div>
+        </div>
+      </div><!-- /page-main -->
+
+      <!-- PAGE: DETAIL -->
+      <div id="page-detail" class="page">
+        <div class="det-back" onclick="showPage('main')"><i class="fas fa-arrow-left"></i>&nbsp; Back to Cheats</div>
+        <img class="det-img" id="det-img" src="" alt="">
+        <div class="det-title" id="det-title"></div>
+        <div class="det-desc" id="det-desc"></div>
+        <div class="det-features-title">Features:</div>
+        <div class="det-features-box" id="det-features"></div>
+        <button class="btn btn-primary" id="det-dl" style="min-width:200px">Download</button>
+      </div>
+
+      <!-- PAGE: ACCOUNT -->
+      <div id="page-account" class="page">
+        <!-- Guest state -->
+        <div id="account-guest" style="display:none">
+          <div class="acct-guest-box">
+            <div class="acct-guest-icon">👤</div>
+            <div class="acct-guest-title">No account found</div>
+            <div class="acct-guest-sub">Seems like you don't own an account yet, please make one :D</div>
+            <div class="acct-guest-btns">
+              <button class="btn btn-primary" onclick="openModal('login-modal')">Login</button>
+              <button class="btn btn-ghost" onclick="openModal('reg-modal')">Create Account</button>
+            </div>
+          </div>
+        </div>
+        <!-- Logged-in state -->
+        <div id="account-logged" style="display:none">
+          <div class="account-box">
+            <div class="account-box-title">Your Account</div>
+            <div class="account-box-sub">pixelworldscheats.xyz member</div>
+            <div class="account-info-row"><span class="account-info-label">Username</span><span class="account-info-value" id="acct-username">—</span></div>
+            <div class="account-info-row"><span class="account-info-label">Email</span><span class="account-info-value" id="acct-email">—</span></div>
+            <div class="account-info-row"><span class="account-info-label">UID</span><span class="account-info-value" id="acct-uid" style="font-size:.62rem;word-break:break-all">—</span></div>
+            <div class="account-info-row"><span class="account-info-label">Join Date</span><span class="account-info-value" id="acct-joined">—</span></div>
+            <div class="account-info-row"><span class="account-info-label">Balance</span><span class="account-info-value" id="acct-balance">—</span></div>
+            <div class="account-info-row"><span class="account-info-label">Status</span><span class="account-info-value" style="color:var(--success)">✓ Verified</span></div>
+            <div class="account-actions"><button class="btn btn-danger btn-sm" onclick="doSignOut()">Sign Out</button></div>
+          </div>
+          <div class="uname-box">
+            <div class="uname-box-title">Change Username</div>
+            <div id="uname-locked-notice" style="display:none;font-size:.7rem;color:var(--muted);margin-bottom:8px;">You have already changed your username once.</div>
+            <div class="uname-row" id="uname-row">
+              <input class="uname-input" id="uname-input" type="text" placeholder="New username…" maxlength="24" onkeydown="if(event.key==='Enter')changeUsername()">
+              <button class="btn btn-primary btn-sm" onclick="changeUsername()">Save</button>
+            </div>
+            <div id="uname-notif"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: MINES -->
+      <div id="page-minigames" class="page">
+        <div class="mines-layout">
+          <!-- LEFT Controls -->
+          <div class="mines-left">
+            <div class="mines-tab-row">
+              <button class="mines-tab active" id="mines-tab-manual" onclick="setMinesTab('manual')">Manual</button>
+              <button class="mines-tab" id="mines-tab-auto" onclick="setMinesTab('auto')" disabled title="Coming soon">Auto</button>
+            </div>
+            <div class="mines-field">
+              <div class="mines-field-label">Bet Amount</div>
+              <div class="mines-bet-row">
+                <input class="mines-bet-input" id="mines-bet" type="number" min="1" placeholder="Amount">
+                <span class="mines-coin-icon" title="Max bet" onclick="setMaxBet()">
+                  <img src="https://cdn.discordapp.com/emojis/1495147175489962214.webp?size=96" alt="BC">
+                </span>
+                <button class="mines-bet-half" onclick="halveBet()">½</button>
+                <button class="mines-bet-2x" onclick="doubleBet()">2x</button>
+              </div>
+            </div>
+            <div class="mines-field">
+              <div class="mines-field-label">Grid Size</div>
+              <div class="grid-size-row">
+                <button class="grid-size-btn active" data-size="25" onclick="setGridSize(this)">25</button>
+                <button class="grid-size-btn" data-size="36" onclick="setGridSize(this)">36</button>
+                <button class="grid-size-btn" data-size="49" onclick="setGridSize(this)">49</button>
+                <button class="grid-size-btn" data-size="64" onclick="setGridSize(this)">64</button>
+              </div>
+            </div>
+            <div class="mines-field">
+              <div class="mines-field-label">Number Of Mines</div>
+              <div class="mines-count-row">
+                <div class="mines-count-val-display">
+                  <span class="mines-count-badge">💣</span>
+                  <span id="mines-count-display">1</span>
+                </div>
+                <input type="hidden" id="mines-count" value="1">
+                <button class="mines-count-btn" onclick="adjustMineCount(1)">&#9650;</button>
+                <button class="mines-count-btn" onclick="adjustMineCount(-1)">&#9660;</button>
+              </div>
+            </div>
+            <button class="mines-bet-btn" id="mines-start-btn" onclick="startMinesGame()">Place Bet</button>
+            <button class="mines-cashout-btn" id="mines-cashout-btn" onclick="cashoutMines()">Cash Out</button>
+          </div>
+          <!-- MIDDLE Grid -->
+          <div class="mines-grid-wrap">
+            <div class="mines-winpill" id="mines-winpill">
+              <span>💰</span>
+              <span id="mines-winpill-val">0.00 BC</span>
+            </div>
+            <div class="mines-grid g25" id="mines-grid"></div>
+          </div>
+          <!-- RIGHT Payout ladder -->
+          <div class="mines-payout-col" id="mines-payout-col">
+            <button class="payout-scroll-btn" onclick="scrollPayouts(-1)">&#9650;</button>
+            <button class="payout-scroll-btn" onclick="scrollPayouts(1)">&#9660;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: ADMIN / WARDEN PANEL -->
+      <div id="page-admin" class="page">
+        <div class="admin-header">
+          <div class="admin-title">Warden Panel</div>
+          <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin Only</span>
+        </div>
+
+        <div class="admin-section">
+          <div class="admin-section-title"><i class="fas fa-bolt"></i> Server Bypass Controls</div>
+          <div class="toggle-row"><span class="toggle-label">Speed Bypass</span><div class="toggle-switch" id="toggle-speed-bypass" onclick="toggleBypass('speedBypass')"></div></div>
+          <div class="toggle-row"><span class="toggle-label">Chat Limit Bypass</span><div class="toggle-switch" id="toggle-chat-bypass" onclick="toggleBypass('chatLimitBypass')"></div></div>
+        </div>
+
+        <div class="admin-section">
+          <div class="admin-section-title"><i class="fas fa-rotate"></i> Force Reload for All Users</div>
+          <p style="font-size:.7rem;color:var(--muted);margin-bottom:12px;">Pushing a new version causes every connected client to reload automatically.</p>
+          <button class="btn btn-primary btn-sm" onclick="adminForceReload()"><i class="fas fa-broadcast-tower"></i> Deploy New Version</button>
+          <div class="admin-notif" id="reload-notif"></div>
+        </div>
+
+        <div class="admin-section">
+          <div class="admin-section-title"><i class="fas fa-users"></i> User Searcher</div>
+          <div class="search-filter-row">
+            <button class="search-filter-btn active" data-filter="all"      onclick="setSearchFilter(this)">All</button>
+            <button class="search-filter-btn" data-filter="uid"             onclick="setSearchFilter(this)">UID</button>
+            <button class="search-filter-btn" data-filter="email"           onclick="setSearchFilter(this)">Email</button>
+            <button class="search-filter-btn" data-filter="username"        onclick="setSearchFilter(this)">Username</button>
+          </div>
+          <div class="admin-input-row">
+            <input class="admin-input" id="user-search" type="text" placeholder="Search by name or email…" onkeydown="if(event.key==='Enter')searchUsers()">
+            <button class="btn btn-primary btn-sm" onclick="searchUsers()">Search</button>
+            <button class="btn btn-ghost btn-sm" onclick="loadAllUsers()">Load All</button>
+          </div>
+          <div id="user-search-results" style="margin-top:12px;overflow-x:auto"></div>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Balance Control</div>
+            <div class="admin-input-row">
+              <input class="admin-input" id="balance-uid" type="text" placeholder="User UID">
+              <input class="admin-input" id="bc-amount-input" type="number" placeholder="Amount" style="max-width:100px" value="500">
+              <button class="btn btn-primary btn-sm" onclick="addBalance()">Add</button>
+              <button class="btn btn-danger btn-sm" onclick="removeBalance()">Remove</button>
+              <button class="btn btn-ghost btn-sm" onclick="viewBalance()">View</button>
+            </div>
+            <div class="admin-notif" id="balance-notif"></div>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <div class="admin-section-title"><i class="fas fa-microphone-slash"></i> Mute User</div>
+          <div class="admin-input-row">
+            <input class="admin-input" id="mute-email" type="email" placeholder="user@example.com">
+            <button class="btn btn-warn btn-sm" onclick="adminMuteUser()">Mute</button>
+            <button class="btn btn-ghost btn-sm" onclick="adminUnmuteUser()">Unmute</button>
+          </div>
+          <div class="admin-notif" id="mute-notif"></div>
+        </div>
+
+        <div class="admin-section">
+          <div class="admin-section-title"><i class="fas fa-lock"></i> Jail User</div>
+          <div class="admin-input-row">
+            <input class="admin-input" id="jail-email" type="email" placeholder="user@example.com">
+            <input class="admin-input" id="jail-duration" type="number" placeholder="Minutes" style="max-width:110px" value="30">
+            <button class="btn btn-danger btn-sm" onclick="adminJailUser()">Jail</button>
+          </div>
+          <div class="admin-notif" id="jail-notif"></div>
+          <div style="margin-top:16px">
+            <div style="font-size:.66rem;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">Currently Jailed</div>
+            <div class="jailed-list" id="jailed-list"><div style="font-size:.68rem;color:var(--muted)">No one jailed.</div></div>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <div class="admin-section-title"><i class="fas fa-trash"></i> Delete Message by ID</div>
+          <div class="admin-input-row">
+            <input class="admin-input" id="del-msg-id" type="text" placeholder="Firebase message key">
+            <button class="btn btn-danger btn-sm" onclick="adminDeleteMessage()">Delete</button>
+          </div>
+          <div class="admin-notif" id="del-notif"></div>
+          <p style="font-size:.62rem;color:var(--muted);margin-top:8px">Hover a chat message and click DEL to auto-fill the key.</p>
+        </div>
+      </div>
+
+    </div><!-- /page-area -->
+
+    <!-- CHAT SIDEBAR -->
+    <div id="chat-sidebar">
+      <button id="chat-toggle" onclick="toggleChat()" title="Toggle chat">
+        <i class="fas fa-chevron-right" id="chat-toggle-icon"></i>
+      </button>
+      <div id="chat-inner">
+        <div class="chat-header">
+          <div class="chat-header-left">
+            <div class="chat-dot"></div>
+            <span class="chat-header-title">Chat</span>
+          </div>
+          <span class="chat-online-count" id="chat-online-badge">0 online</span>
+        </div>
+        <div id="chat-messages"></div>
+        <div class="chat-muted-banner" id="chat-muted-banner">🔇 You are muted and cannot send messages.</div>
+        <div id="chat-footer">
+          <div class="typing-bar" id="typing-bar"></div>
+          <div id="reply-preview">
+            <span style="color:var(--muted);font-size:.6rem">↩ Replying to:</span>
+            <span class="reply-preview-text" id="reply-preview-text"></span>
+            <span class="reply-clear" onclick="clearReply()"><i class="fas fa-times"></i></span>
+          </div>
+          <div class="chat-hint" id="chat-guest-ui"><a onclick="openModal('login-modal')">Log in</a> to send messages.</div>
+          <div id="chat-user-ui">
+            <div class="char-count" id="char-count">0 / 120</div>
+            <div class="chat-input-row">
+              <input class="chat-input" id="chat-input" type="text" placeholder="Say something…" maxlength="120">
+              <button class="chat-send-btn" id="chat-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-row -->
+
+  <!-- BOTTOM NAV (mobile) -->
+  <div id="bottom-nav">
+    <button class="bnav-btn active" id="bnav-main"      onclick="showPage('main')"><i class="fas fa-th-large"></i><span>Cheats</span></button>
+    <button class="bnav-btn"        id="bnav-minigames" onclick="showPage('minigames')"><i class="fas fa-bomb"></i><span>Mines</span></button>
+    <button class="bnav-btn"        id="bnav-account"   onclick="showPage('account')"><i class="fas fa-user"></i><span>Account</span></button>
+    <button class="bnav-btn"        id="bnav-admin"     onclick="showPage('admin')"><i class="fas fa-shield-alt"></i><span>Warden</span></button>
+  </div>
+  <div id="mobile-chat-bubble" onclick="toggleMobileChat()"><i class="fas fa-comment"></i></div>
+
+</div><!-- /app -->
+
+<!-- JAIL OVERLAY -->
+<div id="page-jail">
+  <img class="jail-gif" src="https://media.discordapp.net/attachments/984502793970802770/1190554316621226165/giphy.gif" alt="Jail">
+  <div class="jail-title">You Are In Jail because you were being a retard</div>
+  <div class="jail-sub">dont do that again, you are in jail</div>
+  <div class="jail-timer" id="jail-timer">--:--:--</div>
+  <div class="jail-timer-label">remaining time until release</div>
+  <div class="jail-admin-release" id="jail-admin-release" style="display:none">
+    <div class="jail-admin-release-title">Admin: Release User Early</div>
+    <div class="jail-admin-input-row">
+      <input class="admin-input" id="jail-release-email" type="email" placeholder="user@example.com to release">
+      <button class="btn btn-primary btn-sm" onclick="adminReleaseUser()">Release</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="auth-box">
+    <button class="modal-close" onclick="closeModal('login-modal')"><i class="fas fa-times"></i></button>
+    <div class="auth-title">Welcome back</div>
+    <div class="auth-subtitle">Sign in to your account</div>
+    <div class="notif-area" id="login-notifs"></div>
+    <div class="auth-field">
+      <label class="auth-label">Email</label>
+      <input class="auth-input" id="log-email" type="email" placeholder="Example@gmail.com">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Password</label>
+      <input class="auth-input with-eye" id="log-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
+      <span class="eye-toggle" onclick="toggleEye('log-pass',this)"><i class="fas fa-eye"></i></span>
+    </div>
+    <div class="resend-ui" id="resend-ui-log">
+      <div class="resend-bar-wrap">
+        <div class="resend-bar-fill" id="resend-fill-log" style="width:100%"></div>
+        <div class="resend-bar-text" id="resend-text-log">Verification email sent, check spam</div>
+      </div>
+    </div>
+    <div class="resend-ready" id="resend-ready-log">
+      <button class="btn btn-ghost" style="width:100%;font-size:.7rem" onclick="resendEmail('log')">Resend verification email</button>
+    </div>
+    <br>
+    <button class="btn btn-primary" style="width:100%" onclick="login()">Log In</button>
+    <div class="auth-switch">No account? <span class="auth-link" onclick="closeModal('login-modal');openModal('reg-modal')">Sign up</span></div>
+  </div>
+</div>
+
+<!-- REGISTER MODAL — rebuilt with segmented toggle, validators, ToS -->
+<div class="modal-overlay" id="reg-modal">
+  <div class="auth-box">
+    <button class="modal-close" onclick="closeModal('reg-modal')"><i class="fas fa-times"></i></button>
+
+    <!-- Segmented toggle -->
+    <div class="auth-seg-wrap">
+      <button class="auth-seg-btn active" id="seg-signup" onclick="setAuthSeg('signup')">Sign Up</button>
+      <button class="auth-seg-btn" id="seg-signin" onclick="setAuthSeg('signin')">Sign In</button>
+    </div>
+
+    <!-- SIGN UP view -->
+    <div id="reg-signup-view">
+      <div class="notif-area" id="reg-notifs"></div>
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <input class="auth-input" id="reg-email" type="email" placeholder="Example@gmail.com">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Username</label>
+        <input class="auth-input" id="reg-username" type="text" placeholder="MyUsername" maxlength="24">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <input class="auth-input with-eye" id="reg-pass" type="password" placeholder="••••••••" oninput="checkPwStrength()">
+        <span class="eye-toggle" onclick="toggleEye('reg-pass',this)"><i class="fas fa-eye"></i></span>
+      </div>
+      <!-- Live validators -->
+      <div class="pw-validators">
+        <div class="pw-check" id="pwc-len">
+          <div class="pw-check-icon"><i class="fas fa-check"></i></div>
+          <span>Min. 8 characters</span>
+        </div>
+        <div class="pw-check" id="pwc-numsym">
+          <div class="pw-check-icon"><i class="fas fa-check"></i></div>
+          <span>Min. 1 number &amp; symbol</span>
+        </div>
+        <div class="pw-check" id="pwc-case">
+          <div class="pw-check-icon"><i class="fas fa-check"></i></div>
+          <span>Lowercase &amp; uppercase letters</span>
+        </div>
+        <div class="pw-check" id="pwc-noname">
+          <div class="pw-check-icon"><i class="fas fa-check"></i></div>
+          <span>Password doesn't contain your username</span>
+        </div>
+      </div>
+      <!-- ToS -->
+      <div class="tos-row">
+        <input type="checkbox" id="reg-tos" onchange="checkRegBtn()">
+        <label for="reg-tos">I confirm that I am at least 13 years old and agree to the Terms of Service and Privacy Policy.</label>
+      </div>
+      <div class="resend-ui" id="resend-ui-reg">
+        <div class="resend-bar-wrap">
+          <div class="resend-bar-fill" id="resend-fill-reg" style="width:100%"></div>
+          <div class="resend-bar-text" id="resend-text-reg">Check your inbox and spam…</div>
+        </div>
+      </div>
+      <div class="resend-ready" id="resend-ready-reg">
+        <button class="btn btn-ghost" style="width:100%;font-size:.7rem" onclick="resendEmail('reg')">Resend verification email</button>
+      </div>
+      <button class="btn btn-primary" id="reg-submit-btn" style="width:100%" onclick="signUp()" disabled>Create Account</button>
+    </div>
+
+    <!-- SIGN IN view (mirrors login modal inline) -->
+    <div id="reg-signin-view" style="display:none">
+      <div class="notif-area" id="reg-login-notifs"></div>
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <input class="auth-input" id="reg-log-email" type="email" placeholder="Example@gmail.com">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <input class="auth-input with-eye" id="reg-log-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginFromReg()">
+        <span class="eye-toggle" onclick="toggleEye('reg-log-pass',this)"><i class="fas fa-eye"></i></span>
+      </div>
+      <br>
+      <button class="btn btn-primary" style="width:100%" onclick="loginFromReg()">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FIREBASE v9 COMPAT + JS LOGIC
+══════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+// ═══════════════════════════════════════
+//  FIREBASE INIT
+// ═══════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyCM-ySTXgy37zVUMB2vy4ZJQ3MWlDD5g4E",
+  authDomain: "efn-archive.firebaseapp.com",
+  projectId: "efn-archive",
+  storageBucket: "efn-archive.firebasestorage.app",
+  messagingSenderId: "1073610968306",
+  appId: "1:1073610968306:web:72e03b6f43decbb636546b",
+  databaseURL: "https://efn-archive-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.database();
+
+// ═══════════════════════════════════════
+//  GLOBAL STATE
+// ═══════════════════════════════════════
+const ADMIN_EMAIL = 'djfkfk186@gmail.com';
+let currentUser      = null;
+let userBalance      = 0;
+let lastMsgSent      = 0;
+let lastMailSent     = { log:0, reg:0 };
+let replyingTo       = null;
+let userIsMuted      = false;
+let adminSearchFilter= 'all';
+let jailListener     = null;
+let jailTimerInterval= null;
+
+// Password strength state
+let pwValid = { len:false, numsym:false, case:false, noname:false };
+
+function isAdmin(u){ return u && u.emailVerified && u.email === ADMIN_EMAIL; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function emailToKey(e){ return e.replace(/\./g,','); }
+function getDisplayName(){
+  const u = auth.currentUser;
+  if(!u) return '?';
+  return u.displayName || u.email.split('@')[0];
+}
+
+// ═══════════════════════════════════════
+//  SPLASH — exactly 2s then fade out
+// ═══════════════════════════════════════
+window.addEventListener('load', () => {
+  const bar   = document.getElementById('splash-bar');
+  const splash = document.getElementById('splash');
+  setTimeout(() => { if(bar) bar.style.width = '100%'; }, 50);
+  setTimeout(() => {
+    if(splash){
+      splash.style.opacity = '0';
+      setTimeout(() => { splash.classList.add('hidden'); }, 500);
+    }
+  }, 2000);
+});
+
+// ═══════════════════════════════════════
+//  CENTER NOTIFICATION (guests only, after splash)
+// ═══════════════════════════════════════
+let centerNotifDismissed = false;
+function showCenterNotif(){
+  if(centerNotifDismissed) return;
+  const overlay = document.getElementById('center-notif-overlay');
+  overlay.classList.add('active');
+  const btn = document.getElementById('center-notif-close');
+  const txt = document.getElementById('center-notif-timer-txt');
+  let t = 3.5;
+  btn.disabled = true;
+  const iv = setInterval(() => {
+    t = Math.max(0, t - 0.1);
+    if(t <= 0){
+      clearInterval(iv);
+      btn.disabled = false;
+      btn.classList.add('ready');
+      txt.style.display = 'none';
+    } else {
+      txt.textContent = `Please wait ${t.toFixed(1)} seconds…`;
+    }
+  }, 100);
+}
+window.dismissCenterNotif = () => {
+  centerNotifDismissed = true;
+  document.getElementById('center-notif-overlay').classList.remove('active');
+};
+
+// ═══════════════════════════════════════
+//  SPLASH done → show notif if guest
+// ═══════════════════════════════════════
+setTimeout(() => {
+  if(!currentUser) showCenterNotif();
+}, 2600);
+
+// ═══════════════════════════════════════
+//  TAB TITLE CYCLE
+// ═══════════════════════════════════════
+const tabTitles = ['pixelworldscheats.xyz','free pw cheats <3'];
+let tabIdx = 0;
+setInterval(() => { tabIdx=(tabIdx+1)%2; document.title=tabTitles[tabIdx]; }, 2000);
+
+// ═══════════════════════════════════════
+//  PRESENCE & ONLINE COUNTER
+// ═══════════════════════════════════════
+const presenceKey = `p_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+const presRef = db.ref(`presence/${presenceKey}`);
+
+db.ref('.info/connected').on('value', snap => {
+  if(snap.val() === true){
+    presRef.set({ ts: Date.now() });
+    presRef.onDisconnect().remove();
+  }
+});
+db.ref('presence').on('value', snap => {
+  const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+  const txt = `${count} online`;
+  const oc = document.getElementById('online-count');
+  const ob = document.getElementById('chat-online-badge');
+  if(oc) oc.innerText = txt;
+  if(ob) ob.innerText = txt;
+});
+
+// ═══════════════════════════════════════
+//  FORCE RELOAD
+// ═══════════════════════════════════════
+let siteVersionLoaded = false, currentSiteVersion = null;
+db.ref('siteVersion').on('value', snap => {
+  const v = snap.val();
+  if(!siteVersionLoaded){ currentSiteVersion=v; siteVersionLoaded=true; return; }
+  if(v && v !== currentSiteVersion) location.reload();
+});
+window.adminForceReload = async () => {
+  if(!currentUser || !isAdmin(currentUser)) return;
+  await db.ref('siteVersion').set(Date.now().toString());
+  notify('reload-notif','Deployed — all clients will reload.','success');
+};
+
+// ═══════════════════════════════════════
+//  CHEAT DATA
+// ═══════════════════════════════════════
+const CHEATS = {
+  charon:{
+    name:'Charon client v2.0 [cracked]',
+    img:'https://cdn.discordapp.com/attachments/1492616427230728415/1492616755439341678/image.png?ex=69e9d2ed&is=69e8816d&hm=f162004925efa7e603e5090cd61815ec2cc493316d838d71f9d94eb053634f76&',
+    url:'https://www.mediafire.com/file/eia22kkv7a2n66u/Charon+2.0.zip/file',
+    features:'automine, autofish (the best autofish), auto nether (requires jetpack or kicks out), teleport hack, 100+ chat commands like warp world, warp any portal in world, autofarm, auto clear world, godmode, fly, troll hacks spikebomb spawn, trade all, +200 more features.',
+    desc:`If menu doesn't show up click F2 / FN + 2.
+If that didn't work change:
+  BepInEx → Config → CharonXXIII.DearImGuiInjection.cfg
+    StartupMode = ForceD3D12
+  (if that doesn't work try ForceD3D11)
+
+Credits: xorry / ! efn  — 19.4.2026
+
+──────────────────────────────────
+INSTALLATION
+
+1. Download the ZIP
+2. Extract all files to your Pixel Worlds folder
+   (ask AI if you don't know where it is)
+
+──────────────────────────────────
+CHARON CLIENT — POSSIBLE CAUSES & FIXES
+
+▸ Running fullscreen or changed resolution while menu was active
+  • Delete the entire PW folder and reinstall PW
+  • In-game → Settings → Display → switch to Windowed Mode
+  • Or add -windowed to your Steam Launch Options
+
+▸ DirectX issues (most common on laptops)
+
+  Option 1 — Auto (try first)
+  BepInEx/config/dearimgui.cfg → startupmode = Auto
+
+  Option 2 — Force D3D11
+  Steam launch option: -force-d3d11
+  BepInEx/config/dearimgui.cfg → startupmode = ForceD3D11
+
+  Option 3 — Force D3D12
+  Steam launch option: -force-d3d12
+  BepInEx/config/dearimgui.cfg → startupmode = ForceD3D12
+
+⚠ IF YOU CRASH ON LOGIN: minimize PW and use a small window.`
+  },
+  automath:{
+    name:'Automath',
+    img:'https://cdn.discordapp.com/attachments/1495365239489957962/1495365366938079424/image.png?ex=69e9ef86&is=69e89e06&hm=cef7c89730fecdeadf415a3997c4857ac7a78da6e63674ffa3e9c1e5805f81da&',
+    url:'https://gofile.io/d/9sUpZS',
+    features:'calculates math questions sent in pw chat, settings tab where you can customize delay.',
+    desc:`Automate your math questions in Pixel Worlds. Tutorial is included in the zip folder!`
+  },
+  tictactoe:{
+    name:'TTT Bot v3.1',
+    img:'https://cdn.discordapp.com/attachments/1492915866797342976/1495336661331214366/image.png?ex=69e9d4ca&is=69e8834a&hm=7a66d41fc4485762ba4be823cfa3e9c1e5805f81da4',
+    url:'https://cdn.discordapp.com/attachments/1492915866797342976/1495336594624741517/Efns_Tictactoe_Bot_v3.1.html?ex=69e8833a&is=69e731ba&hm=2e2bb4c4efb795ecf211618a8c87476d707bf45b120f95a048962ade4372d05e&',
+    features:'no mid gamemode, normal gamemode, enemy starts page, your turn to start page, smart AI.',
+    desc:`TTT bot to win in p2p worlds. HTML file, easy to use.
+
+Update log:
+v3.1 — added no mid gamemode, optimized tool
+
+Download the HTML file and open it directly.`
+  },
+  hyx:{
+    name:'Hyx Client Free',
+    img:'https://i.ytimg.com/vi/FnPP2weLLfk/maxresdefault.jpg',
+    url:'https://www.mediafire.com/folder/cxm6q2f79vc0j/Hyx',
+    features:'Autonether (best, no jetpack needed), addall, anti bounce-trap, +25 more for giveaways, jump modes (double, high, long, triple, jetpack), zoom hack, anti darkness, warp any world, tradeall, calculate gems in world, +40 more features.',
+    desc:`Make sure this is installed or it won't work:
+vcredist AIO
+
+Setup steam launch settings or the menu won't appear: -force-d3d11
+
+Also remove Charon client folders from PW folder if not working!
+TUTORIAL: https://www.youtube.com/watch?v=FnPP2weLLfk`
+  }
+};
+
+// ═══════════════════════════════════════
+//  SPA ROUTER
+// ═══════════════════════════════════════
+const ALL_PAGES = ['main','detail','account','minigames','admin'];
+let currentPage = 'main';
+window.showPage = (name) => {
+  if(!ALL_PAGES.includes(name)) return;
+  if(name==='admin' && (!currentUser || !isAdmin(currentUser))) return;
+  ALL_PAGES.forEach(p => {
+    const el = document.getElementById(`page-${p}`);
+    if(el) el.classList.toggle('active', p===name);
+  });
+  const siMap = {main:'si-main',detail:'si-main',minigames:'si-minigames',account:'si-account',admin:'si-admin'};
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  const si = document.getElementById(siMap[name]); if(si) si.classList.add('active');
+  const h = (name==='detail') ? 'main' : name;
+  ['main','minigames','account','admin'].forEach(p => {
+    const b = document.getElementById(`bnav-${p}`); if(b) b.classList.toggle('active', p===h);
+  });
+  currentPage = name;
+  if(name==='minigames'){ renderMinesPayouts(); renderMinesGrid(); }
+};
+
+// ═══════════════════════════════════════
+//  DETAIL PAGE
+// ═══════════════════════════════════════
+window.openDetail = (key) => {
+  const c = CHEATS[key]; if(!c) return;
+  document.getElementById('det-title').innerText   = c.name;
+  document.getElementById('det-desc').innerText    = c.desc;
+  document.getElementById('det-features').innerText = c.features||'';
+  const img = document.getElementById('det-img');
+  if(c.img){ img.src=c.img; img.style.display='block'; } else { img.style.display='none'; }
+  const dlBtn = document.getElementById('det-dl');
+  if(currentUser){
+    dlBtn.className='btn btn-primary'; dlBtn.style.minWidth='200px';
+    dlBtn.innerText='⬇ Download';
+    dlBtn.onclick=()=>{ if(c.url&&c.url!=='#') window.open(c.url,'_blank'); };
+  } else {
+    dlBtn.className='btn btn-locked'; dlBtn.style.minWidth='200px';
+    dlBtn.innerText=' login to download';
+    dlBtn.onclick=()=>{ showPage('main'); openModal('login-modal'); notify('login-notifs','Please log in to download.','info'); };
+  }
+  showPage('detail');
+};
+
+// ═══════════════════════════════════════
+//  SIDEBAR TOGGLE
+// ═══════════════════════════════════════
+let sidebarCollapsed = false;
+window.toggleSidebar = () => {
+  sidebarCollapsed = !sidebarCollapsed;
+  document.getElementById('left-sidebar').classList.toggle('collapsed', sidebarCollapsed);
+  document.getElementById('hamburger-btn').classList.toggle('active', sidebarCollapsed);
+};
+
+// ═══════════════════════════════════════
+//  MODAL HELPERS
+// ═══════════════════════════════════════
+window.openModal  = id => document.getElementById(id).classList.add('active');
+window.closeModal = id => document.getElementById(id).classList.remove('active');
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('active'); });
+});
+
+// ═══════════════════════════════════════
+//  AUTH SEGMENTED TOGGLE (reg modal)
+// ═══════════════════════════════════════
+window.setAuthSeg = (mode) => {
+  document.getElementById('seg-signup').classList.toggle('active', mode==='signup');
+  document.getElementById('seg-signin').classList.toggle('active', mode==='signin');
+  document.getElementById('reg-signup-view').style.display = mode==='signup' ? 'block' : 'none';
+  document.getElementById('reg-signin-view').style.display = mode==='signin' ? 'block' : 'none';
+};
+
+// ═══════════════════════════════════════
+//  PASSWORD EYE TOGGLE
+// ═══════════════════════════════════════
+window.toggleEye = (inputId, iconEl) => {
+  const inp = document.getElementById(inputId);
+  const isPass = inp.type === 'password';
+  inp.type = isPass ? 'text' : 'password';
+  iconEl.innerHTML = isPass ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+};
+
+// ═══════════════════════════════════════
+//  PASSWORD STRENGTH VALIDATORS
+// ═══════════════════════════════════════
+window.checkPwStrength = () => {
+  const pw   = document.getElementById('reg-pass').value;
+  const uname = (document.getElementById('reg-username').value || '').toLowerCase();
+  pwValid.len    = pw.length >= 8;
+  pwValid.numsym = /[0-9]/.test(pw) && /[^a-zA-Z0-9]/.test(pw);
+  pwValid.case   = /[a-z]/.test(pw) && /[A-Z]/.test(pw);
+  pwValid.noname = uname.length === 0 || !pw.toLowerCase().includes(uname);
+  setCheck('pwc-len',    pwValid.len);
+  setCheck('pwc-numsym', pwValid.numsym);
+  setCheck('pwc-case',   pwValid.case);
+  setCheck('pwc-noname', pwValid.noname);
+  checkRegBtn();
+};
+function setCheck(id, ok){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle('ok', ok);
+}
+window.checkRegBtn = () => {
+  const tos = document.getElementById('reg-tos').checked;
+  const allPw = pwValid.len && pwValid.numsym && pwValid.case && pwValid.noname;
+  const btn = document.getElementById('reg-submit-btn');
+  btn.disabled = !(allPw && tos);
+};
+
+// ═══════════════════════════════════════
+//  NOTIFY
+// ═══════════════════════════════════════
+function notify(boxId, msg, type='error'){
+  const c = document.getElementById(boxId); if(!c) return;
+  c.innerHTML='';
+  const d = document.createElement('div');
+  d.className=`menu-notif ${type}`; d.innerText=msg;
+  c.appendChild(d); setTimeout(()=>d.remove(), 5000);
+}
+
+// ═══════════════════════════════════════
+//  RESEND EMAIL
+// ═══════════════════════════════════════
+window.resendEmail = async (which) => {
+  if(Date.now()-lastMailSent[which]<60000) return;
+  if(!auth.currentUser) return;
+  try{ await auth.currentUser.sendEmailVerification(); } catch(e){}
+  lastMailSent[which] = Date.now();
+  const ui   = document.getElementById(`resend-ui-${which}`);
+  const fill = document.getElementById(`resend-fill-${which}`);
+  const txt  = document.getElementById(`resend-text-${which}`);
+  const ready= document.getElementById(`resend-ready-${which}`);
+  ui.style.display='block'; ready.style.display='none';
+  fill.style.transition='none'; fill.style.width='100%';
+  setTimeout(()=>{ fill.style.transition='width 60s linear'; fill.style.width='0%'; },50);
+  let t=60; txt.innerText=`Email sent — resend in ${t}s`;
+  const iv=setInterval(()=>{ t--; txt.innerText=`Email sent — resend in ${t}s`; if(t<=0){clearInterval(iv);ui.style.display='none';ready.style.display='block';} },1000);
+};
+function showResendUI(w){ document.getElementById(`resend-ui-${w}`).style.display='block'; resendEmail(w); }
+
+// ═══════════════════════════════════════
+//  AUTH — SIGN UP
+//  Fixed: writes users/${uid} with balance=1000, username, email, joinDate
+// ═══════════════════════════════════════
+window.signUp = async () => {
+  const e    = document.getElementById('reg-email').value.trim();
+  const uraw = document.getElementById('reg-username').value.trim();
+  const p    = document.getElementById('reg-pass').value;
+  if(!e)    return notify('reg-notifs','Please enter your email.');
+  if(!uraw) return notify('reg-notifs','Please enter a username.');
+  if(!(pwValid.len && pwValid.numsym && pwValid.case && pwValid.noname))
+            return notify('reg-notifs','Password does not meet all requirements.');
+  if(!document.getElementById('reg-tos').checked)
+            return notify('reg-notifs','Please accept the Terms of Service.');
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(e, p);
+    // Set display name
+    await cred.user.updateProfile({ displayName: uraw });
+    await cred.user.sendEmailVerification();
+    // Write user record to Realtime Database with starting 1000 BC
+    await db.ref(`users/${cred.user.uid}`).set({
+      username:  uraw,
+      email:     e,
+      balance:   1000,
+      joinDate:  new Date().toISOString(),
+      hasChangedName: false
+    });
+    // Register username mapping
+    await db.ref(`usernames/${uraw}`).set(cred.user.uid);
+    lastMailSent.reg = Date.now();
+    notify('reg-notifs','Account created! Check your email to verify.','success');
+    showResendUI('reg');
+  } catch(err) {
+    const msgs = {
+      'auth/email-already-in-use': 'That email is already registered.',
+      'auth/invalid-email':        'Invalid email address.',
+      'auth/weak-password':        'Password is too weak.'
+    };
+    notify('reg-notifs', msgs[err.code] || err.message);
+  }
+};
+
+// ═══════════════════════════════════════
+//  AUTH — LOGIN
+// ═══════════════════════════════════════
+window.login = async () => {
+  const e = document.getElementById('log-email').value.trim();
+  const p = document.getElementById('log-pass').value;
+  if(!e || !p) return notify('login-notifs','Please fill in all fields.');
+  try {
+    const cred = await auth.signInWithEmailAndPassword(e, p);
+    if(!cred.user.emailVerified){
+      notify('login-notifs','Email not verified. Check inbox and spam.');
+      showResendUI('log');
+      await auth.signOut();
+      return;
+    }
+    closeModal('login-modal');
+    location.reload();
+  } catch(err) {
+    const bad = ['auth/user-not-found','auth/wrong-password','auth/invalid-credential'];
+    notify('login-notifs', bad.includes(err.code) ? 'Invalid email or password.' : err.message);
+  }
+};
+
+// Login from inside reg modal (sign-in tab)
+window.loginFromReg = async () => {
+  const e = document.getElementById('reg-log-email').value.trim();
+  const p = document.getElementById('reg-log-pass').value;
+  if(!e || !p) return notify('reg-login-notifs','Please fill in all fields.');
+  try {
+    const cred = await auth.signInWithEmailAndPassword(e, p);
+    if(!cred.user.emailVerified){
+      notify('reg-login-notifs','Email not verified. Check inbox and spam.');
+      await auth.signOut();
+      return;
+    }
+    closeModal('reg-modal');
+    location.reload();
+  } catch(err) {
+    const bad = ['auth/user-not-found','auth/wrong-password','auth/invalid-credential'];
+    notify('reg-login-notifs', bad.includes(err.code) ? 'Invalid email or password.' : err.message);
+  }
+};
+
+window.doSignOut = async () => { await auth.signOut(); location.reload(); };
+
+// ═══════════════════════════════════════
+//  AUTH STATE OBSERVER
+// ═══════════════════════════════════════
+auth.onAuthStateChanged(async user => {
+  currentUser = (user && user.emailVerified) ? user : null;
+  const ok    = !!currentUser;
+
+  // Nav
+  document.getElementById('nav-guest').style.display       = ok ? 'none' : 'flex';
+  document.getElementById('nav-user').style.display        = ok ? 'flex' : 'none';
+  document.getElementById('balance-display').style.display = ok ? 'flex' : 'none';
+
+  if(ok){
+    // If no record yet (legacy users / manual create) seed balance
+    const snapUser = await db.ref(`users/${currentUser.uid}`).get();
+    if(!snapUser.exists()){
+      await db.ref(`users/${currentUser.uid}`).set({
+        username:  getDisplayName(),
+        email:     user.email,
+        balance:   1000,
+        joinDate:  new Date().toISOString(),
+        hasChangedName: false
+      });
+    }
+
+    const name = getDisplayName();
+    document.getElementById('user-tag').innerText = name;
+
+    // Account page info
+    document.getElementById('acct-username').innerText = name;
+    document.getElementById('acct-email').innerText    = user.email;
+    document.getElementById('acct-uid').innerText      = user.uid;
+    const joinDate = snapUser.exists() && snapUser.val().joinDate
+      ? new Date(snapUser.val().joinDate).toLocaleDateString()
+      : 'Unknown';
+    document.getElementById('acct-joined').innerText = joinDate;
+
+    // Real-time balance listener
+    db.ref(`users/${currentUser.uid}/balance`).on('value', snap => {
+      userBalance = snap.exists() ? snap.val() : 1000;
+      const balStr = userBalance.toLocaleString();
+      const el1 = document.getElementById('balance-amount');
+      const el2 = document.getElementById('acct-balance');
+      if(el1) el1.innerText = balStr;
+      if(el2) el2.innerText = `${balStr} BC`;
+    });
+
+    // Admin visibility
+    const ab = document.getElementById('bnav-admin');
+    const sa = document.getElementById('sidebar-admin');
+    if(isAdmin(currentUser)){
+      if(ab) ab.style.display='flex';
+      if(sa) sa.style.display='block';
+    } else {
+      if(ab) ab.style.display='none';
+      if(sa) sa.style.display='none';
+    }
+
+    // Username lock check
+    const uSnap = await db.ref(`users/${currentUser.uid}/hasChangedName`).get();
+    if(uSnap.exists() && uSnap.val()===true && !isAdmin(currentUser)){
+      document.getElementById('uname-locked-notice').style.display='block';
+      document.getElementById('uname-row').style.display='none';
+    }
+
+    // Mute listener
+    const muteKey = emailToKey(user.email);
+    db.ref(`muted/${muteKey}`).on('value', snap => {
+      userIsMuted = snap.exists() && snap.val()===true;
+      document.getElementById('chat-muted-banner').style.display = userIsMuted ? 'block' : 'none';
+    });
+
+    startJailListener(currentUser);
+    if(window._adminMsgRefreshCallbacks) window._adminMsgRefreshCallbacks.forEach(fn=>fn());
+
+    // Dismiss center notif if logged in
+    dismissCenterNotif();
+  } else {
+    const ab = document.getElementById('bnav-admin');
+    const sa = document.getElementById('sidebar-admin');
+    if(ab) ab.style.display='none';
+    if(sa) sa.style.display='none';
+    hideJailPage();
+    if(jailListener){ jailListener(); jailListener=null; }
+  }
+
+  // Account page visibility
+  document.getElementById('account-guest').style.display  = ok ? 'none'  : 'block';
+  document.getElementById('account-logged').style.display = ok ? 'block' : 'none';
+  // Chat UI
+  document.getElementById('chat-guest-ui').style.display  = ok ? 'none'  : 'block';
+  document.getElementById('chat-user-ui').style.display   = ok ? 'flex'  : 'none';
+});
+
+// ═══════════════════════════════════════
+//  USERNAME CHANGE
+// ═══════════════════════════════════════
+window.changeUsername = async () => {
+  if(!currentUser) return;
+  const raw = document.getElementById('uname-input').value.trim();
+  if(!raw)         return notify('uname-notif','Please enter a username.','error');
+  if(raw.length<2) return notify('uname-notif','Must be at least 2 characters.','error');
+  if(raw.length>24)return notify('uname-notif','Must be 24 characters or fewer.','error');
+  if(!isAdmin(currentUser)){
+    const snap = await db.ref(`users/${currentUser.uid}`).get();
+    if(snap.exists() && snap.val().hasChangedName) return notify('uname-notif','You can only change your username once.','error');
+  }
+  const namesSnap = await db.ref('usernames').get();
+  if(namesSnap.exists()){
+    const taken = namesSnap.val(); const lc = raw.toLowerCase();
+    for(const k of Object.keys(taken)){
+      if(k.toLowerCase()===lc && taken[k]!==currentUser.uid) return notify('uname-notif','That username is already taken.','error');
+    }
+  }
+  try {
+    if(auth.currentUser.displayName) await db.ref(`usernames/${auth.currentUser.displayName}`).remove();
+    await auth.currentUser.updateProfile({ displayName: raw });
+    await db.ref(`usernames/${raw}`).set(currentUser.uid);
+    await db.ref(`users/${currentUser.uid}/username`).set(raw);
+    if(!isAdmin(currentUser)){
+      await db.ref(`users/${currentUser.uid}/hasChangedName`).set(true);
+      document.getElementById('uname-locked-notice').style.display='block';
+      document.getElementById('uname-row').style.display='none';
+    }
+    document.getElementById('acct-username').innerText = raw;
+    document.getElementById('user-tag').innerText      = raw;
+    document.getElementById('uname-input').value       = '';
+    notify('uname-notif','Username updated!','success');
+  } catch(err){ notify('uname-notif',err.message,'error'); }
+};
+
+// ═══════════════════════════════════════
+//  JAIL SYSTEM
+// ═══════════════════════════════════════
+function startJailListener(user){
+  if(jailListener) jailListener();
+  jailListener = db.ref(`jailed/${emailToKey(user.email)}`).on('value', snap => {
+    if(snap.exists()) showJailPage(snap.val().releaseTimestamp);
+    else              hideJailPage();
+  });
+}
+function showJailPage(releaseTs){
+  document.getElementById('page-jail').classList.add('active');
+  document.getElementById('chat-sidebar').style.display='none';
+  document.getElementById('bottom-nav').style.display='none';
+  document.querySelector('nav').style.display='none';
+  document.getElementById('left-sidebar').style.display='none';
+  if(currentUser && isAdmin(currentUser)) document.getElementById('jail-admin-release').style.display='block';
+  if(jailTimerInterval) clearInterval(jailTimerInterval);
+  function tick(){
+    const rem = releaseTs - Date.now();
+    if(rem<=0){ document.getElementById('jail-timer').innerText='00:00:00'; clearInterval(jailTimerInterval); return; }
+    const h=Math.floor(rem/3600000),m=Math.floor((rem%3600000)/60000),s=Math.floor((rem%60000)/1000);
+    document.getElementById('jail-timer').innerText=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+  tick(); jailTimerInterval=setInterval(tick,1000);
+}
+function hideJailPage(){
+  document.getElementById('page-jail').classList.remove('active');
+  document.getElementById('chat-sidebar').style.display='';
+  document.getElementById('bottom-nav').style.display='';
+  document.querySelector('nav').style.display='';
+  document.getElementById('left-sidebar').style.display='';
+  if(jailTimerInterval){ clearInterval(jailTimerInterval); jailTimerInterval=null; }
+}
+window.adminReleaseUser = async () => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const email = document.getElementById('jail-release-email').value.trim(); if(!email) return;
+  await db.ref(`jailed/${emailToKey(email)}`).remove();
+};
+
+// ═══════════════════════════════════════
+//  ADMIN FUNCTIONS
+// ═══════════════════════════════════════
+window.toggleBypass = async (type) => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const ids = { speedBypass:'toggle-speed-bypass', chatLimitBypass:'toggle-chat-bypass' };
+  const el  = document.getElementById(ids[type]); if(!el) return;
+  const newState = !el.classList.contains('active');
+  await db.ref(`adminConfig/${type}`).set(newState);
+  el.classList.toggle('active', newState);
+};
+db.ref('adminConfig/speedBypass').on('value',  s=>{ const e=document.getElementById('toggle-speed-bypass'); if(e)e.classList.toggle('active',s.val()===true); });
+db.ref('adminConfig/chatLimitBypass').on('value',s=>{ const e=document.getElementById('toggle-chat-bypass'); if(e)e.classList.toggle('active',s.val()===true); });
+
+window.setSearchFilter = (btn) => {
+  document.querySelectorAll('.search-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  adminSearchFilter = btn.dataset.filter;
+};
+
+// User search — searches by name or email, returns table with "Gift 500 BC" button
+window.searchUsers = async () => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const q   = document.getElementById('user-search').value.trim().toLowerCase();
+  const res = document.getElementById('user-search-results');
+  if(!q){ res.innerHTML=''; return; }
+  const snap = await db.ref('users').get();
+  if(!snap.exists()){ res.innerHTML='<p style="color:var(--muted);font-size:.72rem">No users found.</p>'; return; }
+  let rows=[];
+  snap.forEach(c => {
+    const uid   = c.key.toLowerCase();
+    const data  = c.val();
+    const uname = (data.username||data.displayName||'').toLowerCase();
+    const email = (data.email||'').toLowerCase();
+    let match=false;
+    if(adminSearchFilter==='all')      match=uid.includes(q)||uname.includes(q)||email.includes(q);
+    else if(adminSearchFilter==='uid') match=uid.includes(q);
+    else if(adminSearchFilter==='email') match=email.includes(q);
+    else if(adminSearchFilter==='username') match=uname.includes(q);
+    if(match) rows.push({key:c.key, data});
+  });
+  renderUserTable(rows, res);
+};
+
+window.loadAllUsers = async () => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const res  = document.getElementById('user-search-results');
+  const snap = await db.ref('users').get();
+  if(!snap.exists()){ res.innerHTML='<p style="color:var(--muted);font-size:.72rem">No users found.</p>'; return; }
+  let rows=[];
+  snap.forEach(c => rows.push({key:c.key, data:c.val()}));
+  renderUserTable(rows, res);
+};
+
+function renderUserTable(rows, container){
+  if(!rows.length){ container.innerHTML='<p style="color:var(--muted);font-size:.72rem">No users found.</p>'; return; }
+  let html='<table class="user-table"><thead><tr><th>UID</th><th>Username</th><th>Email</th><th>Balance</th><th>Actions</th></tr></thead><tbody>';
+  rows.forEach(({key,data})=>{
+    html+=`<tr>
+      <td style="font-size:.58rem;color:var(--muted)">${esc(key)}</td>
+      <td>${esc(data.username||data.displayName||'—')}</td>
+      <td>${esc(data.email||'—')}</td>
+      <td>${(data.balance||0).toLocaleString()} BC</td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('balance-uid').value='${esc(key)}'">Select</button>
+        <button class="btn btn-primary btn-sm" onclick="gift500BC('${esc(key)}')">Gift 500 BC</button>
+      </td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  container.innerHTML=html;
+}
+
+window.gift500BC = async (uid) => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const snap = await db.ref(`users/${uid}/balance`).get();
+  const cur  = snap.exists() ? snap.val() : 0;
+  await db.ref(`users/${uid}/balance`).set(cur + 500);
+  notify('balance-notif',`Gifted 500 BC to ${uid.slice(0,8)}… New balance: ${cur+500}`,'success');
+  loadAllUsers();
+};
+
+window.addBalance = async () => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const uid = document.getElementById('balance-uid').value.trim();
+  const amt = parseInt(document.getElementById('bc-amount-input').value)||0;
+  if(!uid||amt<=0) return notify('balance-notif','Enter valid UID and amount.','error');
+  const snap = await db.ref(`users/${uid}/balance`).get();
+  const cur  = snap.exists() ? snap.val() : 0;
+  await db.ref(`users/${uid}/balance`).set(cur+amt);
+  notify('balance-notif',`Added ${amt} BC. New balance: ${cur+amt}`,'success');
+};
+window.removeBalance = async () => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const uid = document.getElementById('balance-uid').value.trim();
+  const amt = parseInt(document.getElementById('bc-amount-input').value)||0;
+  if(!uid||amt<=0) return notify('balance-notif','Enter valid UID and amount.','error');
+  const snap = await db.ref(`users/${uid}/balance`).get();
+  const cur  = snap.exists() ? snap.val() : 0;
+  const nb   = Math.max(0, cur-amt);
+  await db.ref(`users/${uid}/balance`).set(nb);
+  notify('balance-notif',`Removed ${amt} BC. New balance: ${nb}`,'success');
+};
+window.viewBalance = async () => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const uid = document.getElementById('balance-uid').value.trim();
+  if(!uid) return notify('balance-notif','Enter a UID.','error');
+  const snap = await db.ref(`users/${uid}/balance`).get();
+  notify('balance-notif',`Balance: ${snap.exists()?snap.val():0} BC`,'info');
+};
+window.adminMuteUser = async () => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const email = document.getElementById('mute-email').value.trim();
+  if(!email) return notify('mute-notif','Enter an email.','error');
+  await db.ref(`muted/${emailToKey(email)}`).set(true);
+  notify('mute-notif',`${email} muted.`,'success');
+};
+window.adminUnmuteUser = async () => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const email = document.getElementById('mute-email').value.trim();
+  if(!email) return notify('mute-notif','Enter an email.','error');
+  await db.ref(`muted/${emailToKey(email)}`).remove();
+  notify('mute-notif',`${email} unmuted.`,'success');
+};
+window.adminJailUser = async () => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const email = document.getElementById('jail-email').value.trim();
+  const mins  = parseInt(document.getElementById('jail-duration').value)||30;
+  if(!email) return notify('jail-notif','Enter an email.','error');
+  await db.ref(`jailed/${emailToKey(email)}`).set({ email, releaseTimestamp: Date.now()+mins*60000, jailedAt: Date.now() });
+  notify('jail-notif',`${email} jailed for ${mins} min.`,'success');
+};
+window.adminDeleteMessage = async () => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  const id = document.getElementById('del-msg-id').value.trim();
+  if(!id) return notify('del-notif','Enter a message key.','error');
+  await db.ref(`messages/${id}`).remove();
+  notify('del-notif','Message deleted.','success');
+  document.getElementById('del-msg-id').value='';
+};
+window.fillDeleteKey = (key) => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  document.getElementById('del-msg-id').value = key;
+  showPage('admin');
+  notify('del-notif',`Key loaded: ${key} — click Delete to confirm.`,'info');
+};
+db.ref('jailed').on('value', snap => {
+  const list = document.getElementById('jailed-list'); if(!list) return;
+  list.innerHTML='';
+  if(!snap.exists()){ list.innerHTML='<div style="font-size:.68rem;color:var(--muted);">No one jailed.</div>'; return; }
+  snap.forEach(child => {
+    const d   = child.val();
+    const rem = Math.max(0,Math.ceil((d.releaseTimestamp-Date.now())/60000));
+    const row = document.createElement('div'); row.className='jailed-row';
+    row.innerHTML=`<div><div class="jailed-email">${esc(d.email)}</div><div class="jailed-time">${rem} min remaining</div></div><button class="btn btn-ghost btn-sm" onclick="adminReleaseByKey('${child.key}')">Release</button>`;
+    list.appendChild(row);
+  });
+});
+window.adminReleaseByKey = async (key) => {
+  if(!currentUser||!isAdmin(currentUser)) return;
+  await db.ref(`jailed/${key}`).remove();
+};
+
+// ═══════════════════════════════════════
+//  CHAT
+// ═══════════════════════════════════════
+const chatBox   = document.getElementById('chat-messages');
+const chatInput = document.getElementById('chat-input');
+const chatBtn   = document.getElementById('chat-btn');
+const charCount = document.getElementById('char-count');
+
+chatInput.addEventListener('input', () => {
+  charCount.innerText = `${chatInput.value.length} / 120`;
+  if(!currentUser) return;
+  db.ref('typing').set(getDisplayName());
+  clearTimeout(window._tt);
+  window._tt = setTimeout(()=>db.ref('typing').remove(), 3000);
+});
+chatInput.addEventListener('keydown', e => { if(e.key==='Enter') sendMessage(); });
+
+let replyingToKey = null;
+window.setReply = (key, uname, text) => {
+  replyingTo = { username: uname, text };
+  replyingToKey = key;
+  document.getElementById('reply-preview').classList.add('active');
+  document.getElementById('reply-preview-text').innerText = `${uname}: ${text}`;
+};
+window.clearReply = () => {
+  replyingTo = null; replyingToKey = null;
+  document.getElementById('reply-preview').classList.remove('active');
+  document.getElementById('reply-preview-text').innerText = '';
+};
+
+window.sendMessage = () => {
+  if(!currentUser) return;
+  if(userIsMuted) return;
+  const text = chatInput.value.trim();
+  if(!text || text.length>120) return;
+  if(Date.now()-lastMsgSent < 3000) return;
+  const username = getDisplayName();
+  const payload  = { username, text, timestamp: Date.now() };
+  if(replyingTo) payload.replyTo = { username: replyingTo.username, text: replyingTo.text.slice(0,60) };
+  db.ref('messages').push(payload);
+  chatInput.value=''; charCount.innerText='0 / 120';
+  clearReply();
+  lastMsgSent = Date.now();
+  chatBtn.disabled=true; let t=3;
+  const iv = setInterval(()=>{ t--; if(t<=0){ clearInterval(iv); chatBtn.disabled=false; } },1000);
+};
+
+db.ref('messages').limitToLast(50).on('child_added', snap => {
+  const m=snap.val(); const key=snap.key;
+  const time=m.timestamp?new Date(m.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+  const div=document.createElement('div');
+  div.className='chat-msg'; div.dataset.key=key;
+  let replyHTML='';
+  if(m.replyTo) replyHTML=`<div class="chat-reply-quote">${esc(m.replyTo.username)}: ${esc(m.replyTo.text)}</div>`;
+  const deleteBtn=`<button class="msg-action-btn delete-btn" onclick="fillDeleteKey('${key}')">DEL</button>`;
+  const replyBtn =`<button class="msg-action-btn" onclick="setReply('${key}','${esc(m.username).replace(/'/g,"\\'")}','${esc(m.text).replace(/'/g,"\\'")}')">↩</button>`;
+  div.innerHTML=`<div class="msg-actions" id="actions-${key}">${replyBtn}<span class="del-btn-wrap">${deleteBtn}</span></div>${replyHTML}<span class="chat-user">${esc(m.username)} · ${time}</span>${esc(m.text)}`;
+  function updateDel(){ const w=div.querySelector('.del-btn-wrap'); if(w) w.style.display=(currentUser&&isAdmin(currentUser))?'inline':'none'; }
+  updateDel();
+  window._adminMsgRefreshCallbacks = window._adminMsgRefreshCallbacks||[];
+  window._adminMsgRefreshCallbacks.push(updateDel);
+  chatBox.appendChild(div); chatBox.scrollTop=chatBox.scrollHeight;
+});
+
+db.ref('typing').on('value', snap => {
+  const val=snap.val(); const me=currentUser?getDisplayName():null;
+  const bar=document.getElementById('typing-bar');
+  if(val&&val!==me){ bar.innerText=`${val} is typing…`; bar.style.opacity='1'; }
+  else             { bar.innerText=''; bar.style.opacity='0'; }
+});
+
+let chatMinimized=false;
+window.toggleChat = () => {
+  chatMinimized=!chatMinimized;
+  document.getElementById('chat-sidebar').classList.toggle('minimized',chatMinimized);
+  document.getElementById('chat-toggle-icon').className=chatMinimized?'fas fa-chevron-left':'fas fa-chevron-right';
+};
+window.toggleMobileChat = () => {
+  document.getElementById('chat-sidebar').classList.toggle('mobile-open');
+};
+
+// ═══════════════════════════════════════
+//  MINES GAME
+// ═══════════════════════════════════════
+function calcMult(gemsRevealed, gridSize, mineCount){
+  if(gemsRevealed<=0) return 1.00;
+  let m=1.0;
+  for(let i=0;i<gemsRevealed;i++){
+    m *= gridSize / (gridSize - mineCount - i);
+  }
+  return Math.max(1.0, parseFloat((m * 0.97).toFixed(2)));
+}
+
+let minesState = {
+  active:false, grid:[], revealed:0,
+  gridSize:25, cols:5, mineCount:1, bet:10,
+  cashable:false, payoutOffset:0
+};
+
+window.setMinesTab = (tab) => {
+  document.getElementById('mines-tab-manual').classList.toggle('active', tab==='manual');
+  document.getElementById('mines-tab-auto').classList.toggle('active',   tab==='auto');
+};
+window.halveBet  = () => { const el=document.getElementById('mines-bet'); el.value=Math.max(1,Math.floor((parseFloat(el.value)||0)/2)); };
+window.doubleBet = () => { const el=document.getElementById('mines-bet'); el.value=Math.min(userBalance,(parseFloat(el.value)||0)*2); };
+window.setMaxBet = () => { document.getElementById('mines-bet').value=userBalance; };
+window.setGridSize = (btn) => {
+  if(minesState.active) return;
+  document.querySelectorAll('.grid-size-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const size=parseInt(btn.dataset.size);
+  minesState.gridSize=size; minesState.cols=Math.round(Math.sqrt(size));
+  const mc=parseInt(document.getElementById('mines-count').value)||1;
+  const maxM=size-1;
+  if(mc>maxM){ document.getElementById('mines-count').value=maxM; document.getElementById('mines-count-display').innerText=maxM; minesState.mineCount=maxM; }
+  document.getElementById('mines-grid').className=`mines-grid g${size}`;
+  renderMinesGrid(); renderMinesPayouts();
+};
+window.adjustMineCount = (delta) => {
+  if(minesState.active) return;
+  const max=minesState.gridSize-1;
+  let val=parseInt(document.getElementById('mines-count').value)+delta;
+  val=Math.min(max,Math.max(1,val));
+  document.getElementById('mines-count').value=val;
+  document.getElementById('mines-count-display').innerText=val;
+  minesState.mineCount=val;
+  renderMinesPayouts();
+};
+
+function renderMinesGrid(){
+  const grid=document.getElementById('mines-grid');
+  const n=minesState.gridSize;
+  grid.innerHTML='';
+  for(let i=0;i<n;i++){
+    const tile=document.createElement('div');
+    tile.className='mines-tile'; tile.dataset.index=i;
+    tile.onclick=()=>revealTile(i);
+    grid.appendChild(tile);
+  }
+}
+
+const PAYOUT_VISIBLE=7;
+function renderMinesPayouts(){
+  const col   =document.getElementById('mines-payout-col');
+  const n     =minesState.gridSize;
+  const mc    =minesState.mineCount;
+  const safe  =n-mc;
+  const bet   =parseFloat(document.getElementById('mines-bet').value)||10;
+  const offset=minesState.payoutOffset;
+  const entries=[];
+  for(let g=0;g<=safe;g++){
+    const mult=calcMult(g,n,mc);
+    entries.push({gems:g, mult, payout:parseFloat((bet*mult).toFixed(2))});
+  }
+  col.querySelectorAll('.mines-payout-item').forEach(el=>el.remove());
+  const scrollDown=col.querySelector('.payout-scroll-btn:last-child');
+  const start=Math.max(0,Math.min(offset,entries.length-PAYOUT_VISIBLE));
+  const slice=entries.slice(start,start+PAYOUT_VISIBLE);
+  slice.forEach(entry=>{
+    const el=document.createElement('div');
+    el.className='mines-payout-item';
+    if(entry.gems===minesState.revealed&&minesState.active) el.classList.add('current');
+    else if(entry.gems<minesState.revealed&&minesState.active) el.classList.add('passed');
+    el.innerHTML=`<span>${entry.mult.toFixed(2)}x</span><span class="mines-payout-mult">${entry.gems} 💎</span>`;
+    col.insertBefore(el,scrollDown);
+  });
+}
+window.scrollPayouts = (dir) => {
+  minesState.payoutOffset=Math.max(0,minesState.payoutOffset+dir*2);
+  renderMinesPayouts();
+};
+
+window.startMinesGame = async () => {
+  if(!currentUser){ openModal('login-modal'); return; }
+  const bet = parseFloat(document.getElementById('mines-bet').value)||0;
+  const mc  = parseInt(document.getElementById('mines-count').value)||1;
+  const n   = minesState.gridSize;
+  if(bet<1)          return notify('balance-notif','Minimum bet is 1 BC.','error');
+  if(bet>userBalance)return notify('balance-notif','Insufficient balance.','error');
+  if(mc<1||mc>=n)    return;
+  const newBal=userBalance-bet;
+  await db.ref(`users/${currentUser.uid}/balance`).set(newBal);
+  const positions=new Set();
+  while(positions.size<mc) positions.add(Math.floor(Math.random()*n));
+  minesState={
+    active:true,
+    grid:Array.from({length:n},(_,i)=>positions.has(i)?'mine':'gem'),
+    revealed:0, gridSize:n, cols:minesState.cols, mineCount:mc,
+    bet, cashable:false, payoutOffset:0
+  };
+  renderMinesGrid(); renderMinesPayouts();
+  document.getElementById('mines-start-btn').disabled=true;
+  document.getElementById('mines-cashout-btn').classList.add('visible');
+  document.getElementById('mines-cashout-btn').disabled=true;
+  document.getElementById('mines-winpill').classList.remove('visible');
+};
+
+function revealTile(index){
+  if(!minesState.active) return;
+  const tiles=document.querySelectorAll('.mines-tile');
+  const tile=tiles[index];
+  if(!tile||tile.classList.contains('revealed')) return;
+  tile.classList.add('revealed');
+  if(minesState.grid[index]==='mine'){
+    tile.classList.add('mine-hit'); tile.innerHTML='💣';
+    minesState.grid.forEach((type,i)=>{
+      if(type==='mine'&&i!==index){ tiles[i].classList.add('revealed','mine-safe'); tiles[i].innerHTML='💣'; }
+    });
+    endMinesGame(false);
+  } else {
+    tile.classList.add('gem'); tile.innerHTML='💎';
+    minesState.revealed++;
+    minesState.cashable=true;
+    const mult=calcMult(minesState.revealed,minesState.gridSize,minesState.mineCount);
+    const winnings=parseFloat((minesState.bet*mult).toFixed(2));
+    const pill=document.getElementById('mines-winpill');
+    pill.classList.add('visible');
+    document.getElementById('mines-winpill-val').innerText=`${winnings.toFixed(2)} BC (${mult.toFixed(2)}x)`;
+    document.getElementById('mines-cashout-btn').disabled=false;
+    renderMinesPayouts();
+    const safeCount=minesState.gridSize-minesState.mineCount;
+    if(minesState.revealed>=safeCount) cashoutMines();
+  }
+}
+
+window.cashoutMines = async () => {
+  if(!minesState.active||!minesState.cashable||!currentUser) return;
+  const mult=calcMult(minesState.revealed,minesState.gridSize,minesState.mineCount);
+  const winnings=parseFloat((minesState.bet*mult).toFixed(2));
+  const newBal=userBalance+winnings;
+  await db.ref(`users/${currentUser.uid}/balance`).set(Math.round(newBal));
+  const tiles=document.querySelectorAll('.mines-tile');
+  minesState.grid.forEach((type,i)=>{ if(type==='mine'){ tiles[i].classList.add('revealed','mine-safe'); tiles[i].innerHTML='💣'; } });
+  endMinesGame(true,winnings);
+};
+
+function endMinesGame(won,winnings){
+  minesState.active=false; minesState.cashable=false;
+  document.getElementById('mines-start-btn').disabled=false;
+  document.getElementById('mines-cashout-btn').classList.remove('visible');
+  document.getElementById('mines-cashout-btn').disabled=true;
+  const pill=document.getElementById('mines-winpill');
+  if(won){ pill.classList.add('visible'); document.getElementById('mines-winpill-val').innerText=`Won ${winnings.toFixed(2)} BC 🎉`; }
+  else   { pill.classList.remove('visible'); }
+  renderMinesPayouts();
+}
+
+// Init
+renderMinesGrid();
+renderMinesPayouts();
+document.getElementById('mines-bet').value=10;
+minesState.mineCount=1;
+</script>
 </body>
 </html>
