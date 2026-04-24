@@ -28,7 +28,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
-/* ── RESET & VARIABLES ── */
 :root {
   --bg:#050508;
   --surface:rgba(18,18,26,0.75);
@@ -56,7 +55,7 @@
 html,body{height:100%;font-family:'Inter',sans-serif;letter-spacing:-0.025em;background:var(--bg);color:var(--text);overflow:hidden}
 #app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 
-/* ── RAINBOW ANIMATION ── */
+
 @keyframes rainbowFlow {
   0%   { color: #ff0000 }
   14%  { color: #ff7700 }
@@ -72,7 +71,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;letter-spacing:-0.025em;bac
   font-weight: 700;
 }
 
-/* ── SPLASH ── */
+
 #splash{
   position:fixed;inset:0;z-index:9999;
   background:var(--bg);
@@ -86,7 +85,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;letter-spacing:-0.025em;bac
 #splash-bar{height:100%;width:0%;background:var(--accent-gradient);border-radius:99px;transition:width 2s cubic-bezier(.4,0,.2,1)}
 #splash-label{font-size:.7rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
 
-/* ── CENTER NOTIFICATION ── */
+
 #center-notif-overlay{
   display:none;position:fixed;inset:0;z-index:8000;
   background:rgba(5,5,8,.85);backdrop-filter:blur(8px);
@@ -114,7 +113,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;letter-spacing:-0.025em;bac
 #center-notif-close.ready:hover{opacity:.88;transform:translateY(-1px)}
 #center-notif-timer-txt{font-size:.63rem;color:var(--muted);margin-top:10px;font-family:'Inter',sans-serif}
 
-/* ── TOP NAV ── */
+
 nav{
   flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
   padding:0 20px;height:var(--nav-h);border-bottom:1px solid var(--border);
@@ -146,14 +145,14 @@ nav{
 #balance-display .bc-icon{width:18px;height:18px;object-fit:contain;vertical-align:middle}
 #balance-amount{font-variant-numeric:tabular-nums}
 
-/* Mobile hamburger for showing nav menu on mobile */
+
 #mobile-nav-btn{display:none;width:36px;height:36px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s}
 #mobile-nav-btn span{width:18px;height:2px;background:var(--muted);transition:all .3s cubic-bezier(.4,0,.2,1)}
 #mobile-nav-btn.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
 #mobile-nav-btn.open span:nth-child(2){opacity:0}
 #mobile-nav-btn.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
 
-/* Mobile nav drawer */
+
 #mobile-nav-drawer{
   display:none;position:fixed;top:var(--nav-h);left:0;right:0;
   background:var(--surface);backdrop-filter:blur(20px);
@@ -167,10 +166,10 @@ nav{
 .mobile-nav-item:hover,.mobile-nav-item.active{background:rgba(124,92,252,.12);color:var(--accent2)}
 .mobile-nav-item i{width:20px;text-align:center}
 
-/* ── CONTENT ROW ── */
+
 #content-row{flex:1;display:flex;min-height:0;overflow:hidden}
 
-/* ── LEFT SIDEBAR ── */
+
 #left-sidebar{
   flex-shrink:0;width:var(--sidebar-w);display:flex;flex-direction:column;
   border-right:1px solid var(--border);background:var(--surface);
@@ -197,7 +196,7 @@ nav{
 .sidebar-item i{font-size:.9rem;width:20px;text-align:center}
 .sidebar-label{white-space:nowrap}
 
-/* ── PAGE AREA ── */
+
 #page-area{flex:1;position:relative;overflow:hidden;min-width:0}
 .page{position:absolute;inset:0;display:none;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
 .page::-webkit-scrollbar{width:4px}
@@ -205,7 +204,7 @@ nav{
 .page.active{display:block;animation:pageIn .28s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── PAGE: MAIN ── */
+
 #page-main{padding:24px 28px}
 .section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
 .section-title{font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -224,7 +223,7 @@ nav{
 .card-subtitle{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
 .card-footer{padding:10px 14px 12px;display:flex;align-items:center;justify-content:center;border-top:1px solid var(--border);gap:8px}
 
-/* SEO Footer */
+
 .seo-footer{margin-top:36px;padding:32px;border-radius:var(--radius);background-image:url('https://shared.fastly.steamstatic.com/community_assets/images/items/636040/931ed57533d122554b8acedc56d55985a81bd928.jpg');background-size:cover;background-position:center;position:relative;overflow:hidden}
 .seo-footer::before{content:'';position:absolute;inset:0;background:rgba(5,5,8,.7);backdrop-filter:blur(2px)}
 .seo-footer-inner{position:relative;z-index:1}
@@ -235,12 +234,12 @@ nav{
 .seo-footer p{font-size:.72rem;color:var(--muted);line-height:1.9}
 .seo-footer.collapsed{display:none}
 
-/* ── PAGE: DETAIL (side-by-side layout) ── */
+
 #page-detail{padding:36px 48px}
 .det-back{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;color:var(--muted);cursor:pointer;margin-bottom:24px;transition:color .2s}
 .det-back:hover{color:var(--accent2)}
 .det-title{font-family:'Outfit',sans-serif;font-size:1.65rem;font-weight:800;color:var(--text);margin-bottom:20px}
-/* Two-column detail layout */
+
 .det-main-layout{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start}
 .det-left{display:flex;flex-direction:column;gap:16px}
 .det-right{display:flex;flex-direction:column;gap:14px;position:sticky;top:0}
@@ -251,7 +250,7 @@ nav{
 .det-features-box{font-size:.74rem;line-height:1.9;white-space:pre-wrap;word-break:break-word}
 .det-dl-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;backdrop-filter:blur(16px)}
 
-/* ── PAGE: ACCOUNT ── */
+
 #page-account{padding:32px 28px}
 .account-box{max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);backdrop-filter:blur(16px);padding:28px 28px 24px;margin-bottom:16px}
 .account-box-title{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:.02em;margin-bottom:4px}
@@ -274,7 +273,7 @@ nav{
 .acct-guest-sub{font-size:.78rem;color:var(--muted);margin-bottom:28px;line-height:1.6}
 .acct-guest-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
-/* ── PAGE: ADMIN (fully rebuilt) ── */
+
 #page-admin{padding:28px 28px;overflow-y:auto}
 .admin-header{display:flex;align-items:center;gap:10px;margin-bottom:24px}
 .admin-badge{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--error);font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.1em}
@@ -313,7 +312,7 @@ nav{
 .search-filter-btn{padding:4px 12px;border-radius:99px;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s}
 .search-filter-btn.active,.search-filter-btn:hover{background:rgba(124,92,252,.12);color:var(--accent2);border-color:var(--accent)}
 
-/* ── MINES GAME ── */
+
 #page-minigames{padding:20px 24px;overflow-y:auto}
 .mines-layout{display:grid;grid-template-columns:300px 1fr auto;gap:16px;max-width:1100px;align-items:start}
 .mines-left{background:rgba(18,18,28,.9);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px}
@@ -369,7 +368,7 @@ nav{
 .payout-scroll-btn{width:100%;padding:7px 0;border:1px solid rgba(255,255,255,.07);border-radius:8px;background:rgba(255,255,255,.04);color:var(--muted);cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;font-size:.8rem}
 .payout-scroll-btn:hover{background:rgba(124,92,252,.12);color:var(--accent2)}
 
-/* ── JAIL ── */
+
 #page-jail{display:none;position:fixed;inset:0;z-index:999;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
 #page-jail.active{display:flex;animation:pageIn .35s ease forwards}
 .jail-gif{width:200px;height:200px;object-fit:cover;border-radius:var(--radius);border:2px solid var(--border2);margin-bottom:28px}
@@ -381,7 +380,7 @@ nav{
 .jail-admin-release-title{font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:12px}
 .jail-admin-input-row{display:flex;gap:8px}
 
-/* ── CHAT SIDEBAR (rebuilt) ── */
+
 #chat-sidebar{
   flex-shrink:0;width:var(--chat-w);display:flex;flex-direction:column;
   border-left:1px solid var(--border);background:var(--surface);
@@ -391,7 +390,7 @@ nav{
 }
 #chat-sidebar.minimized{width:0;border-left-color:transparent;overflow:hidden}
 
-/* Chat slide toggle button */
+
 #chat-slide-btn{
   position:absolute;left:-38px;top:50%;transform:translateY(-50%);
   width:38px;height:64px;
@@ -461,7 +460,7 @@ nav{
 .chat-send-btn:hover{opacity:.85}
 .chat-send-btn:disabled{opacity:.4;cursor:not-allowed}
 
-/* ── BOTTOM NAV ── */
+
 #bottom-nav{flex-shrink:0;height:var(--bnav-h);background:var(--surface);border-top:1px solid var(--border);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;gap:4px;padding:0 12px;z-index:90}
 .bnav-btn{flex:1;max-width:90px;height:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:.56rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border:none;cursor:pointer;border-radius:var(--radius-sm);color:var(--muted);background:transparent;transition:all .18s}
 .bnav-btn:hover{color:var(--text);background:var(--surface2)}
@@ -470,14 +469,14 @@ nav{
 #bnav-admin{display:none}
 #sidebar-admin{display:none}
 
-/* Mobile chat overlay */
+
 #mobile-chat-overlay{
   display:none;position:fixed;inset:0;background:rgba(5,5,8,.7);
   backdrop-filter:blur(4px);z-index:140;
 }
 #mobile-chat-overlay.active{display:block}
 
-/* Mobile chat FAB */
+
 #mobile-chat-fab{
   display:none;position:fixed;bottom:calc(var(--bnav-h) + 14px);right:16px;
   width:52px;height:52px;background:var(--accent-gradient);
@@ -493,7 +492,6 @@ nav{
   display:none;
 }
 
-/* ── BUTTONS ── */
 .btn{font-size:.72rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;padding:8px 16px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all .18s ease;font-family:'Inter',sans-serif}
 .btn:active{transform:scale(.97)}
 .btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--muted)}
@@ -512,7 +510,6 @@ nav{
 .btn-success{background:rgba(74,222,128,.12);color:var(--success);border:1px solid rgba(74,222,128,.3)}
 .btn-success:hover{background:rgba(74,222,128,.2)}
 
-/* ── MODALS ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(5,5,8,.92);backdrop-filter:blur(8px);z-index:200;align-items:center;justify-content:center}
 .modal-overlay.active{display:flex;animation:overlayIn .2s ease}
 @keyframes overlayIn{from{opacity:0}to{opacity:1}}
@@ -553,7 +550,6 @@ nav{
 .resend-bar-text{position:relative;z-index:1;width:100%;text-align:center;font-size:.67rem;color:var(--muted)}
 .resend-ready{display:none;margin-top:7px}
 
-/* ── RESPONSIVE ── */
 @media(max-width:900px){
   #left-sidebar{display:none}
   .hamburger{display:none}
@@ -588,19 +584,17 @@ nav{
 </head>
 <body>
 
-<!-- ═══════════════ SPLASH ═══════════════ -->
 <div id="splash">
   <img id="splash-logo" src="https://i.ibb.co/hx84QsTM/Gemini-Generated-Image-rygx4prygx4prygx-removebg-preview.png" alt="pixelworldscheats.xyz">
   <div id="splash-bar-wrap"><div id="splash-bar"></div></div>
-  <div id="splash-label">Loading…</div>
+  <div id="splash-label">loading <33</div>
 </div>
 
-<!-- ═══════════════ CENTER NOTIFICATION ═══════════════ -->
 <div id="center-notif-overlay">
   <div id="center-notif-box">
     <div id="center-notif-icon">⚠️</div>
-    <div id="center-notif-title">Please make a new account</div>
-    <div id="center-notif-desc">Hello, I have updated the website and had to remove old accounts so if you want to use the website you will have to create a new account.</div>
+    <div id="center-notif-title">welcome to pixelworldscheats.xyz, made by efn.king <3</div>
+    <div id="center-notif-desc">Hello, you will only see this message as a guest. If you can't login to your account please make a ticket in the discord server to reset your password.</div>
     <button id="center-notif-close" disabled onclick="dismissCenterNotif()">Got it</button>
     <div id="center-notif-timer-txt">Please wait 3.5 seconds…</div>
   </div>
@@ -637,19 +631,13 @@ nav{
       </div>
     </div>
   </nav>
-
-  <!-- Mobile Nav Drawer -->
   <div id="mobile-nav-drawer">
     <div class="mobile-nav-item active" id="mni-main" onclick="showPage('main');closeMobileNav()"><i class="fas fa-th-large"></i> Pixel Worlds Cheats</div>
     <div class="mobile-nav-item" id="mni-minigames" onclick="showPage('minigames');closeMobileNav()"><i class="fas fa-bomb"></i> Mines</div>
     <div class="mobile-nav-item" id="mni-account" onclick="showPage('account');closeMobileNav()"><i class="fas fa-user"></i> Account</div>
     <div class="mobile-nav-item" id="mni-admin" style="display:none" onclick="showPage('admin');closeMobileNav()"><i class="fas fa-shield-alt"></i> Warden Panel</div>
   </div>
-
-  <!-- CONTENT ROW -->
   <div id="content-row">
-
-    <!-- LEFT SIDEBAR -->
     <div id="left-sidebar">
       <div class="sidebar-online">
         <div class="sidebar-online-dot"></div>
@@ -677,11 +665,7 @@ nav{
         </div>
       </div>
     </div>
-
-    <!-- PAGE AREA -->
     <div id="page-area">
-
-      <!-- PAGE: MAIN -->
       <div id="page-main" class="page active">
         <div class="section-header">
           <div>
@@ -722,19 +706,15 @@ nav{
             <p>Welcome to <strong>pixelworldscheats.xyz</strong> — the ultimate hub for <strong>Pixel Worlds cheats</strong>, <strong>free PW hacks</strong>, and tools. Our platform is the #1 destination for anyone searching for <strong>Pixel Worlds exploit downloads</strong>, <strong>Charon Client</strong>, <strong>Hyx Client</strong>, PW autofarm scripts, and free resources. We host verified working cheats for Pixel Worlds including autofarm, automine, autofish, nether hacks, godmode, fly, warp hacks, and much more. Join our coder discussion community, use our Bytecoin Mines game, and download the latest free tools updated for 2026. All cheats are tested and safe for download. Whether you're looking for <strong>Pixel Worlds scripts</strong>, <strong>BepInEx mods</strong>, or just want to explore free gaming resources, pixelworldscheats.xyz is your go-to community site.</p>
           </div>
         </div>
-      </div><!-- /page-main -->
-
-      <!-- PAGE: DETAIL -->
+      </div>
       <div id="page-detail" class="page">
         <div class="det-back" onclick="showPage('main')"><i class="fas fa-arrow-left"></i>&nbsp; Back to Cheats</div>
         <div class="det-title" id="det-title"></div>
         <div class="det-main-layout">
-          <!-- LEFT: image + description -->
           <div class="det-left">
             <img class="det-img" id="det-img" src="" alt="">
             <div class="det-desc" id="det-desc"></div>
           </div>
-          <!-- RIGHT: features + download -->
           <div class="det-right">
             <div class="det-features-panel">
               <div class="det-features-title">✨ Features</div>
@@ -747,8 +727,6 @@ nav{
           </div>
         </div>
       </div>
-
-      <!-- PAGE: ACCOUNT -->
       <div id="page-account" class="page">
         <div id="account-guest" style="display:none">
           <div class="acct-guest-box">
@@ -784,8 +762,6 @@ nav{
           </div>
         </div>
       </div>
-
-      <!-- PAGE: MINES -->
       <div id="page-minigames" class="page">
         <div class="mines-layout">
           <div class="mines-left">
@@ -841,23 +817,17 @@ nav{
           </div>
         </div>
       </div>
-
-      <!-- PAGE: ADMIN (rebuilt with tabs) -->
       <div id="page-admin" class="page">
         <div class="admin-header">
           <div class="admin-title">Warden Panel</div>
           <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin Only</span>
         </div>
-
-        <!-- Admin tab buttons -->
         <div class="admin-tabs">
           <button class="admin-tab-btn active" onclick="switchAdminTab('controls',this)"><i class="fas fa-bolt"></i> Controls</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('users',this)"><i class="fas fa-users"></i> Users</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('moderation',this)"><i class="fas fa-gavel"></i> Moderation</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('messages',this)"><i class="fas fa-comment-slash"></i> Messages</button>
         </div>
-
-        <!-- Tab: Controls -->
         <div class="admin-panel active" id="admin-panel-controls">
           <div class="admin-section">
             <div class="admin-section-title"><i class="fas fa-bolt"></i> Server Bypass Controls</div>
@@ -877,8 +847,6 @@ nav{
             <div class="admin-notif" id="reload-notif"></div>
           </div>
         </div>
-
-        <!-- Tab: Users -->
         <div class="admin-panel" id="admin-panel-users">
           <div class="admin-section">
             <div class="admin-section-title"><i class="fas fa-search"></i> User Searcher</div>
@@ -909,8 +877,6 @@ nav{
             <div class="admin-notif" id="balance-notif"></div>
           </div>
         </div>
-
-        <!-- Tab: Moderation -->
         <div class="admin-panel" id="admin-panel-moderation">
           <div class="admin-section">
             <div class="admin-section-title"><i class="fas fa-microphone-slash"></i> Mute User</div>
@@ -943,8 +909,6 @@ nav{
             <div class="admin-notif" id="release-notif"></div>
           </div>
         </div>
-
-        <!-- Tab: Messages -->
         <div class="admin-panel" id="admin-panel-messages">
           <div class="admin-section">
             <div class="admin-section-title"><i class="fas fa-trash"></i> Delete Message by ID</div>
@@ -962,12 +926,8 @@ nav{
           </div>
         </div>
       </div>
-
-    </div><!-- /page-area -->
-
-    <!-- CHAT SIDEBAR -->
+    </div>
     <div id="chat-sidebar">
-      <!-- Slide toggle tab -->
       <button id="chat-slide-btn" onclick="toggleChat()" title="Toggle chat">
         <i class="fas fa-comments chat-slide-icon" id="chat-slide-icon"></i>
         <span class="chat-slide-label" id="chat-slide-label">Chat</span>
@@ -1008,25 +968,18 @@ nav{
       </div>
     </div>
 
-  </div><!-- /content-row -->
-
-  <!-- BOTTOM NAV (mobile) -->
+  </div>
   <div id="bottom-nav">
     <button class="bnav-btn active" id="bnav-main" onclick="showPage('main')"><i class="fas fa-th-large"></i><span>Cheats</span></button>
     <button class="bnav-btn" id="bnav-minigames" onclick="showPage('minigames')"><i class="fas fa-bomb"></i><span>Mines</span></button>
     <button class="bnav-btn" id="bnav-account" onclick="showPage('account')"><i class="fas fa-user"></i><span>Account</span></button>
     <button class="bnav-btn" id="bnav-admin" onclick="showPage('admin')"><i class="fas fa-shield-alt"></i><span>Warden</span></button>
   </div>
-
-  <!-- Mobile chat FAB -->
+  
   <button id="mobile-chat-fab" onclick="openMobileChat()"><i class="fas fa-comment"></i></button>
 
-</div><!-- /app -->
-
-<!-- Mobile chat overlay backdrop -->
+</div>
 <div id="mobile-chat-overlay" onclick="closeMobileChat()"></div>
-
-<!-- JAIL OVERLAY -->
 <div id="page-jail">
   <img class="jail-gif" src="https://media.discordapp.net/attachments/984502793970802770/1190554316621226165/giphy.gif" alt="Jail">
   <div class="jail-title">You Are In Jail because you were being a retard</div>
@@ -1042,7 +995,6 @@ nav{
   </div>
 </div>
 
-<!-- LOGIN MODAL -->
 <div class="modal-overlay" id="login-modal">
   <div class="auth-box">
     <button class="modal-close" onclick="closeModal('login-modal')"><i class="fas fa-times"></i></button>
@@ -1072,8 +1024,6 @@ nav{
     <div class="auth-switch">No account? <span class="auth-link" onclick="closeModal('login-modal');openModal('reg-modal')">Sign up</span></div>
   </div>
 </div>
-
-<!-- REGISTER MODAL -->
 <div class="modal-overlay" id="reg-modal">
   <div class="auth-box">
     <button class="modal-close" onclick="closeModal('reg-modal')"><i class="fas fa-times"></i></button>
@@ -1133,8 +1083,6 @@ nav{
     </div>
   </div>
 </div>
-
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
