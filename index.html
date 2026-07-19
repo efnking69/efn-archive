@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pixelworlds Cheats</title>
+<title>Pixelworlds Cheats v2.0</title>
 
 <link rel="icon" type="image/png" href="https://i.ibb.co/4nHdfYF2/favicon.png">
 
@@ -16,168 +16,284 @@
 }
 
 body{
-    background:#111;
-    color:#ddd;
-    font-family:"Courier New", monospace;
-    background-image:
-    linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-    background-size:4px 4px;
+    background:#0a0a0c;
+    color:#e2e8f0;
+    font-family:"Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    line-height: 1.6;
 }
 
 a{
-    color:#4ea3ff;
+    color:#3b82f6;
     text-decoration:none;
+    transition: color 0.2s ease;
 }
 
 a:hover{
-    text-decoration:underline;
+    color:#60a5fa;
 }
 
 header{
     width:100%;
-    background:#000;
-    border-bottom:2px solid #444;
+    background:#111115;
+    border-bottom:1px solid #27272a;
     text-align:center;
-    padding:18px;
+    padding:20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 header h1{
     color:#fff;
-    font-size:30px;
-    font-weight:normal;
+    font-size:26px;
+    font-weight:700;
     letter-spacing:1px;
 }
 
 .center{
-    width:700px;
+    width:900px;
     max-width:95%;
-    margin:80px auto;
+    margin:60px auto;
     text-align:center;
 }
 
 .center h2{
     color:white;
+    font-size: 32px;
     margin-bottom:15px;
+    font-weight: 800;
 }
 
 .center p{
-    color:#aaa;
-    line-height:1.5;
+    color:#94a3b8;
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto 30px auto;
 }
 
 .discord{
     display:inline-block;
-    margin-top:25px;
-    padding:12px 35px;
-    background:#202020;
-    border:2px solid #666;
+    padding:14px 35px;
+    background:#5865F2;
     color:white;
     font-weight:bold;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(88, 101, 242, 0.4);
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .discord:hover{
-    background:#303030;
+    background:#4752c4;
+    transform: translateY(-2px);
+    text-decoration: none;
 }
 
-.project{
-    margin-top:60px;
-    display:inline-flex;
-    align-items:center;
-    gap:15px;
-    padding:14px;
-    border:2px solid #555;
-    background:#181818;
-    cursor:pointer;
-    text-decoration:none;
-    color:white;
+.project-card {
+    margin: 60px auto 0 auto;
+    display: flex;
+    max-width: 450px;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #27272a;
+    background: #111115;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    text-align: left;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.project:hover{
-    background:#262626;
+.project-card:hover{
+    border-color: #3b82f6;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
 }
 
-.project img{
-    width:72px;
-    height:72px;
-    border-radius:50%;
-    border:2px solid #666;
+.project-card img{
+    width:64px;
+    height:64px;
+    border-radius:12px;
+    background: #1e1e24;
+}
+
+.project-card .info h3 {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.badge-v {
+    background: #27272a;
+    color: #a1a1aa;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.status-free {
+    color: #10b981;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 footer{
-    margin-top:120px;
-    border-top:2px solid #444;
-    text-align:center;
-    padding:20px;
-    color:#777;
+    margin-top: 120px;
+    border-top: 1px solid #27272a;
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+    font-size: 14px;
 }
 
-/* ---------- PAGE ---------- */
+/* ---------- PROJECT PAGE ---------- */
 
 .page{
     display:none;
-    padding:40px;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
 .back{
-    display:inline-block;
-    margin-bottom:25px;
+    display:inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom:30px;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.project-title h2 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
 }
 
 .tag{
     display:inline-block;
-    background:#009900;
-    color:white;
-    padding:4px 10px;
-    border:1px solid #00dd00;
-    margin-top:10px;
-    margin-bottom:20px;
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    padding:4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    margin-top: 8px;
 }
 
 .download{
     display:inline-block;
-    margin-top:25px;
-    background:#222;
-    border:2px solid #666;
-    color:white;
-    padding:12px 30px;
+    background:#fff;
+    color:#000;
+    padding:14px 40px;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+    transition: transform 0.2s ease, background 0.2s ease;
 }
+
+.download:hover {
+    background: #e2e8f0;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* --- DASHBOARD PANEL GRAPHICS --- */
+
+.panel-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #fff;
+    border-left: 4px solid #3b82f6;
+    padding-left: 10px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 50px;
+}
+
+.feature-card {
+    background: #111115;
+    border: 1px solid #27272a;
+    border-radius: 10px;
+    padding: 18px;
+    position: relative;
+    transition: border-color 0.2s ease;
+}
+
+.feature-card:hover {
+    border-color: #3f3f46;
+}
+
+.feature-card h4 {
+    font-size: 16px;
+    color: #f8fafc;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.feature-card p {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.feat-status {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.status-stable { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.status-beta { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.status-dev { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+
+/* --- GALLERY --- */
 
 .gallery{
-    margin-top:45px;
-}
-
-.gallery h3{
-    margin-bottom:15px;
+    margin-top:50px;
 }
 
 .gallery-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
 }
 
 .placeholder{
-    height:150px;
-    border:2px dashed #555;
-    background:#181818;
+    height:180px;
+    border:1px dashed #3f3f46;
+    background:#111115;
+    border-radius: 8px;
     display:flex;
     justify-content:center;
     align-items:center;
-    color:#666;
+    color:#64748b;
+    font-size: 14px;
 }
 
 .video{
-    height:250px;
-}
-
-ul{
-    margin-top:20px;
-    margin-left:25px;
-}
-
-li{
-    margin:6px 0;
+    background: #181820;
+    border: 1px solid #27272a;
+    color: #94a3b8;
 }
 </style>
 </head>
@@ -195,8 +311,7 @@ li{
 <h2>Pixel Worlds Cheats</h2>
 
 <p>
-Free Pixel Worlds projects, downloads and showcases.<br>
-Join the Discord server for downloads, updates and support.
+Free Pixel Worlds projects, modules, and built-in executors. Join the community to get updates and configuration support.
 </p>
 
 <a class="discord" href="https://discord.gg/QV69upuxbg" target="_blank">
@@ -205,80 +320,100 @@ Join Discord Server
 
 <br><br>
 
-<a class="project" href="#" onclick="openProject(); return false;">
-<img src="https://i.ibb.co/4nHdfYF2/favicon.png">
-<div>
-<div><b>Project Handsome</b></div>
-<div style="color:#66ff66;">Free</div>
+<a class="project-card" href="#" onclick="openProject(); return false;">
+<img src="https://i.ibb.co/4nHdfYF2/favicon.png" alt="Icon">
+<div class="info">
+    <h3>Project Handsome <span class="badge-v">v2.0</span></h3>
+    <div class="status-free">Free Download</div>
 </div>
 </a>
 
 </div>
 
 <footer>
-©
-<a href="https://pixelworldscheats.xyz">
-Pixelworldscheats.xyz
-</a>
+© <a href="https://pixelworldscheats.xyz">Pixelworldscheats.xyz</a>
 </footer>
 
 </div>
 
-<!-- PROJECT PAGE -->
-
 <div class="page" id="projectPage">
 
-<a href="#" class="back" onclick="goHome(); return false;">&lt; Back</a>
+<a href="#" class="back" onclick="goHome(); return false;">← Back to Home</a>
 
-<h1>Project Handsome</h1>
+<div class="project-header">
+    <div class="project-title">
+        <h2>Project Handsome <span class="badge-v" style="font-size:14px; padding:4px 8px;">v2.0</span></h2>
+        <div class="tag">ACTIVE &amp; UNDETECTED</div>
+    </div>
+    <div>
+        <a class="download" href="https://discord.gg/QV69upuxbg" target="_blank">
+            Download Module
+        </a>
+    </div>
+</div>
 
-<div class="tag">FREE</div>
+<h3 class="panel-title">Feature Dashboard</h3>
 
-<p>
-Project Handsome is a free Pixel Worlds cheat project.
-</p>
-
-<ul>
-<li>Auto Farm</li>
-<li>Auto Fish</li>
-<li>Auto Mine</li>
-<li>Speed</li>
-<li>Ghost</li>
-<li>World Utilities</li>
-<li>More coming soon...</li>
-</ul>
-
-<a class="download"
-href="https://discord.gg/QV69upuxbg"
-target="_blank">
-Download
-</a>
+<div class="feature-grid">
+    <div class="feature-card">
+        <h4>100+ Basic Cheats <span class="feat-status status-stable">Stable</span></h4>
+        <p>Godmode, anti-bounce, infinite jump, anti-darkness, troll cheats, and more essentials.</p>
+    </div>
+    <div class="feature-card">
+        <h4>Fly Engine <span class="feat-status status-stable">Stable</span></h4>
+        <p>Equipped with multiple bypass fly methods to traverse maps instantly.</p>
+    </div>
+    <div class="feature-card">
+        <h4>Auto Nether &amp; Fish <span class="feat-status status-stable">Stable</span></h4>
+        <p>Fully automated script pathing for effortless Nether runs and dynamic fishing loops.</p>
+    </div>
+    <div class="feature-card">
+        <h4>Built-in Executor <span class="feat-status status-beta">Beta</span></h4>
+        <p>Community integrated script hub designed for easy custom payload execution.</p>
+    </div>
+    <div class="feature-card">
+        <h4>Improved Freecam <span class="feat-status status-stable">Stable</span></h4>
+        <p>Advanced detached camera handling allowing seamless map scouting.</p>
+    </div>
+    <div class="feature-card">
+        <h4>Teleport &amp; Commands <span class="feat-status status-stable">Stable</span></h4>
+        <p>Quick coordinate warp manipulation integrated directly alongside functional chat commands.</p>
+    </div>
+    <div class="feature-card">
+        <h4>Auto Mine <span class="feat-status status-dev">Upcoming</span></h4>
+        <p>Automated underground block mining and path optimization framework coming soon.</p>
+    </div>
+    <div class="feature-card">
+        <h4>Fun Modifiers <span class="feat-status status-stable">Stable</span></h4>
+        <p>Miscellaneous fun features and visual tweaks overseen by the best owner sigma.</p>
+    </div>
+</div>
 
 <div class="gallery">
 
-<h3>Gallery</h3>
+<h3 class="panel-title">Media &amp; Showcases</h3>
 
 <div class="gallery-grid">
 
 <div class="placeholder video">
-YouTube Showcase
+▶ YouTube Showcase Video
 </div>
 
 <div class="placeholder">
-Image 1
+Interface Screenshot 1
 </div>
 
 <div class="placeholder">
-Image 2
-</div>
-
-<div class="placeholder">
-Image 3
+Interface Screenshot 2
 </div>
 
 </div>
 
 </div>
+
+<footer>
+© <a href="https://pixelworldscheats.xyz">Pixelworldscheats.xyz</a>
+</footer>
 
 </div>
 
