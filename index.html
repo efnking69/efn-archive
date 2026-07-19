@@ -2,399 +2,284 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Pixelworlds Cheats</title>
-
-<link rel="icon" type="image/png" href="https://i.ibb.co/4nHdfYF2/favicon.png">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pixelworldscheats</title>
+<link rel="icon" href="https://i.ibb.co/4nHdfYF2/favicon.png">
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d0d0d;color:#d7d7d7;font:14px Tahoma,Verdana,sans-serif}
+a{text-decoration:none;color:#6fb3ff}
+a:hover{color:#fff}
+.top{background:linear-gradient(#191919,#050505);border-bottom:2px solid #444;padding:18px;text-align:center}
+.top h1{font:28px "Courier New",monospace;color:#fff;text-shadow:1px 1px #000}
+.status{color:#5cff5c;font-size:12px;margin-top:5px}
+.wrap{max-width:950px;margin:35px auto;padding:10px}
+.panel{background:#171717;border:1px solid #555;box-shadow:0 0 0 1px #000 inset;margin-bottom:25px}
+.title{background:#252525;border-bottom:1px solid #555;padding:8px 12px;color:#fff;font-weight:bold}
+.content{padding:18px}
+.center{text-align:center}
+.btn{
+display:inline-block;
+padding:11px 26px;
+background:linear-gradient(#3b3b3b,#1a1a1a);
+border:1px solid #666;
+border-right-color:#111;
+border-bottom-color:#111;
+color:#fff;
+font-weight:bold;
+margin:8px;
 }
-
-body{
-    background:#111;
-    color:#ddd;
-    font-family:"Tahoma", sans-serif;
-    background-image:
-    linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-    background-size:4px 4px;
-}
-
-a{
-    color:#4ea3ff;
-    text-decoration:none;
-}
-
-a:hover{
-    text-decoration:underline;
-}
-
-header{
-    width:100%;
-    background:#000;
-    border-bottom:2px solid #444;
-    text-align:center;
-    padding:18px;
-}
-
-header h1{
-    color:#fff;
-    font-size:30px;
-    font-weight:normal;
-    letter-spacing:1px;
-}
-
-.center{
-    width:700px;
-    max-width:95%;
-    margin:80px auto;
-    text-align:center;
-}
-
-.center h2{
-    color:white;
-    margin-bottom:15px;
-}
-
-.center p{
-    color:#aaa;
-    line-height:1.5;
-}
-
-.discord{
-    display:inline-block;
-    margin-top:25px;
-    padding:12px 35px;
-    background:#202020;
-    border:2px solid #666;
-    color:white;
-    font-weight:bold;
-}
-
-.discord:hover{
-    background:#303030;
-}
-
+.btn:hover{background:linear-gradient(#4b4b4b,#222)}
 .project{
-    margin-top:60px;
-    display:inline-flex;
-    align-items:center;
-    gap:15px;
-    padding:14px;
-    border:2px solid #555;
-    background:#181818;
-    cursor:pointer;
-    text-decoration:none;
-    color:white;
-    text-align: left;
+display:flex;
+align-items:center;
+gap:18px;
+background:#131313;
+border:1px solid #555;
+padding:14px;
+cursor:pointer;
+margin-top:20px;
 }
-
-.project:hover{
-    background:#262626;
-}
-
+.project:hover{background:#1d1d1d}
 .project img{
-    width:72px;
-    height:72px;
-    border-radius:50%;
-    border:2px solid #666;
+width:82px;
+height:82px;
+border-radius:50%;
+border:2px solid #666;
 }
-
-footer{
-    margin-top:120px;
-    border-top:2px solid #444;
-    text-align:center;
-    padding:20px;
-    color:#777;
-}
-
-/* ---------- PAGE ---------- */
-
-.page{
-    display:none;
-    padding:40px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.back{
-    display:inline-block;
-    margin-bottom:25px;
-}
-
 .tag{
-    display:inline-block;
-    background:#009900;
-    color:white;
-    padding:4px 10px;
-    border:1px solid #00dd00;
-    margin-top:10px;
-    margin-bottom:20px;
+display:inline-block;
+padding:3px 9px;
+background:#0d7d0d;
+border:1px solid #18d118;
+color:#fff;
+font-size:12px;
+box-shadow:0 0 6px #0d7d0d;
+margin-top:6px;
 }
-
-.download{
-    display:inline-block;
-    margin-top:25px;
-    background:#222;
-    border:2px solid #666;
-    color:white;
-    padding:12px 30px;
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:12px;
+margin-top:15px;
 }
-
-.download:hover{
-    background:#333;
+.feature{
+background:#101010;
+border:1px solid #444;
+padding:12px;
 }
-
-/* --- RESTRUCTURED FEATURE GRID SYSTEM --- */
-
-.feature-panel {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+.feature h3{
+font-size:15px;
+margin-bottom:8px;
+color:#fff;
 }
-
-.feature-box {
-    background: #181818;
-    border: 2px solid #555;
-    padding: 15px;
-}
-
-.feature-box:hover {
-    background: #262626;
-}
-
-.feature-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    border-bottom: 1px dashed #555;
-    padding-bottom: 6px;
-}
-
-.feature-title {
-    font-weight: bold;
-    color: #fff;
-}
-
-.feature-status {
-    font-size: 11px;
-    padding: 2px 6px;
-    font-weight: bold;
-}
-
-.status-stable { background: #004400; color: #66ff66; border: 1px solid #008800; }
-.status-beta { background: #553300; color: #ffaa00; border: 1px solid #aa6600; }
-.status-soon { background: #003355; color: #00aaff; border: 1px solid #0066aa; }
-
-.feature-desc {
-    font-size: 13px;
-    color: #aaa;
-    line-height: 1.4;
-}
-
-/* --- GALLERY --- */
-
 .gallery{
-    margin-top:45px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:12px;
+margin-top:20px;
 }
-
-.gallery h3{
-    margin-bottom:15px;
+.box{
+background:#0f0f0f;
+border:1px solid #555;
+height:150px;
+display:flex;
+justify-content:center;
+align-items:center;
+color:#666;
 }
-
-.gallery-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
+.video{height:240px}
+footer{
+margin-top:35px;
+padding:18px;
+text-align:center;
+border-top:2px solid #333;
+color:#888;
 }
-
-.placeholder{
-    height:150px;
-    border:2px dashed #555;
-    background:#181818;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:#666;
-}
-
-.video{
-    height:250px;
-}
+.page{display:none}
+.back{margin-bottom:20px;display:inline-block}
+ul{margin-left:18px}
+li{margin:5px 0}
+hr{border:none;border-top:1px solid #444;margin:18px 0}
 </style>
 </head>
-
 <body>
 
 <div id="home">
 
-<header>
+<div class="top">
 <h1>Pixelworldscheats.xyz</h1>
-</header>
+<div class="status">discord: eelaska.sys</div>
+</div>
 
-<div class="center">
+<div class="wrap">
+
+<div class="panel">
+<div class="title">Welcome</div>
+<div class="content center">
 
 <h2>Pixel Worlds Cheats</h2>
+<br>
 
 <p>
-Free Pixel Worlds projects, downloads and showcases.<br>
-Join the Discord server for downloads, updates and support.
+Free cheat projects, downloads and showcases.
 </p>
 
-<a class="discord" href="https://discord.gg/QV69upuxbg" target="_blank">
+<br>
+
+<a class="btn" target="_blank" href="https://discord.gg/QV69upuxbg">
 Join Discord Server
 </a>
 
-<br><br>
+<div class="project" onclick="project()">
 
-<a class="project" href="#" onclick="openProject(); return false;">
 <img src="https://i.ibb.co/4nHdfYF2/favicon.png">
-<div>
-<div><b>Project Handsome</b></div>
-<div style="color:#66ff66;">Free</div>
-</div>
-</a>
 
+<div>
+
+<h2>Project Handsome</h2>
+
+<div class="tag">
+FREE
+</div>
+
+<div style="margin-top:8px;color:#aaa">
+Version 2.0
+</div>
+
+</div>
+
+</div>
+
+</div>
 </div>
 
 <footer>
-©
-<a href="https://pixelworldscheats.xyz">
-Pixelworldscheats.xyz
-</a>
+© <a href="https://pixelworldscheats.xyz">pixelworldscheats.xyz</a><br><br>
+Last Updated: 20.7.2026
 </footer>
 
 </div>
 
-<div class="page" id="projectPage">
-
-<a href="#" class="back" onclick="goHome(); return false;">&lt; Back</a>
-
-<h1>Project Handsome</h1>
-
-<div class="tag">FREE</div>
-
-<p>
-Project Handsome is a free Pixel Worlds cheat project.
-</p>
-
-<div class="feature-panel">
-
-    <div class="feature-box">
-        <div class="feature-header">
-            <span class="feature-title">100+ Basic cheats</span>
-            <span class="feature-status status-stable">STABLE</span>
-        </div>
-        <div class="feature-desc">godmode, antibounce, infinitejump, anti darkness, troll cheats etc..</div>
-    </div>
-
-    <div class="feature-box">
-        <div class="feature-header">
-            <span class="feature-title">Chat commands</span>
-            <span class="feature-status status-stable">STABLE</span>
-        </div>
-        <div class="feature-desc">Custom integrated structural commands.</div>
-    </div>
-
-    <div class="feature-box">
-        <div class="feature-header">
-            <span class="feature-title">Auto nether</span>
-            <span class="feature-status status-stable">STABLE</span>
-        </div>
-        <div class="feature-desc">Automated nether progression.</div>
-    </div>
-
-    <div class="feature-box">
-        <div class="feature-header">
-            <span class="feature-title">Auto fish</span>
-            <span class="feature-status status-stable">STABLE</span>
-        </div>
-        <div class="feature-desc">Automated fishing routines.</div>
-    </div>
-
-    <div class="feature-box">
-        <div class="feature-header">
-            <span class="feature-title">Teleport</span>
-            <span class="feature-status status-stable">STABLE</span>
-        </div>
-        <div class="feature-desc">Instant position adjustments.</div>
-    </div>
-
-    <div class="feature-box">
-        <div class="feature-header">
-            <span class="feature-title">Fly</span>
-            <span class="feature-status status-stable">STABLE</span>
-        </div>
-        <div class="feature-desc">many fly methods available.</div>
-    </div>
-
-    <div class="feature-box">
-        <div class="feature-header">
-            <span class="feature-title">Freecam Improved</span>
-            <span class="feature-status status-stable">STABLE</span>
-        </div>
-        <div class="feature-desc">Enhanced detached viewing options.</div>
-    </div>
-
-    <div class="feature-box">
-        <div class="feature-header">
-            <span class="feature-title">funneh things</span>
-            <span class="feature-status status-stable">STABLE</span>
-        </div>
-        <div class="feature-desc">best owner sigma layout settings.</div>
-    </div>
-
-    <div class="feature-box">
-        <div class="feature-header">
-            <span class="feature-title">Community Executor</span>
-            <span class="feature-status status-beta">BETA</span>
-        </div>
-        <div class="feature-desc">Built in executor and scripthub (for fun).</div>
-    </div>
-
-    <div class="feature-box">
-        <div class="feature-header">
-            <span class="feature-title">Auto mine</span>
-            <span class="feature-status status-soon">SOON</span>
-        </div>
-        <div class="feature-desc">Automated mining elements.</div>
-    </div>
-
 </div>
 
-<a class="download"
-href="https://discord.gg/QV69upuxbg"
-target="_blank">
+<div id="project" class="page">
+
+<div class="top">
+<h1>Project Handsome</h1>
+</div>
+
+<div class="wrap">
+
+<a href="#" class="back" onclick="home()">← Back</a>
+
+<div class="panel">
+
+<div class="title">
+Information
+</div>
+
+<div class="content">
+
+<div class="tag">
+FREE
+</div>
+
+<p style="margin-top:15px">
+Project Handsome is a free Pixel Worlds cheat with over 100+ features,
+multiple automation features and community scripts.
+</p>
+
+<br>
+
+<a class="btn"
+target="_blank"
+href="https://discord.gg/QV69upuxbg">
 Download
 </a>
 
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="feature">
+
+<h3>Main Features</h3>
+
+<ul>
+<li>100+ Basic Cheats</li>
+<li>Godmode</li>
+<li>Anti Bounce</li>
+<li>Infinite Jump</li>
+<li>Anti Darkness</li>
+<li>Troll Cheats</li>
+<li>And much more...</li>
+</ul>
+
+</div>
+
+<div class="feature">
+
+<h3>Automation</h3>
+
+<ul>
+<li>Auto Nether</li>
+<li>Auto Fish</li>
+<li>Teleport</li>
+<li>Auto Mine (Soon)</li>
+</ul>
+
+</div>
+
+<div class="feature">
+
+<h3>Movement</h3>
+
+<ul>
+<li>Fly</li>
+<li>Multiple Fly Methods</li>
+<li>Improved Freecam</li>
+</ul>
+
+</div>
+
+<div class="feature">
+
+<h3>Extras</h3>
+
+<ul>
+<li>Chat Commands</li>
+<li>Fun Features</li>
+<li>Community Executor</li>
+<li>Built-in Script Hub</li>
+<li>Owner is an sigma</li>
+</ul>
+
+</div>
+
+</div>
+
+<hr>
+
+<h2>Gallery</h2>
+
 <div class="gallery">
 
-<h3>Gallery</h3>
-
-<div class="gallery-grid">
-
-<div class="placeholder video">
+<div class="box video">
 YouTube Showcase
 </div>
 
-<div class="placeholder">
+<div class="box">
 Image 1
 </div>
 
-<div class="placeholder">
+<div class="box">
 Image 2
 </div>
 
-<div class="placeholder">
+<div class="box">
 Image 3
 </div>
 
@@ -402,26 +287,18 @@ Image 3
 
 </div>
 
-<footer>
-©
-<a href="https://pixelworldscheats.xyz">
-Pixelworldscheats.xyz
-</a>
-</footer>
-
 </div>
 
 <script>
-function openProject(){
-    document.getElementById("home").style.display="none";
-    document.getElementById("projectPage").style.display="block";
-    window.scrollTo(0,0);
+function project(){
+document.getElementById("home").style.display="none";
+document.getElementById("project").style.display="block";
+window.scrollTo(0,0);
 }
-
-function goHome(){
-    document.getElementById("projectPage").style.display="none";
-    document.getElementById("home").style.display="block";
-    window.scrollTo(0,0);
+function home(){
+document.getElementById("project").style.display="none";
+document.getElementById("home").style.display="block";
+window.scrollTo(0,0);
 }
 </script>
 
