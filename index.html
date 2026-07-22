@@ -113,6 +113,7 @@ a:hover {
     border-radius: 6px;
     margin-bottom: 20px;
     overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .panel-header {
@@ -131,7 +132,7 @@ a:hover {
     padding: 20px;
 }
 
-/* BUTTONS */
+/* BUTTONS WITH SMOOTH TRANSITIONS */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -145,14 +146,15 @@ a:hover {
     font-weight: bold;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn:hover {
     background: #242736;
     border-color: #3f445c;
     color: #ffffff;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .btn:active {
@@ -183,6 +185,7 @@ a:hover {
     border-color: #1a1c24;
     color: #4a4e5d;
     transform: none;
+    box-shadow: none;
 }
 
 /* BADGES & TAGS */
@@ -223,13 +226,14 @@ a:hover {
     border-radius: 5px;
     padding: 14px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .project-card:hover {
     background: #151720;
-    border-color: #2b2f40;
-    transform: translateX(3px);
+    border-color: #383d54;
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
 }
 
 .project-card img {
@@ -270,6 +274,11 @@ a:hover {
     border: 1px solid #1a1c26;
     border-radius: 4px;
     padding: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.feature-box:hover {
+    border-color: #2e3346;
 }
 
 .feature-title {
@@ -330,7 +339,7 @@ a:hover {
     color: #4f80ff;
 }
 
-/* GALLERY SHOWCASE - UNCROPPED FULL SIZE */
+/* GALLERY SHOWCASE */
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -344,23 +353,24 @@ a:hover {
     border-radius: 4px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
 }
 
 .gallery-card:hover {
     border-color: #3f445c;
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
 }
 
 .gallery-card img {
     width: 100%;
-    height: auto;
-    max-height: 260px;
+    height: 180px;
     object-fit: contain;
     display: block;
     background: #06070a;
+    padding: 6px;
 }
 
 .gallery-caption {
@@ -376,9 +386,19 @@ a:hover {
     font-size: 12px;
 }
 
-/* PAGES & BACK BUTTON */
+/* PAGES & ANIMATIONS */
 .page {
     display: none;
+}
+
+.page-active {
+    display: block;
+    animation: fadeInPage 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .back-btn {
@@ -393,10 +413,12 @@ a:hover {
     color: #9095a5;
     font-size: 11px;
     font-weight: bold;
+    transition: all 0.15s ease;
 }
 .back-btn:hover {
     background: #181a24;
     color: #ffffff;
+    transform: translateX(-2px);
 }
 
 /* FOOTER */
@@ -408,7 +430,7 @@ footer {
     font-size: 11px;
 }
 
-/* LIGHTBOX MODAL */
+/* LIGHTBOX MODAL WITH PROPER FULL SIZE IMAGE EXPANSION */
 .modal {
     display: none;
     position: fixed;
@@ -417,6 +439,13 @@ footer {
     z-index: 100;
     flex-direction: column;
     user-select: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.modal-active {
+    display: flex;
+    opacity: 1;
 }
 
 .modal-header {
@@ -439,16 +468,24 @@ footer {
     padding: 20px;
 }
 
+/* FIX: Forces full width/height scaling while maintaining uncropped proportions */
 .modal-viewport img {
-    max-width: 92vw;
-    max-height: 82vh;
-    width: auto;
-    height: auto;
+    width: 80vw;
+    height: 75vh;
+    max-width: 1100px;
+    max-height: 80vh;
     object-fit: contain;
     border-radius: 4px;
     border: 1px solid #222533;
-    transition: transform 0.08s ease-out;
+    transition: transform 0.1s ease-out;
     cursor: grab;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalFadeIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 .modal-viewport img:active {
@@ -471,6 +508,7 @@ footer {
     cursor: pointer;
     border-radius: 4px;
     z-index: 105;
+    transition: background 0.15s ease;
 }
 .modal-arrow:hover {
     background: #232736;
@@ -487,6 +525,7 @@ footer {
     cursor: pointer;
     font-size: 12px;
     font-weight: bold;
+    transition: all 0.15s ease;
 }
 .modal-close:hover {
     color: #ffffff;
@@ -522,7 +561,7 @@ footer {
 <div class="container">
 
     <!-- HOME PAGE (/main) -->
-    <div id="home-page">
+    <div id="home-page" class="page page-active">
         <div class="panel">
             <div class="panel-header">
                 <span>Welcome</span>
@@ -734,15 +773,16 @@ const routes = {
     'arkangel': '/arkangelremake'
 };
 
-/* PAGE NAVIGATION WITH FAKE URL CHANGE */
+/* PAGE NAVIGATION WITH FAKE URL CHANGE & ANIMATIONS */
 function navTo(target, pushUrl = true) {
-    document.getElementById("home-page").style.display = "none";
-    document.getElementById("handsome-page").style.display = "none";
-    document.getElementById("arkangel-page").style.display = "none";
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(p => p.classList.remove('page-active'));
 
-    if (target === 'home') document.getElementById("home-page").style.display = "block";
-    if (target === 'handsome') document.getElementById("handsome-page").style.display = "block";
-    if (target === 'arkangel') document.getElementById("arkangel-page").style.display = "block";
+    let targetEl = document.getElementById("home-page");
+    if (target === 'handsome') targetEl = document.getElementById("handsome-page");
+    if (target === 'arkangel') targetEl = document.getElementById("arkangel-page");
+
+    targetEl.classList.add('page-active');
 
     if (pushUrl && routes[target]) {
         try {
@@ -797,11 +837,13 @@ function openLightbox(index) {
     lbIndex = index;
     resetZoom();
     updateLightbox();
-    document.getElementById("lightbox").style.display = "flex";
+    const modal = document.getElementById("lightbox");
+    modal.classList.add("modal-active");
 }
 
 function closeLightbox() {
-    document.getElementById("lightbox").style.display = "none";
+    const modal = document.getElementById("lightbox");
+    modal.classList.remove("modal-active");
 }
 
 function navLightbox(dir) {
@@ -863,7 +905,8 @@ window.addEventListener("mouseup", () => {
 });
 
 window.addEventListener("keydown", (e) => {
-    if (document.getElementById("lightbox").style.display === "flex") {
+    const modal = document.getElementById("lightbox");
+    if (modal.classList.contains("modal-active")) {
         if (e.key === "Escape") closeLightbox();
         if (e.key === "ArrowLeft") navLightbox(-1);
         if (e.key === "ArrowRight") navLightbox(1);
