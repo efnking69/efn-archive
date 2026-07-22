@@ -330,11 +330,11 @@ a:hover {
     color: #4f80ff;
 }
 
-/* GALLERY SHOWCASE */
+/* GALLERY SHOWCASE - UNCROPPED FULL SIZE */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
     margin-top: 14px;
 }
 
@@ -345,6 +345,8 @@ a:hover {
     overflow: hidden;
     cursor: pointer;
     transition: all 0.15s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .gallery-card:hover {
@@ -354,28 +356,24 @@ a:hover {
 
 .gallery-card img {
     width: 100%;
-    height: 120px;
-    object-fit: cover;
+    height: auto;
+    max-height: 260px;
+    object-fit: contain;
     display: block;
-    background: #08090c;
+    background: #06070a;
 }
 
 .gallery-caption {
-    padding: 8px 10px;
+    padding: 10px;
     background: #12141c;
     border-top: 1px solid #1a1c26;
+    text-align: center;
 }
 
 .gallery-caption-title {
     color: #d0d5e5;
     font-weight: bold;
-    font-size: 11px;
-}
-
-.gallery-caption-sub {
-    color: #606575;
-    font-size: 10px;
-    margin-top: 2px;
+    font-size: 12px;
 }
 
 /* PAGES & BACK BUTTON */
@@ -415,7 +413,7 @@ footer {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(5, 6, 8, 0.94);
+    background: rgba(5, 6, 8, 0.95);
     z-index: 100;
     flex-direction: column;
     user-select: none;
@@ -438,11 +436,15 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 20px;
 }
 
 .modal-viewport img {
-    max-width: 88vw;
-    max-height: 78vh;
+    max-width: 92vw;
+    max-height: 82vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
     border-radius: 4px;
     border: 1px solid #222533;
     transition: transform 0.08s ease-out;
@@ -457,15 +459,15 @@ footer {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(16, 18, 24, 0.8);
+    background: rgba(16, 18, 24, 0.85);
     border: 1px solid #282c3a;
     color: #ffffff;
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
     border-radius: 4px;
     z-index: 105;
@@ -496,8 +498,9 @@ footer {
     background: #0d0e13;
     border-top: 1px solid #1a1c26;
     text-align: center;
-    font-size: 11px;
-    color: #707585;
+    font-size: 12px;
+    font-weight: bold;
+    color: #d0d5e5;
 }
 </style>
 </head>
@@ -518,12 +521,11 @@ footer {
 <!-- CONTAINER -->
 <div class="container">
 
-    <!-- HOME PAGE -->
+    <!-- HOME PAGE (/main) -->
     <div id="home-page">
         <div class="panel">
             <div class="panel-header">
                 <span>Welcome</span>
-                <span style="font-size: 11px; color: #606575;">Portal v2.1</span>
             </div>
             <div class="panel-body" style="text-align: center; padding: 30px 20px;">
                 <h2 style="color: #f0f2f8; font-size: 20px; font-weight: bold;">Pixel Worlds Cheats</h2>
@@ -567,9 +569,9 @@ footer {
         </div>
     </div>
 
-    <!-- PROJECT HANDSOME PAGE -->
+    <!-- PROJECT HANDSOME PAGE (/projecthandsome) -->
     <div id="handsome-page" class="page">
-        <a href="#" class="back-btn" onclick="navTo('home')">← Back to Overview</a>
+        <a href="#" class="back-btn" onclick="navTo('home'); return false;">← Back to Overview</a>
 
         <div class="panel">
             <div class="panel-header">
@@ -651,42 +653,38 @@ footer {
         <!-- GALLERY -->
         <div class="gallery-grid">
             <div class="gallery-card" onclick="openLightbox(0)">
-                <img src="https://i.ibb.co/7J9m776C/image.png" alt="Showcase 1">
+                <img src="https://i.ibb.co/7J9m776C/image.png" alt="Image 1">
                 <div class="gallery-caption">
-                    <div class="gallery-caption-title">Cheat Interface</div>
-                    <div class="gallery-caption-sub">Src: Client UI • 22.07.2026</div>
+                    <div class="gallery-caption-title">Image 1</div>
                 </div>
             </div>
 
             <div class="gallery-card" onclick="openLightbox(1)">
-                <img src="https://i.ibb.co/tw7V2yy6/image.png" alt="Showcase 2">
+                <img src="https://i.ibb.co/tw7V2yy6/image.png" alt="Image 2">
                 <div class="gallery-caption">
-                    <div class="gallery-caption-title">Automation Engine</div>
-                    <div class="gallery-caption-sub">Src: Bot Log • 22.07.2026</div>
+                    <div class="gallery-caption-title">Image 2</div>
                 </div>
             </div>
 
             <div class="gallery-card" onclick="openLightbox(2)">
-                <img src="https://i.ibb.co/gFM0hVXs/image.png" alt="Showcase 3">
+                <img src="https://i.ibb.co/gFM0hVXs/image.png" alt="Image 3">
                 <div class="gallery-caption">
-                    <div class="gallery-caption-title">Teleport & World Tools</div>
-                    <div class="gallery-caption-sub">Src: Core Module • 22.07.2026</div>
+                    <div class="gallery-caption-title">Image 3</div>
                 </div>
             </div>
 
             <div class="gallery-card" onclick="openLightbox(3)">
-                <img src="https://i.ibb.co/5hS2y1Jv/image.png" alt="Showcase 4">
+                <img src="https://i.ibb.co/5hS2y1Jv/image.png" alt="Image 4">
                 <div class="gallery-caption">
-                    <div class="gallery-caption-title">Script Hub Execution</div>
-                    <div class="gallery-caption-sub">Src: Executor • 22.07.2026</div>
+                    <div class="gallery-caption-title">Image 4</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ARKANGEL REMAKE PAGE -->
+    <!-- ARKANGEL REMAKE PAGE (/arkangelremake) -->
     <div id="arkangel-page" class="page">
-        <a href="#" class="back-btn" onclick="navTo('home')">← Back to Overview</a>
+        <a href="#" class="back-btn" onclick="navTo('home'); return false;">← Back to Overview</a>
 
         <div class="panel">
             <div class="panel-header">
@@ -713,24 +711,31 @@ footer {
 <!-- LIGHTBOX MODAL -->
 <div id="lightbox" class="modal">
     <div class="modal-header">
-        <span id="lb-title-header" style="font-weight: bold;">Image Showcase</span>
+        <span id="lb-title-header" style="font-weight: bold;">Image 1</span>
         <button class="modal-close" onclick="closeLightbox()">Close [ESC]</button>
     </div>
 
     <div class="modal-viewport">
         <button class="modal-arrow arrow-prev" onclick="navLightbox(-1)">‹</button>
         <button class="modal-arrow arrow-next" onclick="navLightbox(1)">›</button>
-        <img id="lb-image" src="" alt="Zoomable Preview">
+        <img id="lb-image" src="" alt="Full Preview">
     </div>
 
-    <div class="modal-footer">
-        <span id="lb-caption">Title</span> | Source: <span id="lb-source">Module</span> | Date: <span id="lb-date">22.07.2026</span>
+    <div class="modal-footer" id="lb-caption">
+        Image 1
     </div>
 </div>
 
 <script>
-/* PAGE NAVIGATION */
-function navTo(target) {
+/* ROUTE MAP */
+const routes = {
+    'home': '/main',
+    'handsome': '/projecthandsome',
+    'arkangel': '/arkangelremake'
+};
+
+/* PAGE NAVIGATION WITH FAKE URL CHANGE */
+function navTo(target, pushUrl = true) {
     document.getElementById("home-page").style.display = "none";
     document.getElementById("handsome-page").style.display = "none";
     document.getElementById("arkangel-page").style.display = "none";
@@ -739,15 +744,47 @@ function navTo(target) {
     if (target === 'handsome') document.getElementById("handsome-page").style.display = "block";
     if (target === 'arkangel') document.getElementById("arkangel-page").style.display = "block";
 
+    if (pushUrl && routes[target]) {
+        try {
+            history.pushState({ page: target }, '', routes[target]);
+        } catch (e) {
+            console.log('URL pushState handled');
+        }
+    }
+
     window.scrollTo(0, 0);
 }
 
-/* LIGHTBOX & PAN/ZOOM DATA */
+// Handle Browser Back / Forward Buttons
+window.addEventListener('popstate', (e) => {
+    if (e.state && e.state.page) {
+        navTo(e.state.page, false);
+    } else {
+        parseCurrentUrl(false);
+    }
+});
+
+function parseCurrentUrl(pushUrl = false) {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes('projecthandsome')) {
+        navTo('handsome', pushUrl);
+    } else if (path.includes('arkangelremake')) {
+        navTo('arkangel', pushUrl);
+    } else {
+        navTo('home', pushUrl);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    parseCurrentUrl(true);
+});
+
+/* LIGHTBOX DATA */
 const galleryData = [
-    { src: "https://i.ibb.co/7J9m776C/image.png", title: "Cheat Interface Panel", source: "Client UI Module", date: "22.07.2026 - 14:20" },
-    { src: "https://i.ibb.co/tw7V2yy6/image.png", title: "Automation Log", source: "Bot Module", date: "22.07.2026 - 14:22" },
-    { src: "https://i.ibb.co/gFM0hVXs/image.png", title: "World Teleport & Utilities", source: "Core Engine", date: "22.07.2026 - 14:25" },
-    { src: "https://i.ibb.co/5hS2y1Jv/image.png", title: "Script Hub Execution", source: "Executor Module", date: "22.07.2026 - 14:30" }
+    { src: "https://i.ibb.co/7J9m776C/image.png", title: "Image 1" },
+    { src: "https://i.ibb.co/tw7V2yy6/image.png", title: "Image 2" },
+    { src: "https://i.ibb.co/gFM0hVXs/image.png", title: "Image 3" },
+    { src: "https://i.ibb.co/5hS2y1Jv/image.png", title: "Image 4" }
 ];
 
 let lbIndex = 0;
@@ -786,8 +823,6 @@ function updateLightbox() {
     img.src = item.src;
     document.getElementById("lb-title-header").innerText = item.title;
     document.getElementById("lb-caption").innerText = item.title;
-    document.getElementById("lb-source").innerText = item.source;
-    document.getElementById("lb-date").innerText = item.date;
 
     applyTransform();
 }
