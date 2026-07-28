@@ -2,929 +2,212 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pixelworldscheats.xyz</title>
 <link rel="icon" href="https://i.ibb.co/4nHdfYF2/favicon.png">
 
-
-<meta name="title" content="pixelworldscheats">
-<meta name="description" content="projectreboot and pixelworlds cheats. Free">
+<meta name="title" content="Pixelworldscheats.xyz">
+<meta name="description" content="Free Pixel Worlds & Project Reboot Cheats">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://pixelworldscheats.xyz/">
-<meta property="og:title" content="pixelworldscheats">
-<meta property="og:description" content="projectreboot and pixelworlds cheats. Free">
+<meta property="og:title" content="Pixelworldscheats.xyz">
+<meta property="og:description" content="Free Pixel Worlds & Project Reboot Cheats">
 <meta property="og:image" content="https://i.ibb.co/4nHdfYF2/favicon.png">
-<meta name="theme-color" content="#121318">
+<meta name="theme-color" content="#050505">
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Tahoma, Verdana, Segoe, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    user-select: none;
 }
 
-body {
-    background-color: #08090c;
-    color: #a0a5b5;
-    font-size: 13px;
-    line-height: 1.5;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-a {
-    color: #4f80ff;
-    text-decoration: none;
-    transition: color 0.15s ease;
-}
-a:hover {
-    color: #7ca1ff;
-}
-
-/* TOP HEADER BAR */
-.header-bar {
-    background: #0f1016;
-    border-bottom: 1px solid #1a1c24;
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.brand-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
-    border: 1px solid #282c3a;
-}
-
-.brand-title {
-    color: #f0f2f8;
-    font-size: 16px;
-    font-weight: bold;
-    letter-spacing: -0.2px;
-}
-
-.discord-badge {
-    background: #151720;
-    border: 1px solid #222634;
-    color: #7289da;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.status-dot {
-    width: 6px;
-    height: 6px;
-    background: #00dc82;
-    border-radius: 50%;
-}
-
-/* MAIN CONTAINER */
-.container {
-    max-width: 980px;
+body, html {
     width: 100%;
-    margin: 28px auto;
-    padding: 0 16px;
-    flex: 1;
-}
-
-/* PANEL & BOX CARDS */
-.panel {
-    background: #0e0f14;
-    border: 1px solid #1c1e28;
-    border-radius: 6px;
-    margin-bottom: 20px;
+    height: 100%;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-.panel-header {
-    background: #13151c;
-    border-bottom: 1px solid #1c1e28;
-    padding: 10px 16px;
-    color: #d0d5e5;
-    font-weight: bold;
-    font-size: 13px;
+    background: #000;
+    color: #fff;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.panel-body {
-    padding: 20px;
-}
-
-/* BUTTONS WITH SMOOTH TRANSITIONS */
-.btn {
-    display: inline-flex;
-    align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 9px 18px;
-    background: #1a1c26;
-    border: 1px solid #2e3244;
-    color: #e2e6f0;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.btn:hover {
-    background: #242736;
-    border-color: #3f445c;
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-.btn:active {
-    transform: translateY(0);
-}
-
-.btn-primary {
-    background: #233256;
-    border-color: #3b5080;
-    color: #7ca1ff;
-}
-
-.btn-primary:hover {
-    background: #2b3d6a;
-    border-color: #4a649f;
-    color: #ffffff;
-}
-
-.btn-disabled {
-    background: #121319;
-    border-color: #1a1c24;
-    color: #4a4e5d;
-    cursor: not-allowed;
-}
-
-.btn-disabled:hover {
-    background: #121319;
-    border-color: #1a1c24;
-    color: #4a4e5d;
-    transform: none;
-    box-shadow: none;
-}
-
-/* BADGES & TAGS */
-.badge {
-    padding: 2px 7px;
-    font-size: 10px;
-    font-weight: bold;
-    border-radius: 3px;
-    text-transform: uppercase;
-}
-
-.badge-green {
-    background: rgba(0, 220, 130, 0.1);
-    border: 1px solid rgba(0, 220, 130, 0.25);
-    color: #00dc82;
-}
-
-.badge-orange {
-    background: rgba(255, 170, 0, 0.1);
-    border: 1px solid rgba(255, 170, 0, 0.25);
-    color: #ffaa00;
-}
-
-/* PROJECT LIST */
-.project-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 16px;
-}
-
-.project-card {
-    display: flex;
     align-items: center;
-    gap: 16px;
-    background: #111218;
-    border: 1px solid #1a1c26;
-    border-radius: 5px;
-    padding: 14px;
+}
+
+#bg-video {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    filter: brightness(0.35) contrast(1.1);
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.85) 100%);
+    z-index: 2;
+}
+
+.mute-btn {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50px;
+    padding: 8px 18px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.project-card:hover {
-    background: #151720;
-    border-color: #383d54;
-    transform: translateX(4px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+.mute-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #fff;
+    transform: scale(1.03);
 }
 
-.project-card img {
-    width: 52px;
-    height: 52px;
-    border-radius: 4px;
-    border: 1px solid #222533;
+.card-wrap {
+    position: relative;
+    z-index: 5;
+    animation: floatCard 5s ease-in-out infinite;
+}
+
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
+.card {
+    background: rgba(15, 15, 18, 0.4);
+    backdrop-filter: blur(35px) saturate(190%);
+    -webkit-backdrop-filter: blur(35px) saturate(190%);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 26px;
+    padding: 42px 36px;
+    width: 360px;
+    text-align: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.65), 0 0 40px rgba(255, 255, 255, 0.02) inset;
+}
+
+.avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     object-fit: cover;
 }
 
-.project-info {
-    flex: 1;
-}
-
-.project-name {
-    color: #e6e9f2;
-    font-size: 15px;
-    font-weight: bold;
-}
-
-.project-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 4px;
-}
-
-/* FEATURE GRID */
-.feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 12px;
-    margin-top: 16px;
-}
-
-.feature-box {
-    background: #101117;
-    border: 1px solid #1a1c26;
-    border-radius: 4px;
-    padding: 14px;
-    transition: border-color 0.2s ease;
-}
-
-.feature-box:hover {
-    border-color: #2e3346;
-}
-
-.feature-title {
-    color: #f0f2f8;
-    font-size: 13px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid #1a1c26;
-}
-
-.feature-list {
-    list-style: none;
-}
-
-.feature-list li {
-    padding: 3px 0;
-    color: #9095a5;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.feature-list li::before {
-    content: "›";
-    color: #4f80ff;
-    font-weight: bold;
-}
-
-/* CHANGELOG */
-.changelog-card {
-    background: #101117;
-    border: 1px solid #1d212c;
-    border-left: 3px solid #4f80ff;
-    border-radius: 4px;
-    padding: 14px 16px;
-    margin-bottom: 20px;
-}
-
-.changelog-title {
-    color: #e6e9f2;
-    font-weight: bold;
-    font-size: 13px;
-    margin-bottom: 8px;
-}
-
-.changelog-list {
-    list-style: none;
-}
-
-.changelog-list li {
-    color: #8a8f9e;
-    padding: 2px 0;
-}
-
-.changelog-list li::before {
-    content: "- ";
-    color: #4f80ff;
-}
-
-/* GALLERY SHOWCASE */
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
-    margin-top: 14px;
-}
-
-.gallery-card {
-    background: #101117;
-    border: 1px solid #1a1c26;
-    border-radius: 4px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex;
-    flex-direction: column;
-}
-
-.gallery-card:hover {
-    border-color: #3f445c;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-}
-
-.gallery-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: contain;
-    display: block;
-    background: #06070a;
-    padding: 6px;
-}
-
-.gallery-caption {
-    padding: 10px;
-    background: #12141c;
-    border-top: 1px solid #1a1c26;
-    text-align: center;
-}
-
-.gallery-caption-title {
-    color: #d0d5e5;
-    font-weight: bold;
-    font-size: 12px;
-}
-
-/* PAGES & ANIMATIONS */
-.page {
-    display: none;
-}
-
-.page-active {
-    display: block;
-    animation: fadeInPage 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeInPage {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 16px;
-    padding: 6px 12px;
-    background: #101117;
-    border: 1px solid #1a1c26;
-    border-radius: 4px;
-    color: #9095a5;
-    font-size: 11px;
-    font-weight: bold;
-    transition: all 0.15s ease;
-}
-.back-btn:hover {
-    background: #181a24;
-    color: #ffffff;
-    transform: translateX(-2px);
-}
-
-/* FOOTER */
-footer {
-    padding: 24px;
-    border-top: 1px solid #161820;
-    text-align: center;
-    color: #505462;
-    font-size: 11px;
-}
-
-/* LIGHTBOX MODAL WITH PROPER FULL SIZE IMAGE EXPANSION */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(5, 6, 8, 0.95);
-    z-index: 100;
-    flex-direction: column;
-    user-select: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-
-.modal-active {
-    display: flex;
-    opacity: 1;
-}
-
-.modal-header {
-    padding: 12px 20px;
-    background: #0d0e13;
-    border-bottom: 1px solid #1a1c26;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: #d0d5e5;
-}
-
-.modal-viewport {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-/* FIX: Forces full width/height scaling while maintaining uncropped proportions */
-.modal-viewport img {
-    width: 80vw;
-    height: 75vh;
-    max-width: 1100px;
-    max-height: 80vh;
-    object-fit: contain;
-    border-radius: 4px;
-    border: 1px solid #222533;
-    transition: transform 0.1s ease-out;
-    cursor: grab;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-    animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes modalFadeIn {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-.modal-viewport img:active {
-    cursor: grabbing;
-}
-
-.modal-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(16, 18, 24, 0.85);
-    border: 1px solid #282c3a;
-    color: #ffffff;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.title {
     font-size: 20px;
-    cursor: pointer;
-    border-radius: 4px;
-    z-index: 105;
-    transition: background 0.15s ease;
-}
-.modal-arrow:hover {
-    background: #232736;
-}
-.arrow-prev { left: 20px; }
-.arrow-next { right: 20px; }
-
-.modal-close {
-    background: #181a24;
-    border: 1px solid #2a2e3d;
-    color: #a0a5b5;
-    padding: 4px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
-    transition: all 0.15s ease;
-}
-.modal-close:hover {
-    color: #ffffff;
-    background: #242838;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
 }
 
-.modal-footer {
-    padding: 10px 20px;
-    background: #0d0e13;
-    border-top: 1px solid #1a1c26;
-    text-align: center;
-    font-size: 12px;
-    font-weight: bold;
-    color: #d0d5e5;
+.desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 28px;
+    font-weight: 400;
+    letter-spacing: -0.1px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: -0.2px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.32);
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: scale(0.98);
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER BAR -->
-<div class="header-bar">
-    <div class="brand">
-        <img class="brand-icon" src="https://i.ibb.co/4nHdfYF2/favicon.png" alt="Logo">
-        <span class="brand-title">Pixelworldscheats.xyz</span>
-    </div>
-    <div class="discord-badge">
-        <div class="status-dot"></div>
-        discord: eelaska.sys
-    </div>
-</div>
+<video id="bg-video" autoplay loop muted playsinline>
+    <source src="video.mp4" type="video/mp4">
+</video>
 
-<!-- CONTAINER -->
-<div class="container">
+<div class="overlay"></div>
 
-    <!-- HOME PAGE (/main) -->
-    <div id="home-page" class="page page-active">
-        <div class="panel">
-            <div class="panel-header">
-                <span>Welcome</span>
-            </div>
-            <div class="panel-body" style="text-align: center; padding: 30px 20px;">
-                <h2 style="color: #f0f2f8; font-size: 20px; font-weight: bold;">Pixel Worlds Cheats</h2>
-                <p style="margin-top: 6px; color: #808595;">Free cheat projects, downloads, and technical feature showcases.</p>
-                
-                <div style="margin-top: 16px;">
-                    <a class="btn btn-primary" target="_blank" href="https://discord.gg/QV69upuxbg">
-                        Join Discord Server
-                    </a>
-                </div>
+<audio id="bg-music" loop src="music.mp3"></audio>
 
-                <div class="project-grid">
-                    <!-- Project Handsome Card -->
-                    <div class="project-card" onclick="navTo('handsome')">
-                        <img src="https://i.ibb.co/4nHdfYF2/favicon.png" alt="Project Handsome">
-                        <div class="project-info" style="text-align: left;">
-                            <div class="project-name">Project Handsome</div>
-                            <div class="project-meta">
-                                <span class="badge badge-green">FREE</span>
-                                <span style="color: #606575; font-size: 11px;">Version 2.1</span>
-                            </div>
-                        </div>
-                        <span style="color: #404555; font-weight: bold; font-size: 16px;">›</span>
-                    </div>
+<button class="mute-btn" id="mBtn" onclick="toggleMute()">Unmute</button>
 
-
-                    <div class="project-card" onclick="navTo('projectreboot')">
-                        <img src="https://pwreboot.com/assets/img/png/logowithdudesnewnoportal.png" alt="project reboot logo">
-                        <div class="project-info" style="text-align: left;">
-                            <div class="project-name">Project Reboot cheat</div>
-                            <div class="project-meta">
-                                <span class="badge badge-orange">SOON</span>
-                                <span style="color: #606575; font-size: 11px;">coming some time ok bradar</span>
-                            </div>
-                        </div>
-                        <span style="color: #404555; font-weight: bold; font-size: 16px;">›</span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-    <div id="handsome-page" class="page">
-        <a href="#" class="back-btn" onclick="navTo('home'); return false;">← Back to Overview</a>
-
-        <div class="panel">
-            <div class="panel-header">
-                <span>Project Handsome</span>
-                <span class="badge badge-green">FREE v2.1</span>
-            </div>
-            <div class="panel-body">
-                <p style="color: #c0c5d5;">Project Handsome is a free Pixel Worlds cheat featuring over 100+ basic features, multiple automation features, and community script support.</p>
-                <div style="margin-top: 16px;">
-                    <a class="btn btn-primary" target="_blank" href="https://discord.gg/QV69upuxbg">
-                        Download v2.1
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- CHANGELOG -->
-        <div class="changelog-card">
-            <div class="changelog-title">V2.1 UPDATES & FIXES</div>
-            <ul class="changelog-list">
-                <li>Fixed auto world report module</li>
-                <li>Added Auto Math & Auto Farm automation</li>
-                <li>Added more core features & stability fixes</li>
-                <li>Performance and general engine optimizations</li>
-            </ul>
-        </div>
-
-        <!-- FEATURE MATRIX -->
-        <div class="feature-grid">
-            <div class="feature-box">
-                <div class="feature-title">Main Cheats</div>
-                <ul class="feature-list">
-                    <li>100+ Basic Cheats</li>
-                    <li>Godmode</li>
-                    <li>Anti Bounce</li>
-                    <li>Infinite Jump</li>
-                    <li>Anti Darkness</li>
-                    <li>Troll Cheats</li>
-                </ul>
-            </div>
-
-            <div class="feature-box">
-                <div class="feature-title">Automation</div>
-                <ul class="feature-list">
-                    <li>Auto Nether</li>
-                    <li>Auto Fish</li>
-                    <li>Auto Math</li>
-                    <li>Auto Farm</li>
-                    <li>Teleport</li>
-                    <li>Auto Mine (Soon)</li>
-                </ul>
-            </div>
-
-            <div class="feature-box">
-                <div class="feature-title">Movement</div>
-                <ul class="feature-list">
-                    <li>Fly Mode</li>
-                    <li>Multiple Fly Methods</li>
-                    <li>Improved Freecam</li>
-                </ul>
-            </div>
-
-            <div class="feature-box">
-                <div class="feature-title">Extras</div>
-                <ul class="feature-list">
-                    <li>Chat Commands</li>
-                    <li>Fun Features</li>
-                    <li>Community Executor</li>
-                    <li>Built-in Script Hub</li>
-                    <li>Owner is a sigma</li>
-                </ul>
-            </div>
-        </div>
-
-        <div style="margin-top: 28px; margin-bottom: 10px; color: #f0f2f8; font-weight: bold; font-size: 14px;">
-            Showcase Gallery
-        </div>
-
-        <!-- GALLERY -->
-        <div class="gallery-grid">
-            <div class="gallery-card" onclick="openLightbox(0)">
-                <img src="https://i.ibb.co/7J9m776C/image.png" alt="Image 1">
-                <div class="gallery-caption">
-                    <div class="gallery-caption-title">Image 1</div>
-                </div>
-            </div>
-
-            <div class="gallery-card" onclick="openLightbox(1)">
-                <img src="https://i.ibb.co/tw7V2yy6/image.png" alt="Image 2">
-                <div class="gallery-caption">
-                    <div class="gallery-caption-title">Image 2</div>
-                </div>
-            </div>
-
-            <div class="gallery-card" onclick="openLightbox(2)">
-                <img src="https://i.ibb.co/gFM0hVXs/image.png" alt="Image 3">
-                <div class="gallery-caption">
-                    <div class="gallery-caption-title">Image 3</div>
-                </div>
-            </div>
-
-            <div class="gallery-card" onclick="openLightbox(3)">
-                <img src="https://i.ibb.co/5hS2y1Jv/image.png" alt="Image 4">
-                <div class="gallery-caption">
-                    <div class="gallery-caption-title">Image 4</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ARKANGEL REMAKE PAGE (/arkangelremake) -->
-    <div id="arkangel-page" class="page">
-        <a href="#" class="back-btn" onclick="navTo('home'); return false;">← Back to Overview</a>
-
-        <div class="panel">
-            <div class="panel-header">
-                <span>Arkangel remake</span>
-                <span class="badge badge-orange">SOON</span>
-            </div>
-            <div class="panel-body" style="text-align: center; padding: 45px 20px;">
-                <h3 style="color: #f0f2f8; font-size: 16px; font-weight: bold;">Coming soon..</h3>
-                <p style="margin-top: 6px; color: #707585;">This project is currently under active development.</p>
-                <div style="margin-top: 20px;">
-                    <button class="btn btn-disabled" disabled>Download (Coming Soon)</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- FOOTER -->
-<footer>
-    © <a href="https://pixelworldscheats.xyz">pixelworldscheats.xyz</a> — Last Updated: 22.7.2026
-</footer>
-
-<!-- LIGHTBOX MODAL -->
-<div id="lightbox" class="modal">
-    <div class="modal-header">
-        <span id="lb-title-header" style="font-weight: bold;">Image 1</span>
-        <button class="modal-close" onclick="closeLightbox()">Close [ESC]</button>
-    </div>
-
-    <div class="modal-viewport">
-        <button class="modal-arrow arrow-prev" onclick="navLightbox(-1)">‹</button>
-        <button class="modal-arrow arrow-next" onclick="navLightbox(1)">›</button>
-        <img id="lb-image" src="" alt="Full Preview">
-    </div>
-
-    <div class="modal-footer" id="lb-caption">
-        Image 1
+<div class="card-wrap">
+    <div class="card">
+        <img class="avatar" src="https://i.ibb.co/4nHdfYF2/favicon.png" alt="logo">
+        <div class="title">Pixelworldscheats.xyz</div>
+        <div class="desc">Free Pixel Worlds & Project Reboot Cheats</div>
+        <a href="https://discord.gg/QV69upuxbg" target="_blank" class="btn">Download</a>
     </div>
 </div>
 
 <script>
-/* ROUTE MAP */
-const routes = {
-    'home': '/main',
-    'handsome': '/projecthandsome',
-    'arkangel': '/arkangelremake'
-};
+const m = document.getElementById('bg-music');
+const b = document.getElementById('mBtn');
 
-/* PAGE NAVIGATION WITH FAKE URL CHANGE & ANIMATIONS */
-function navTo(target, pushUrl = true) {
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(p => p.classList.remove('page-active'));
-
-    let targetEl = document.getElementById("home-page");
-    if (target === 'handsome') targetEl = document.getElementById("handsome-page");
-    if (target === 'arkangel') targetEl = document.getElementById("arkangel-page");
-
-    targetEl.classList.add('page-active');
-
-    if (pushUrl && routes[target]) {
-        try {
-            history.pushState({ page: target }, '', routes[target]);
-        } catch (e) {
-            console.log('URL pushState handled');
-        }
-    }
-
-    window.scrollTo(0, 0);
-}
-
-// Handle Browser Back / Forward Buttons
-window.addEventListener('popstate', (e) => {
-    if (e.state && e.state.page) {
-        navTo(e.state.page, false);
+function toggleMute() {
+    if (m.paused) {
+        m.play();
+        b.innerText = 'Mute';
     } else {
-        parseCurrentUrl(false);
-    }
-});
-
-function parseCurrentUrl(pushUrl = false) {
-    const path = window.location.pathname.toLowerCase();
-    if (path.includes('projecthandsome')) {
-        navTo('handsome', pushUrl);
-    } else if (path.includes('arkangelremake')) {
-        navTo('arkangel', pushUrl);
-    } else {
-        navTo('home', pushUrl);
+        m.pause();
+        b.innerText = 'Unmute';
     }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    parseCurrentUrl(true);
-});
-
-/* LIGHTBOX DATA */
-const galleryData = [
-    { src: "https://i.ibb.co/7J9m776C/image.png", title: "Image 1" },
-    { src: "https://i.ibb.co/tw7V2yy6/image.png", title: "Image 2" },
-    { src: "https://i.ibb.co/gFM0hVXs/image.png", title: "Image 3" },
-    { src: "https://i.ibb.co/5hS2y1Jv/image.png", title: "Image 4" }
-];
-
-let lbIndex = 0;
-let zoomScale = 1;
-let panX = 0, panY = 0;
-let isDragging = false;
-let startX = 0, startY = 0;
-
-function openLightbox(index) {
-    lbIndex = index;
-    resetZoom();
-    updateLightbox();
-    const modal = document.getElementById("lightbox");
-    modal.classList.add("modal-active");
-}
-
-function closeLightbox() {
-    const modal = document.getElementById("lightbox");
-    modal.classList.remove("modal-active");
-}
-
-function navLightbox(dir) {
-    lbIndex = (lbIndex + dir + galleryData.length) % galleryData.length;
-    resetZoom();
-    updateLightbox();
-}
-
-function resetZoom() {
-    zoomScale = 1;
-    panX = 0;
-    panY = 0;
-}
-
-function updateLightbox() {
-    const item = galleryData[lbIndex];
-    const img = document.getElementById("lb-image");
-    
-    img.src = item.src;
-    document.getElementById("lb-title-header").innerText = item.title;
-    document.getElementById("lb-caption").innerText = item.title;
-
-    applyTransform();
-}
-
-function applyTransform() {
-    const img = document.getElementById("lb-image");
-    img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
-}
-
-/* MOUSE WHEEL ZOOM & PAN DRAG */
-const lbImg = document.getElementById("lb-image");
-
-lbImg.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    zoomScale += e.deltaY * -0.0012;
-    zoomScale = Math.min(Math.max(1, zoomScale), 4);
-    if (zoomScale === 1) { panX = 0; panY = 0; }
-    applyTransform();
-});
-
-lbImg.addEventListener("mousedown", (e) => {
-    if (zoomScale > 1) {
-        isDragging = true;
-        startX = e.clientX - panX;
-        startY = e.clientY - panY;
-    }
-});
-
-window.addEventListener("mousemove", (e) => {
-    if (!isDragging) return;
-    panX = e.clientX - startX;
-    panY = e.clientY - startY;
-    applyTransform();
-});
-
-window.addEventListener("mouseup", () => {
-    isDragging = false;
-});
-
-window.addEventListener("keydown", (e) => {
-    const modal = document.getElementById("lightbox");
-    if (modal.classList.contains("modal-active")) {
-        if (e.key === "Escape") closeLightbox();
-        if (e.key === "ArrowLeft") navLightbox(-1);
-        if (e.key === "ArrowRight") navLightbox(1);
-    }
-});
 
 const titles = [
-    "pixelworldscheats.xyz",
+    "Pixelworldscheats.xyz",
     "Best PW Cheats free",
     "Pixel Worlds Cheats",
-    "Project reboot cheats",
-    "fucking nigger"
-    "stfu and join the dc server"
+    "Project reboot cheats"
 ];
-let titleIdx = 0;
+let idx = 0;
 setInterval(() => {
-    titleIdx = (titleIdx + 1) % titles.length;
-    document.title = titles[titleIdx];
+    idx = (idx + 1) % titles.length;
+    document.title = titles[idx];
 }, 2000);
 </script>
 
